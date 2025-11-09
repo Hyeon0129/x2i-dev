@@ -8,16 +8,38 @@ const HERO_IMG = 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'
 const TV_IMG   = 'https://x2i.dev/wp-content/uploads/2025/04/abm.png'
 
 export default function HomePage() {
+
+  // ✅ fade-in 스크롤 애니메이션 추가
+  useEffect(() => {
+    const elements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // ✅ 기존 return 그대로 유지
   return (
     <>
       <Hero />
       <div className="divider" />
       <div className="below-bg">
         <TvSection />
+        <SkillsSection /> {/* ✅ 여기에 추가 */}
       </div>
     </>
   )
 }
+
 
 function Hero() {
   return (
@@ -76,7 +98,7 @@ function TvSection() {
   }, [idx, done])
 
   return (
-    <section id="records" className="section">
+    <section id="records" className="section fade-in">
       <div className="container tv-grid">
         <div className="tv-wrap">
           <Image src={TV_IMG} alt="terminal tv" width={1200} height={800} className="tv-image" priority />
@@ -97,9 +119,82 @@ function TvSection() {
             This is a space where I write down what I learn, what I think, and personal thoughts,
             questions, and everyday moments. If it helps someone later, that would be great.
           </p>
-          <a className="tv-cta" href="/about">Explore ↗</a>
+                   <a href="/about" className="tv-cta">
+                    <span>explore</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      className="icon"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8.25 5.75h10v10h-1.5V8.31L5.78 19.28 4.72 18.22 15.69 7.25H8.25V5.75z"
+                      />
+                    </svg>
+                  </a>
         </div>
       </div>
     </section>
   )
 }
+
+
+function SkillsSection() {
+  return (
+  <section id="skills" className="section fade-in">
+  <div className="container skills-grid-alt">
+    <div className="skills-left">
+      <div className="mono-tag">
+        <span>[</span>
+        <span>SKILLS</span>
+        <span>]</span>
+      </div>
+      <h3 className="section-title">Technical Expertise</h3>
+    </div>
+
+    <div className="skills-right">
+      <div className="skills-box">
+        <h4>CORE SKILLS</h4>
+        <ul>
+          <li>&nbsp;Linux Administration</li>
+          <li>&nbsp;Quality Control</li>
+          <li>&nbsp;Process Automation</li>
+          <li>&nbsp;System Integration</li>
+          <li>&nbsp;Technical Documentation</li>
+          <li>&nbsp;Server Assembly</li>
+        </ul>
+      </div>
+      <div className="skills-box">
+        <h4>DEVELOPMENT</h4>
+        <ul>
+          <li>&nbsp;Bash/Shell Script</li>
+        </ul>
+      </div>
+      <div className="skills-box">
+        <h4>DEVOPS & TOOLS</h4>
+        <ul>
+          <li>&nbsp;Docker</li>
+          <li>&nbsp;Ansible</li>
+          <li>&nbsp;Git</li>
+        </ul>
+      </div>
+      <div className="skills-box">
+        <h4>HARDWARE & PROTOCOLS</h4>
+        <ul>
+          <li>&nbsp;Redfish API</li>
+          <li>&nbsp;IPMI Management</li>
+          <li>&nbsp;AI Accelerator</li>
+          <li>&nbsp;Soldering</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+  )
+}
+

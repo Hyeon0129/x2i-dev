@@ -1,26 +1,242 @@
-@import "tailwindcss";
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+:root{
+  --background-color: #000000;
+  --accent-color-hover:#5c5c5c;
+  --secondary-color: #333333;
+  --bg-top: #000000;   /* 상단(히어로) : 블랙보다 살짝 밝음 */
+  --bg-below: #000000; /* 디바이더 아래는 순블랙 */
+  --muted: #9aa3af;
+}
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+::-webkit-scrollbar-track {
+  background: var(--background-color);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color-hover);
+}
+
+
+*{ box-sizing:border-box; }
+html, body{ margin:0; padding:0; color:#e7ebf0; background:var(--bg-top);
+font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial;
+}
+
+.nav a{ font-size:32px; font-weight:200; }
+
+.container{ width:min(92vw, 1420px); margin:0 auto; padding:0 24px; }
+
+/* ===== Header ===== */
+.site-header {
+  position: fixed;       /* ✅ 항상 화면 맨 위에 떠 있게 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;          /* ✅ HeroParticles, 콘텐츠보다 위 */
+  background: transparent; /* ✅ 배경 없음 — Hero와 완전히 이어짐 */
+  backdrop-filter: blur(2.5px) saturate(150%); /* 💡 살짝 유리감 (원하면 제거 가능) */
+  pointer-events: none;  /* ✅ 마우스 통과시키기 (아래 배경 클릭 가능) */
+}
+
+.header-inner {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  pointer-events: auto; /* ✅ 내부 링크만 클릭 가능하게 복원 */
+  padding-top: 8px;
+}
+
+.header-inner .brand{ display:flex; align-items:center; }
+.nav{
+  display:flex; gap:38px; margin-left:8px;
+  letter-spacing:.06em; color:#d4d4d4;
+}
+.nav a{ color:#888888; text-decoration:none; font-size:17px; font-weight:300;  }
+.nav a:hover{ color:#ffffff; }
+.nav-right{ margin-left:auto; display:flex; align-items:center; }
+.globe {
+  width: 25px;
+  height: 25px;
+  background: url("https://x2i.dev/wp-content/uploads/2025/10/globe.svg") no-repeat center / contain;
+  border: none;
+  cursor: pointer;
+  filter: brightness(0.9);
+  transition: filter .25s ease;
+}
+.globe:hover {
+  filter: brightness(1.1);
+}
+
+.globe img {
+  opacity:0.8;
+  width:24px;
+  height:24px;
+}
+.globe:hover img {
+  opacity:1;
+}
+
+/* ===== Hero ===== */
+.hero{ position:relative; min-height:100svh; display:flex; align-items:center; overflow:hidden; }
+.hero-grid{
+  display:grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(40px, 6vw, 96px); align-items:center;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  /* ✅ 중심을 화면 가운데로 옮기고, 반경을 더 크게 확장 */
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(circle at 1% 100%, rgba(40,60,200,0.06) 0%, transparent 100%);
+  mix-blend-mode: screen;
+  z-index:0;
+}
+
+.hero-left {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.hero-right {
+  margin-right: -3vw; /* ✅ 살짝 더 띄워서 x.ai 같은 시각적 거리감 */
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+  
+}
+@media (max-width:1280px){ .hero-grid{ grid-template-columns:1fr; } }
+
+.mono-tag {
+  font-family: "GeistMono", ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 16px;
+  font-weight: 500; /* ← ★ 포인트! 살짝 더 두껍게 */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(216, 4%, 51%); /* #858a91 근처 */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.25rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-title{
+  margin:40px 0 40px; font-size:clamp(66px,5vw,79px); line-height:1.1; font-weight:700;
+  text-shadow:0 0 20px rgba(255,255,255,.9);
+  transition:text-shadow .5s ease-in-out, filter .5s ease-in-out;
+}
+.hero-title:hover{ text-shadow:0 0 28px rgba(255,255,255,1); filter:brightness(1.03); }
+
+.hero-sub{   font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size:clamp(19px,5vw,21px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: hsl(215, 5%, 65%); /* ✅ 원본 톤: 밝은 그레이+살짝 따뜻함 */
+  opacity: 1; /* 원본은 투명도 없이 선명하게 렌더됨 */
+  margin-top: 1rem;
+  -webkit-font-smoothing: antialiased; 
+}
+
+/* 우측 이미지: 기존 대비 20% 축소 (1.35 × 0.8 ≈ 1.08) */
+.hero-right--smaller{ transform: scale(1.25); transform-origin:left center; }
+@media (max-width:1280px){ .hero-right--smaller{ transform:none; } }
+.hero-image{ width:120%; height:100%; filter:drop-shadow(0 20px 50px rgba(0,0,0,.5)); 
+ filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+  
+}
+
+/* 히어로 캔버스(파티클) — 섹션 내부 전체를 덮음 */
+.hero-canvas{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+
+/* 디바이더 & 아래 배경 */
+.divider {
+  width:100%;
+  height:2px;
+  background:#222222;
+}
+.below-bg{ background:var(--bg-below); }
+
+/* ===== Sections / TV ===== */
+.section {
+  padding: 140px 0; /* 기존 96px → 140px */
+  margin-top: 40px; /* Hero와의 간격 */
+}
+.tv-grid {
+  display: grid;
+  align-items: center;
+  gap: clamp(80px, 8vw, 160px); /* ✅ Hero와 비슷한 여백 */
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+
+
+@media (max-width:1200px){ .tv-grid{ grid-template-columns:1fr; } }
+.tv-wrap{ position:relative; width:100%; max-width:1420px; }
+.tv-image{ width:100%; height:auto; display:block; }
+.tv-text{
+  --screen-left:61%; --screen-top:52%; --screen-width:58%;
+  position:absolute; top:var(--screen-top); left:var(--screen-left); transform:translate(-50%,-50%);
+  width:var(--screen-width);
+  font-family:'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size:1.3rem; line-height:1.6; color:#A6FF4D; text-shadow:0 0 10px #A6FF4D, 0 0 20px #00FF00; white-space:pre-wrap;
+}
+@media (max-width:1200px){ .tv-text{ font-size:.95rem; } }
+@media (max-width:767px){ .tv-text{ font-size:.78rem; } }
+.typing-text{ display:inline; }
+.cursor{ display:inline-block; width:8px; height:1.4rem; margin-left:6px; position:relative; top:.25rem; background:#00FF00; opacity:0; }
+.cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
+.section-title {
+ font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+}
+
+.section-sub{   font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size:clamp(19px,5vw,21px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: hsl(215, 5%, 65%); /* ✅ 원본 톤: 밝은 그레이+살짝 따뜻함 */
+  opacity: 1; /* 원본은 투명도 없이 선명하게 렌더됨 */
+  margin-top: 1rem;
+  -webkit-font-smoothing: antialiased; 
+}
+
+.tv-cta{ display:inline-block; padding:10px 16px; border-radius:999px; border:1px solid #2a2a2a; color:#e5e5e5; }
+.tv-cta:hover{ background:#161616; }
+
+/* 스크롤 다운 화살표 */
+.scroll-down{ position:absolute; left:50%; bottom:90px; transform:translateX(-50%); color:#a6adbb; text-decoration:none; }
+.scroll-down:hover{ color:#fff; }
+
+
+
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px); /* 💡 살짝 아래에서 올라오게 */
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

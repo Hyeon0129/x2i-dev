@@ -2,41 +2,53 @@
 
 
 :root{
-  --background-color: #000000;
+   --background-color: #000000;
   --accent-color-hover:#5c5c5c;
   --secondary-color: #333333;
   --bg-top: #000000;   /* 상단(히어로) : 블랙보다 살짝 밝음 */
   --bg-below: #000000; /* 디바이더 아래는 순블랙 */
   --muted: #9aa3af;
+  --scrollbar-width: calc(100vw - 100%);
 }
-/* 스크롤바 스타일 */
-::-webkit-scrollbar {
+
+
+html::-webkit-scrollbar {
   width: 8px;
 }
-
-::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track {
   background: var(--background-color);
 }
-
-::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
   background: var(--secondary-color);
   border-radius: 4px;
 }
-
-::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover {
   background: var(--accent-color-hover);
 }
 
 
+
 *{ box-sizing:border-box; }
-html, body{ margin:0; padding:0; color:#e7ebf0; background:var(--bg-top);
-font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial;
-overflow-x: hidden;
+html {
+  height:100%;
+  overflow-y:auto;          /* ✅ 스크롤은 html이 담당 */
+  overflow-x:hidden;
+  scrollbar-gutter: stable; /* 스크롤 생겨도 레이아웃 흔들림 방지 */
+}
+
+body {
+  min-height:100%;
+  overflow:visible;         /* ✅ body는 스크롤러 해제 */
+  margin:0;
+  padding:0;
+  color:#e7ebf0;
+  background:var(--bg-top);
+  font-family:'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial;
 }
 
 .nav a{ font-size:32px; font-weight:200; }
 
-.container{ width:min(92vw, 1420px); margin:0 auto; padding:0 24px; }
+.container{ width:min(92vw, 1420px); margin:0 auto; padding:0 24px; overflow: visible; /* ✅ 추가 */ }
 
 /* ===== Header ===== */
 .site-header {
@@ -114,7 +126,6 @@ overflow-x: hidden;
 .hero-right {
   opacity: 0;
   animation: fadeIn 1s ease-in-out forwards;
-  
 }
 @media (max-width:1280px){ .hero-grid{ grid-template-columns:1fr; } }
 .fade-in {
@@ -390,7 +401,7 @@ font-size: 1.3rem;
   font-size: 1.1rem;
   color: #9aa3af;
   line-height: 1.8;
-  margin-top: 58px; /* mono-tag 높이 + margin-bottom 보정 */
+  margin-top: 60px; /* mono-tag 높이 + margin-bottom 보정 */
 }
 
 .timeline-placeholder {
@@ -400,6 +411,7 @@ font-size: 1.3rem;
 }
 #history.section {
   padding-top: 120px; /* 90 → 120 으로 상단 공간 30px 추가 */
+  overflow: visible; /* ✅ 추가 */
 }
 
 
@@ -448,7 +460,7 @@ font-size: 1.3rem;
   top: -28px;
   left: 50%;
   width: 2px; /* ✅ 1px → 2px */
-  height: 36.5px;
+  height: 33px;
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.14); /* ✅ 동일 밝기 유지 */
   -webkit-font-smoothing: antialiased;
@@ -496,6 +508,8 @@ font-size: 1.3rem;
   transition: all 0.3s ease;
   z-index: 4;
   transform: translate(-50%, -50%);
+   top: 50%;
+  left: 50%; /* ✅ 0 대신 50% */
 }
 
 #detailBox {
@@ -507,6 +521,9 @@ font-size: 1.3rem;
   display: none;
   z-index: 4;
   transition: all 0.3s ease;
+    top: calc(50% + 40px); /* ✅ 선 아래에 위치 */
+  left: 50%; /* ✅ 중앙에 위치 */
+  transform: translateX(-50%); /* ✅ 중앙 정렬 */
 }
 
 #detailBox .date-label {

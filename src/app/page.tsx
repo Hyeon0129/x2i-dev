@@ -201,6 +201,7 @@ function SkillsSection() {
 
 function HistorySection() {
   useEffect(() => {
+    
     const timelineWrap = document.querySelector('.timeline-wrap');
     const eventDots = document.querySelectorAll('.event-dot');
     const highlight = document.getElementById('highlightBox');

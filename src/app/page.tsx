@@ -328,9 +328,8 @@ function HistorySection() {
           </div>
 
         <p className="timeline-desc">
-          This is where I keep track of the things I&apos;ve done and the moments I&apos;ve been through.
-          There&apos;s no particular rule to what&apos;s included — just events that felt meaningful to me.
-          I&apos;ll continue adding to it whenever something comes to mind.
+          A timeline that captures both personal and professional milestones 
+          from meaningful life moments to career shifts that shaped who I am today.
         </p>
 
         </div>
@@ -739,9 +738,7 @@ useEffect(() => setMounted(true), []);
             <h3 className="section-title">Featured Work</h3>
           </div>
           <p className="timeline-desc">
-            I started building whenever something felt necessary or interesting. There wasn’t a clear goal,
-            but I kept working on things one by one, and eventually, they started to take shape.
-            Some of them I still use, others I used for a while. These are the ones I decided to keep.
+            Built from curiosity and necessity small experiments that eventually became real projects.
           </p>
         </div>
 

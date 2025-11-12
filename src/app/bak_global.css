@@ -391,23 +391,18 @@ font-size: 1.3rem;
 /* ===== HISTORY SECTION ===== */
 .timeline-header {
   display: grid;
-  grid-template-columns: 0.8fr 0.61fr;
-  align-items: center;; /* ✅ start 유지 */
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: start; /* ✅ start 유지 */
   gap: 80px;
   margin-bottom: 80px;
 }
 
 /* ✅ 오른쪽 텍스트를 mono-tag 높이만큼 아래로 */
 .timeline-desc {
- font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-font-size: 1.1rem;
-  font-weight: 300;
-  line-height: 1.45;
-  color: hsl(215, 5%, 60%); /* ✅ 원본 톤: 밝은 그레이+살짝 따뜻함 */
-  opacity: 1; /* 원본은 투명도 없이 선명하게 렌더됨 */
-  -webkit-font-smoothing: antialiased; 
-  margin:40px 0 0 0;
-  
+  font-size: 1.1rem;
+  color: #9aa3af;
+  line-height: 1.8;
+  margin-top: 60px; /* mono-tag 높이 + margin-bottom 보정 */
 }
 
 .timeline-placeholder {
@@ -520,13 +515,16 @@ font-size: 1.1rem;
 
 #detailBox {
   position: absolute;
+  padding: 20px 0;
   background: transparent;
   color: #ccc;
   width: 18rem;
   display: none;
   z-index: 4;
   transition: all 0.3s ease;
+    top: calc(50% + 40px); /* ✅ 선 아래에 위치 */
   left: 50%; /* ✅ 중앙에 위치 */
+  transform: translateX(-50%); /* ✅ 중앙 정렬 */
 }
 
 #detailBox .date-label {
@@ -538,16 +536,14 @@ font-size: 1.1rem;
 
 #detailBox .detail-title {
   font-size: 1.1rem;
-  font-weight: 400;
-  margin-bottom: 15px;
+  font-weight: 500;
+  margin-bottom: 10px;
   color: #f0f0f0;
 }
 
 #detailBox .detail-desc {
-  
-  font-size: 0.91rem;
+  font-size: 0.9rem;
   line-height: 1.5;
-  font-weight: 300;
   color: #999;
 }
 
@@ -559,7 +555,7 @@ font-size: 1.1rem;
   align-items: start;
   margin-bottom: 56px;
 }
-.projects-header .section-sub .timeline-desc { color:#9aa; line-height:1.8; }
+.projects-header .section-sub { color:#9aa; line-height:1.8; }
 
 /* --- Carousel --- */
 .projects-carousel {

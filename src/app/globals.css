@@ -558,8 +558,20 @@ font-size: 1.3rem;
 .projects-header .section-sub { color:#9aa; line-height:1.8; }
 
 /* --- Carousel --- */
-.projects-carousel { position: relative; width: 100vw; overflow: hidden; }
-.projects-track { display: flex; gap: 40px; transition: transform .5s ease; align-items: stretch; width: max-content; }
+.projects-carousel {
+  position: relative;
+  width: 100%;              /* ✅ 컨테이너 안에서 시작 */
+  overflow: visible;         /* ✅ 컨테이너 밖 카드도 보이게 */
+}
+
+.projects-track {
+  display: flex;
+  gap: 40px;
+  transition: transform 0.5s ease;
+  align-items: stretch;
+  width: max-content;
+  will-change: transform;
+}
 
  .project-card {
     flex-shrink: 0;
@@ -575,11 +587,7 @@ font-size: 1.3rem;
     flex-direction: column;
 }
 
-.project-card,
-.project-card video,
-.project-card img {
-  cursor: url(/cursors/soft-pointer@2x.png) 10 8, pointer; /* 포인터 핫스팟 */
-}
+
 .project-card:hover {
         background: rgba(255, 255, 255, 0.05);
         border-color: rgba(255, 255, 255, 0.15);
@@ -639,21 +647,28 @@ font-size: 1.3rem;
   background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(8px);
   z-index: 9999;
-  display: none;
+  display: flex;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.4s ease;
+  overflow-y: auto;
 }
-.project-modal.active { display:flex; opacity:1; }
-.modal-content {
+
+.project-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+.project-modal .modal-content {
+  margin: auto;
+  max-width: 1680px;
+  min-width: 1400px;
+  width: 90%;
+  padding: 60px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: stretch;
   gap: 60px;
-  max-width: 1680px; /* 기존 1400에서 확장 */
-  min-width: 1400px; /* 작은 해상도에서도 깨지지 않게 */
-  width: 90%;
-  margin: auto;
-  padding: 60px;
   position: relative;
 }
 .modal-close {

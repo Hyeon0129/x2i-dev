@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useMemo, useRef, useState } from 'react';
 import HeroParticles from '../components/HeroParticles'
+import { createPortal } from 'react-dom';
 
 const HERO_IMG = 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'
 const TV_IMG   = 'https://x2i.dev/wp-content/uploads/2025/04/abm.png'
@@ -470,73 +471,85 @@ function ProjectsSection() {
   }
 
   type ProjectId = 'qc-dashboard' | 'llm-inference' | 'resnet-inference';
-
+  const [mounted, setMounted] = useState(false);
+useEffect(() => setMounted(true), []);
   useEffect(() => {
-    // ---------- DOM helpers ----------
-    const $ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
-      root.querySelector<T>(sel);
+  if (!mounted) return; // Portal 렌더 전엔 실행 안 함
 
-    const $$ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
-      Array.from(root.querySelectorAll<T>(sel));
+  // ---------- DOM helpers ----------
+  const $ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
+    root.querySelector<T>(sel);
+  const $$ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
+    Array.from(root.querySelectorAll<T>(sel));
 
-    // ---------- Carousel ----------
-    const track = $('#projectsTrack') as HTMLElement | null;
-    const prevBtn = $('#prevBtn') as HTMLButtonElement | null;
-    const nextBtn = $('#nextBtn') as HTMLButtonElement | null;
-    const cards = $$('.project-card') as HTMLElement[];
-    let currentIndex = 0;
+  // ---------- Carousel ----------
+  const track = $('#projectsTrack') as HTMLElement | null;
+  const prevBtn = $('#prevBtn') as HTMLButtonElement | null;
+  const nextBtn = $('#nextBtn') as HTMLButtonElement | null;
+  const cards = $$('.project-card') as HTMLElement[];
+  let currentIndex = 0;
 
-    const getCardsToShow = () => {
-      if (window.innerWidth <= 480) return 1;
-      if (window.innerWidth <= 1024) return 1.5;
-      return 2;
-    };
+  const getCardsToShow = () => {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 1024) return 1.5;
+    return 2;
+  };
 
-    const updateCarousel = () => {
-      if (!track || cards.length === 0) return;
-      const cardWidth = cards[0].offsetWidth;
-      const gap = 40;
-      const offset = currentIndex * (cardWidth + gap);
-      track.style.transform = `translateX(-${offset}px)`;
+  const updateCarousel = () => {
+    if (!track || cards.length === 0) return;
+    const cardWidth = cards[0].offsetWidth;
+    const gap = 40;
+    const offset = currentIndex * (cardWidth + gap);
+    track.style.transform = `translateX(-${offset}px)`;
 
-      if (prevBtn) prevBtn.disabled = currentIndex === 0;
-      if (nextBtn) nextBtn.disabled = currentIndex >= cards.length - Math.floor(getCardsToShow());
-    };
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex >= cards.length - Math.floor(getCardsToShow());
+  };
 
-    prevBtn?.addEventListener('click', () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateCarousel();
-      }
-    });
-
-    nextBtn?.addEventListener('click', () => {
-      const maxIndex = Math.max(0, cards.length - Math.floor(getCardsToShow()));
-      if (currentIndex < maxIndex) {
-        currentIndex++;
-        updateCarousel();
-      }
-    });
-
-    const onResize = () => {
-      currentIndex = 0;
+  prevBtn?.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
       updateCarousel();
-    };
-    window.addEventListener('resize', onResize);
+    }
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    const maxIndex = Math.max(0, cards.length - Math.floor(getCardsToShow()));
+    if (currentIndex < maxIndex) {
+      currentIndex++;
+      updateCarousel();
+    }
+  });
+
+  const onResize = () => {
+    currentIndex = 0;
     updateCarousel();
+  };
+  window.addEventListener('resize', onResize);
+  updateCarousel();
 
-    // ---------- Modal ----------
-    const modal = $('#projectModal') as HTMLDivElement | null;
-    const modalClose = $('#modalClose') as HTMLButtonElement | null;
-    const modalMedia = $('#modalMedia') as HTMLDivElement | null;
-    const modalTitle = $('#modalTitle') as HTMLHeadingElement | null;
-    const modalDesc = $('#modalDesc') as HTMLParagraphElement | null;
-    const modalCta = $('#modalCta') as HTMLAnchorElement | null;
-    const impactBar = $('#impactBar') as HTMLDivElement | null;
-    const methodChips = $('#methodChips') as HTMLDivElement | null;
-    const divider = $('#projectModal .thin-divider') as HTMLDivElement | null;
+  // ---------- Modal ----------
+  const modal = $('#projectModal') as HTMLDivElement | null;
+  const modalClose = $('#modalClose') as HTMLButtonElement | null;
+  const modalMedia = $('#modalMedia') as HTMLDivElement | null;
+  const modalTitle = $('#modalTitle') as HTMLHeadingElement | null;
+  const modalDesc = $('#modalDesc') as HTMLParagraphElement | null;
+  const modalCta = $('#modalCta') as HTMLAnchorElement | null;
+  const impactBar = $('#impactBar') as HTMLDivElement | null;
+  const methodChips = $('#methodChips') as HTMLDivElement | null;
+  const divider = $('#projectModal .thin-divider') as HTMLDivElement | null;
 
-    const projectData: Record<ProjectId, ProjectEntry> = {
+  type Dir = 'up' | 'down' | 'neutral';
+  interface Metric { label: string; value: number; suffix: string; dir: Dir; }
+  interface SnapshotPoint { value: number; unit: string; }
+  interface SnapshotRow { label: string; npu: SnapshotPoint; gpu: SnapshotPoint; }
+  interface ProjectEntry {
+    title: string; description: string; video: string; link: string;
+    metrics?: Metric[]; snapshots?: SnapshotRow[]; methods?: string[];
+  }
+  type ProjectId = 'qc-dashboard' | 'llm-inference' | 'resnet-inference';
+
+ const projectData: Record<ProjectId, ProjectEntry> = {
       'qc-dashboard': {
         title: 'Server QC Automation Dashboard',
         description: `
@@ -584,132 +597,121 @@ function ProjectsSection() {
         ],
         methods: ['ResNet-50', 'PyTorch', 'TorchVision', 'TT-Metalium', 'TT-NN'],
       },
-    };
+  };
 
-    const animateImpact = () => {
-      const els = $$('#impactBar .impact-value') as HTMLElement[];
-      els.forEach((el) => {
-        const target = parseFloat(el.getAttribute('data-target') || '0');
-        const suffix = el.getAttribute('data-suffix') || '';
-        const start = performance.now();
-        const dur = Math.max(600, Math.min(1200, Math.abs(target) * 6));
+  const animateImpact = () => {
+    const els = $$('#impactBar .impact-value') as HTMLElement[];
+    els.forEach((el) => {
+      const target = parseFloat(el.getAttribute('data-target') || '0');
+      const suffix = el.getAttribute('data-suffix') || '';
+      const start = performance.now();
+      const dur = Math.max(600, Math.min(1200, Math.abs(target) * 6));
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / dur);
+        const val = Math.round(target * p);
+        el.textContent = `${val}${suffix}`;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  };
 
-        const tick = (now: number) => {
-          const p = Math.min(1, (now - start) / dur);
-          const val = Math.round(target * p);
-          el.textContent = `${val}${suffix}`;
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      });
-    };
+  const renderImpactOrHighlights = (data: ProjectEntry) => {
+    if (!impactBar) return;
+    impactBar.innerHTML = '';
+    if (divider) divider.style.display = 'block';
 
-    const renderImpactOrHighlights = (data: ProjectEntry) => {
-      if (!impactBar) return;
-      impactBar.innerHTML = '';
-      if (divider) divider.style.display = 'block';
+    if (data.metrics && data.metrics.length) {
+      const cols = Math.min(3, data.metrics.length);
+      impactBar.style.display = 'grid';
+      impactBar.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      impactBar.innerHTML = data.metrics.map(m => `
+        <div class="impact-stat">
+          <div class="impact-value" data-target="${m.value}" data-suffix="${m.suffix}">0</div>
+          <div class="impact-label">${m.label}</div>
+        </div>
+      `).join('');
+      animateImpact();
+      return;
+    }
 
-      // 1) Metrics (숫자 카드)
-      if (data.metrics && data.metrics.length) {
-        const cols = Math.min(3, data.metrics.length);
-        impactBar.style.display = 'grid';
-        impactBar.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        impactBar.innerHTML = data.metrics
-          .map(
-            (m) => `
-              <div class="impact-stat">
-                <div class="impact-value" data-target="${m.value}" data-suffix="${m.suffix}">0</div>
-                <div class="impact-label">${m.label}</div>
+    if (data.snapshots && data.snapshots.length) {
+      impactBar.removeAttribute('style');
+      const max = Math.max(...data.snapshots.map(s => Math.max(s.npu.value, s.gpu.value)));
+      let html = `<div class="snapshots">`;
+      data.snapshots.forEach((s) => {
+        const npuPct = max ? Math.min(100, Math.round((s.npu.value / max) * 100)) : 0;
+        const gpuPct = max ? Math.min(100, Math.round((s.gpu.value / max) * 100)) : 0;
+        html += `
+          <div class="snapshot-card">
+            <div class="snapshot-label">${s.label}</div>
+            <div class="snapshot-bars">
+              <div class="bar-group">
+                <div class="bar"><div class="bar-fill" style="width:${npuPct}%"></div></div>
+                <div class="bar-meta">NPU ${s.npu.value} ${s.npu.unit}</div>
               </div>
-            `
-          )
-          .join('');
-        animateImpact();
-        return;
-      }
-
-      // 2) Snapshots (막대 2개)
-      if (data.snapshots && data.snapshots.length) {
-        impactBar.removeAttribute('style'); // grid 영향 제거
-        const max = Math.max(
-          ...data.snapshots.map((s) => Math.max(s.npu.value, s.gpu.value))
-        );
-        let html = `<div class="snapshots">`;
-        data.snapshots.forEach((s) => {
-          const npuPct = max ? Math.min(100, Math.round((s.npu.value / max) * 100)) : 0;
-          const gpuPct = max ? Math.min(100, Math.round((s.gpu.value / max) * 100)) : 0;
-          html += `
-  <div class="snapshot-card">
-    <div class="snapshot-label">${s.label}</div>
-    <div class="snapshot-bars">
-      <div class="bar-group">
-        <div class="bar"><div class="bar-fill" style="width:${npuPct}%"></div></div>
-        <div class="bar-meta">NPU ${s.npu.value} ${s.npu.unit}</div>
-      </div>
-      <div class="bar-group">
-        <div class="bar"><div class="bar-fill" style="width:${gpuPct}%"></div></div>
-        <div class="bar-meta">GPU ${s.gpu.value} ${s.gpu.unit}</div>
-      </div>
-    </div>
-  </div>`;
-        });
-        html += `</div><div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>`;
-        impactBar.innerHTML = html;
-        return;
-      }
-
-      // 3) 아무것도 없으면 감춤
-      impactBar.style.display = 'none';
-      if (divider) divider.style.display = 'none';
-    };
-
-    const openModal = (data: ProjectEntry) => {
-      if (!modal) return;
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      if (modalMedia)
-        modalMedia.innerHTML = `<video autoplay muted loop playsinline><source src="${data.video}" type="video/mp4"></video>`;
-      if (modalTitle) modalTitle.innerHTML = data.title;
-      if (modalDesc) modalDesc.innerHTML = data.description;
-      if (modalCta) modalCta.href = data.link;
-      renderImpactOrHighlights(data);
-      if (methodChips) {
-        methodChips.innerHTML = (data.methods || [])
-          .map((m) => `<span class="chip">${m}</span>`)
-          .join('');
-      }
-    };
-
-    const closeModal = () => {
-      if (!modal) return;
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-      if (modalMedia) modalMedia.innerHTML = '';
-    };
-
-    // 카드 클릭
-    cards.forEach((card, idx) => {
-      card.addEventListener('click', () => {
-        const idAttr = card.getAttribute('data-project') as ProjectId | null;
-        const fallback: ProjectId[] = ['qc-dashboard', 'llm-inference', 'resnet-inference'];
-        const key = (idAttr || fallback[idx]) as ProjectId;
-        if (projectData[key]) openModal(projectData[key]);
+              <div class="bar-group">
+                <div class="bar"><div class="bar-fill" style="width:${gpuPct}%"></div></div>
+                <div class="bar-meta">GPU ${s.gpu.value} ${s.gpu.unit}</div>
+              </div>
+            </div>
+          </div>`;
       });
+      html += `</div><div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>`;
+      impactBar.innerHTML = html;
+      return;
+    }
+
+    impactBar.style.display = 'none';
+    if (divider) divider.style.display = 'none';
+  };
+
+  const openModal = (data: ProjectEntry) => {
+    if (!modal) return;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if (modalMedia)
+      modalMedia.innerHTML = `<video autoplay muted loop playsinline><source src="${data.video}" type="video/mp4"></video>`;
+    if (modalTitle) modalTitle.innerHTML = data.title;
+    if (modalDesc) modalDesc.innerHTML = data.description;
+    if (modalCta) modalCta.href = data.link;
+    renderImpactOrHighlights(data);
+    if (methodChips) {
+      methodChips.innerHTML = (data.methods || []).map(m => `<span class="chip">${m}</span>`).join('');
+    }
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    if (modalMedia) modalMedia.innerHTML = '';
+  };
+
+  // 카드 클릭
+  cards.forEach((card, idx) => {
+    card.addEventListener('click', () => {
+      const idAttr = card.getAttribute('data-project') as ProjectId | null;
+      const fallback: ProjectId[] = ['qc-dashboard', 'llm-inference', 'resnet-inference'];
+      const key = (idAttr || fallback[idx]) as ProjectId;
+      if (projectData[key]) openModal(projectData[key]);
     });
+  });
 
-    modalClose?.addEventListener('click', closeModal);
-    modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-    const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeModal(); };
-    document.addEventListener('keydown', onEsc);
+  modalClose?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeModal(); };
+  document.addEventListener('keydown', onEsc);
 
-    return () => {
-      window.removeEventListener('resize', onResize);
-      document.removeEventListener('keydown', onEsc);
-    };
-  }, []);
+  // ✅ cleanup
+  return () => {
+    window.removeEventListener('resize', onResize);
+    document.removeEventListener('keydown', onEsc);
+  };
+}, [mounted]);
 
+
+  
   return (
     <section id="projects" className="section fade-in">
       <div className="container">
@@ -728,6 +730,7 @@ function ProjectsSection() {
 
         {/* Carousel */}
         <div className="projects-carousel">
+          <div className="container"></div>
           <div className="projects-track" id="projectsTrack">
             {/* 1 */}
             <div className="project-card" data-project="qc-dashboard">
@@ -802,6 +805,8 @@ function ProjectsSection() {
         </div>
 
         {/* Modal */}
+      {mounted &&
+      createPortal(
         <div className="project-modal" id="projectModal">
           <div className="modal-content">
             <button className="modal-close" id="modalClose">✕</button>
@@ -827,6 +832,9 @@ function ProjectsSection() {
             </div>
           </div>
         </div>
+      ,
+    document.body   
+  )}
       </div>
     </section>
   );

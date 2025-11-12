@@ -714,55 +714,135 @@ font-size: 1.3rem;
 .thin-divider { height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent); margin:6px 0 2px; }
 
 /* Impact / Snapshots */
- .impact-bar {
+.impact-bar {
   display: grid;
   grid-template-columns: repeat(3, minmax(140px, 1fr));
-  gap: 20px;
+  column-gap: 20px; /* ✅ 명시적 간격 */
+  justify-content: space-between;
   margin-top: 6px;
   min-height: 42px; /* 지표 높이 고정 → 재정렬 방지 */
 }
-.impact-stat{
-  border:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
-  border-radius:12px; padding:14px 12px; text-align:center;
-}
-.impact-value{
-  font-size:26px; font-weight:700; line-height:1; color:#fff;
-}
-.impact-label{
-  margin-top:6px; font-size:12px; color:#aaa; letter-spacing:.3px;
-}
-.method-chips{
-  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
-}
-.method-chips::before{
-  content:'METHOD'; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#777; margin-right:8px;
-}
-.chip{
-  font-size:12px; color:#bbb; padding:6px 10px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03);
+
+.impact-stat {
+  display: flex; /* ✅ 한 줄 정렬 */
+  flex-direction: row; /* 세로 → 가로 */
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* 숫자와 라벨 간 여백 */
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border-radius: 12px;
+  padding: 15px 16px;
+  text-align: center;
+  white-space: nowrap; /* ✅ 줄바꿈 방지 */
 }
 
-.snapshots { display:flex; flex-direction:column; gap:10px; margin-top:6px; }
-.snapshot-card{
-  display:grid; grid-template-columns:140px 1fr; gap:16px;
-  align-items:center; padding:12px 14px; border-radius:12px;
-  border:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+.impact-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
 }
-.snapshot-label{
-  font-size:13px; color:#bbb; letter-spacing:.2px;
+
+.impact-label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #aaa;
+  letter-spacing: .2px;
 }
-.snapshot-bars{ display:flex; gap:10px; align-items:center; }
-.bar{
-  position:relative; height:8px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; width:42%;
-  background: rgba(255,255,255,.07); 
+
+/* 메서드 칩스: 근거만 짧게 */
+.method-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
+.method-chips::before {
+  content: 'METHOD';
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #777;
+  margin-right: 8px;
+}
+.chip {
+  font-size: 12px;
+  color: #bbb;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+}
+/* ====== Animations ====== */
+
+/* Snapshot strip */
+.snapshots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.snapshot-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+}
+
+.snapshot-label {
+  font-size: 13px;
+  color: #bbb;
+  letter-spacing: .2px;
+}
+
+.snapshot-bars {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  overflow: hidden;
+  flex: 0 0 auto; /* ✅ width: 42% 삭제하고 이것으로 교체 */
+  min-width: 100px; /* ✅ 최소 너비만 지정 */
+}
+
 .bar:nth-of-type(1) .bar-fill { background: rgba(255,255,255,.72); }  /* NPU */
 .bar:nth-of-type(2) .bar-fill { background: rgba(255,255,255,.45); }  /* GPU */
- .bar-fill{ position:absolute; left:0; top:0; bottom:0; width:0%; background:rgba(255,255,255,.6); }
- .bar-meta{ font-size:12px; color:#aaa; margin-left:6px; white-space:nowrap; }
- .snap-caption{
-  margin-top:6px; font-size:11px; color:#666; letter-spacing:.4px;
+
+.bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: rgba(255,255,255,.6);
 }
+
+.bar-meta {
+  font-size: 12px;
+  color: #aaa;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.snap-caption {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #666;
+  letter-spacing: .4px;
+}
+
+
+
+
 

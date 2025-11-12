@@ -450,10 +450,11 @@ function ProjectsSection() {
   }
 
   interface SnapshotPoint {
-    value: number;
-    unit: string;
-  }
-
+  value: number;
+  unit: string;
+  /** 0~100 (%). 지정하면 이 값 그대로 사용, 없으면 value 기준으로 자동 계산 */
+  percent?: number;
+}
   interface SnapshotRow {
     label: string;
     npu: SnapshotPoint;
@@ -541,7 +542,11 @@ useEffect(() => setMounted(true), []);
 
   type Dir = 'up' | 'down' | 'neutral';
   interface Metric { label: string; value: number; suffix: string; dir: Dir; }
-  interface SnapshotPoint { value: number; unit: string; }
+  interface SnapshotPoint {
+  value: number;
+  unit: string;
+  percent?: number; // ✅ ← 이 한 줄 추가!
+}
   interface SnapshotRow { label: string; npu: SnapshotPoint; gpu: SnapshotPoint; }
   interface ProjectEntry {
     title: string; description: string; video: string; link: string;
@@ -560,8 +565,8 @@ useEffect(() => setMounted(true), []);
         video: 'https://x2i.dev/wp-content/uploads/2025/10/test.mp4',
         link: 'https://x2i.dev/blog/how-i-made-work-5x-faster-with-automation/',
         metrics: [
-          { label: '처리량 증가', value: 260, suffix: '%', dir: 'up' },
-          { label: '검수 시간 단축', value: 70, suffix: '%', dir: 'down' },
+          { label: '처리량 증가 ↑', value: 260, suffix: '%', dir: 'up' },
+          { label: '검수 시간 단축 ↓', value: 70, suffix: '%', dir: 'down' },
           { label: '오류율', value: 0, suffix: '%', dir: 'neutral' },
         ],
         methods: ['Ansible', 'Shell Scripting', 'Redfish/IPMI', 'iPXE', 'FastAPI', 'Python'],
@@ -576,9 +581,9 @@ useEffect(() => setMounted(true), []);
         video: 'https://x2i.dev/wp-content/uploads/2025/10/2025-10-22-21-42-24.mp4',
         link: '#',
         snapshots: [
-          { label: 'Llama-3 70B', npu: { value: 15, unit: 'tok/s' }, gpu: { value: 20, unit: 'tok/s' } },
-          { label: 'QwQ-32B', npu: { value: 18, unit: 'tok/s' }, gpu: { value: 22, unit: 'tok/s' } },
-        ],
+        { label: 'Llama-3 70B', npu: { value: 15, unit: 'tok/s', percent: 75 }, gpu: { value: 20, unit: 'tok/s', percent: 100 } },
+        { label: 'QwQ-32B',     npu: { value: 18, unit: 'tok/s', percent: 80 }, gpu: { value: 22, unit: 'tok/s', percent: 100 } },
+      ],
         methods: ['Llama', 'vLLM', 'Docker', 'Open WebUI', 'TT-Metalium', 'TT-NN'],
       },
       'resnet-inference': {
@@ -592,8 +597,8 @@ useEffect(() => setMounted(true), []);
         video: 'https://x2i.dev/wp-content/uploads/2025/10/Tenstorrent_ResNe5-50.mp4',
         link: '#',
         snapshots: [
-          { label: 'FPS',   npu: { value: 8000, unit: 'FPS' }, gpu: { value: 5000, unit: 'FPS' } },
-          { label: 'Power', npu: { value: 160,  unit: 'W'   }, gpu: { value: 350,  unit: 'W'   } },
+          { label: 'FPS',   npu: { value: 8000, unit: 'FPS', percent: 100  }, gpu: { value: 5000, unit: 'FPS' , percent: 62.5 } },
+          { label: 'Power', npu: { value: 160,  unit: 'W' , percent: 46   }, gpu: { value: 350,  unit: 'W'   , percent: 100 } },
         ],
         methods: ['ResNet-50', 'PyTorch', 'TorchVision', 'TT-Metalium', 'TT-NN'],
       },
@@ -617,15 +622,21 @@ useEffect(() => setMounted(true), []);
   };
 
   const renderImpactOrHighlights = (data: ProjectEntry) => {
-    if (!impactBar) return;
-    impactBar.innerHTML = '';
-    if (divider) divider.style.display = 'block';
+  if (!impactBar) return;
+  impactBar.innerHTML = '';
+  impactBar.removeAttribute('style'); // ✅ 기존 grid/flex 스타일 초기화
+  if (divider) divider.style.display = 'block';
 
     if (data.metrics && data.metrics.length) {
       const cols = Math.min(3, data.metrics.length);
       impactBar.style.display = 'grid';
       impactBar.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      impactBar.style.columnGap = '15px'; // ✅ 가로 간격 확실히 지정
+      impactBar.style.justifyContent = 'space-between'; // ✅ 양쪽 여백 유지
+
+
       impactBar.innerHTML = data.metrics.map(m => `
+        
         <div class="impact-stat">
           <div class="impact-value" data-target="${m.value}" data-suffix="${m.suffix}">0</div>
           <div class="impact-label">${m.label}</div>
@@ -636,29 +647,35 @@ useEffect(() => setMounted(true), []);
     }
 
     if (data.snapshots && data.snapshots.length) {
-      impactBar.removeAttribute('style');
+     // ✅ 스냅샷: 원본 구조 + caption 순서 수정
+      impactBar.classList.remove('impact-bar');
+      impactBar.style.display = 'block';
+
       const max = Math.max(...data.snapshots.map(s => Math.max(s.npu.value, s.gpu.value)));
-      let html = `<div class="snapshots">`;
+      let html = '<div class="snapshots">';
       data.snapshots.forEach((s) => {
-        const npuPct = max ? Math.min(100, Math.round((s.npu.value / max) * 100)) : 0;
-        const gpuPct = max ? Math.min(100, Math.round((s.gpu.value / max) * 100)) : 0;
+            const npuPct = (typeof s.npu.percent === 'number')
+      ? Math.max(0, Math.min(100, s.npu.percent))
+      : (max ? Math.min(100, Math.round((s.npu.value / max) * 100)) : 0);
+
+    const gpuPct = (typeof s.gpu.percent === 'number')
+      ? Math.max(0, Math.min(100, s.gpu.percent))
+      : (max ? Math.min(100, Math.round((s.gpu.value / max) * 100)) : 0);
         html += `
           <div class="snapshot-card">
             <div class="snapshot-label">${s.label}</div>
             <div class="snapshot-bars">
-              <div class="bar-group">
-                <div class="bar"><div class="bar-fill" style="width:${npuPct}%"></div></div>
-                <div class="bar-meta">NPU ${s.npu.value} ${s.npu.unit}</div>
-              </div>
-              <div class="bar-group">
-                <div class="bar"><div class="bar-fill" style="width:${gpuPct}%"></div></div>
-                <div class="bar-meta">GPU ${s.gpu.value} ${s.gpu.unit}</div>
-              </div>
+              <div class="bar"><div class="bar-fill" style="width:${npuPct}%"></div></div>
+              <div class="bar-meta">NPU ${s.npu.value} ${s.npu.unit}</div>
+              <div class="bar"><div class="bar-fill" style="width:${gpuPct}%"></div></div>
+              <div class="bar-meta">GPU ${s.gpu.value} ${s.gpu.unit}</div>
             </div>
           </div>`;
       });
-      html += `</div><div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>`;
+      html += '</div>'; // ✅ snapshots 닫기 먼저
+      html += '<div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>'; // ✅ 그다음 caption 추가
       impactBar.innerHTML = html;
+      if (divider) divider.style.display = 'block';
       return;
     }
 

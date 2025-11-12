@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react';
 import HeroParticles from '../components/HeroParticles'
 
 const HERO_IMG = 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'
@@ -35,7 +35,8 @@ export default function HomePage() {
       <div className="below-bg">
         <TvSection />
         <SkillsSection /> {}
-        <HistorySection /> {/* ✅ 여기에 있어야 함 */}
+        <HistorySection /> {}
+        <ProjectsSection /> {}
       </div>
     </>
   )
@@ -72,7 +73,7 @@ function Hero() {
         width={500}
         height={500}
         priority
-        unoptimized   // ✅ 여기에 추가!
+        unoptimized  
         className="hero-image"
 />
         </div>
@@ -434,3 +435,401 @@ function HistorySection() {
     </section>
   )
 }
+
+
+function ProjectsSection() {
+  // ---------- Types ----------
+  type Dir = 'up' | 'down' | 'neutral';
+
+  interface Metric {
+    label: string;
+    value: number;
+    suffix: string;
+    dir: Dir;
+  }
+
+  interface SnapshotPoint {
+    value: number;
+    unit: string;
+  }
+
+  interface SnapshotRow {
+    label: string;
+    npu: SnapshotPoint;
+    gpu: SnapshotPoint;
+  }
+
+  interface ProjectEntry {
+    title: string;
+    description: string; // HTML string
+    video: string;
+    link: string;
+    metrics?: Metric[];
+    snapshots?: SnapshotRow[];
+    methods?: string[];
+  }
+
+  type ProjectId = 'qc-dashboard' | 'llm-inference' | 'resnet-inference';
+
+  useEffect(() => {
+    // ---------- DOM helpers ----------
+    const $ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
+      root.querySelector<T>(sel);
+
+    const $$ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
+      Array.from(root.querySelectorAll<T>(sel));
+
+    // ---------- Carousel ----------
+    const track = $('#projectsTrack') as HTMLElement | null;
+    const prevBtn = $('#prevBtn') as HTMLButtonElement | null;
+    const nextBtn = $('#nextBtn') as HTMLButtonElement | null;
+    const cards = $$('.project-card') as HTMLElement[];
+    let currentIndex = 0;
+
+    const getCardsToShow = () => {
+      if (window.innerWidth <= 480) return 1;
+      if (window.innerWidth <= 1024) return 1.5;
+      return 2;
+    };
+
+    const updateCarousel = () => {
+      if (!track || cards.length === 0) return;
+      const cardWidth = cards[0].offsetWidth;
+      const gap = 40;
+      const offset = currentIndex * (cardWidth + gap);
+      track.style.transform = `translateX(-${offset}px)`;
+
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex >= cards.length - Math.floor(getCardsToShow());
+    };
+
+    prevBtn?.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      const maxIndex = Math.max(0, cards.length - Math.floor(getCardsToShow()));
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateCarousel();
+      }
+    });
+
+    const onResize = () => {
+      currentIndex = 0;
+      updateCarousel();
+    };
+    window.addEventListener('resize', onResize);
+    updateCarousel();
+
+    // ---------- Modal ----------
+    const modal = $('#projectModal') as HTMLDivElement | null;
+    const modalClose = $('#modalClose') as HTMLButtonElement | null;
+    const modalMedia = $('#modalMedia') as HTMLDivElement | null;
+    const modalTitle = $('#modalTitle') as HTMLHeadingElement | null;
+    const modalDesc = $('#modalDesc') as HTMLParagraphElement | null;
+    const modalCta = $('#modalCta') as HTMLAnchorElement | null;
+    const impactBar = $('#impactBar') as HTMLDivElement | null;
+    const methodChips = $('#methodChips') as HTMLDivElement | null;
+    const divider = $('#projectModal .thin-divider') as HTMLDivElement | null;
+
+    const projectData: Record<ProjectId, ProjectEntry> = {
+      'qc-dashboard': {
+        title: 'Server QC Automation Dashboard',
+        description: `
+          반복적인 서버 품질관리 과정을 자동화해, 사람이 육안으로 확인하던 모든 단계를 시스템이 대신 처리하도록 설계하고 구축했습니다.<br>
+        서버 전원 제어부터 BIOS 설정, OS 자동 설치, 상태 점검 및 실시간 이상 알림까지 모든 과정을 버튼 한 번으로 수행할 수 있습니다.
+        뿐만 아니라 웹 새디보드를 통해 대량의 서버에 대한 작업 배포, 상태를 실시간으로 시각화해 전체 프로세스의 진행 상황을 직관적으로 확인할 수 있도록 구현했습니다.
+        `,
+        video: 'https://x2i.dev/wp-content/uploads/2025/10/test.mp4',
+        link: 'https://x2i.dev/blog/how-i-made-work-5x-faster-with-automation/',
+        metrics: [
+          { label: '처리량 증가', value: 260, suffix: '%', dir: 'up' },
+          { label: '검수 시간 단축', value: 70, suffix: '%', dir: 'down' },
+          { label: '오류율', value: 0, suffix: '%', dir: 'neutral' },
+        ],
+        methods: ['Ansible', 'Shell Scripting', 'Redfish/IPMI', 'iPXE', 'FastAPI', 'Python'],
+      },
+      'llm-inference': {
+        title: 'LLM Inference Visualization',
+        description: `
+          Tenstorrent NPU(N300S)와 NVIDIA A100 GPU 환경에서 LLM의 응답 속도와 리소스 사용 변화를 실시간으로 비교·시각화한 데모입니다.<br>
+        Llama-3 기반 모델을 사용해 인터페이스 상에서 문장이 출력되는 속도와 GPU의 사용률·전력 소모를 함께 표현해,
+        두 하드웨어 간의 차이를 직관적으로 확인할 수 있습니다.
+        `,
+        video: 'https://x2i.dev/wp-content/uploads/2025/10/2025-10-22-21-42-24.mp4',
+        link: '#',
+        snapshots: [
+          { label: 'Llama-3 70B', npu: { value: 15, unit: 'tok/s' }, gpu: { value: 20, unit: 'tok/s' } },
+          { label: 'QwQ-32B', npu: { value: 18, unit: 'tok/s' }, gpu: { value: 22, unit: 'tok/s' } },
+        ],
+        methods: ['Llama', 'vLLM', 'Docker', 'Open WebUI', 'TT-Metalium', 'TT-NN'],
+      },
+      'resnet-inference': {
+        title: 'ResNet-50 Comparison',
+        description: `
+          ResNet-50 기반 추론을 NPU(N300S)와 GPU(A30·A100·H100) 환경에서 동시에 실행해, 초당 처리 속도(FPS)와 전력 사용량(W)을 실시간으로 측정했습니다. <br>
+        캔버스를 통해 하드웨어별 처리 효율을 시각적으로 표현했으며,  
+        동일한 조건에서의 성능 차이를 직관적으로 비교할 수 있습니다.  
+        이를 통해 특정 AI 워크로드에서 NPU가 GPU 대비 더 높은 처리 효율과 전력 최적화를 달성할 수 있음을 보여줍니다.
+        `,
+        video: 'https://x2i.dev/wp-content/uploads/2025/10/Tenstorrent_ResNe5-50.mp4',
+        link: '#',
+        snapshots: [
+          { label: 'FPS',   npu: { value: 8000, unit: 'FPS' }, gpu: { value: 5000, unit: 'FPS' } },
+          { label: 'Power', npu: { value: 160,  unit: 'W'   }, gpu: { value: 350,  unit: 'W'   } },
+        ],
+        methods: ['ResNet-50', 'PyTorch', 'TorchVision', 'TT-Metalium', 'TT-NN'],
+      },
+    };
+
+    const animateImpact = () => {
+      const els = $$('#impactBar .impact-value') as HTMLElement[];
+      els.forEach((el) => {
+        const target = parseFloat(el.getAttribute('data-target') || '0');
+        const suffix = el.getAttribute('data-suffix') || '';
+        const start = performance.now();
+        const dur = Math.max(600, Math.min(1200, Math.abs(target) * 6));
+
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - start) / dur);
+          const val = Math.round(target * p);
+          el.textContent = `${val}${suffix}`;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    };
+
+    const renderImpactOrHighlights = (data: ProjectEntry) => {
+      if (!impactBar) return;
+      impactBar.innerHTML = '';
+      if (divider) divider.style.display = 'block';
+
+      // 1) Metrics (숫자 카드)
+      if (data.metrics && data.metrics.length) {
+        const cols = Math.min(3, data.metrics.length);
+        impactBar.style.display = 'grid';
+        impactBar.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        impactBar.innerHTML = data.metrics
+          .map(
+            (m) => `
+              <div class="impact-stat">
+                <div class="impact-value" data-target="${m.value}" data-suffix="${m.suffix}">0</div>
+                <div class="impact-label">${m.label}</div>
+              </div>
+            `
+          )
+          .join('');
+        animateImpact();
+        return;
+      }
+
+      // 2) Snapshots (막대 2개)
+      if (data.snapshots && data.snapshots.length) {
+        impactBar.removeAttribute('style'); // grid 영향 제거
+        const max = Math.max(
+          ...data.snapshots.map((s) => Math.max(s.npu.value, s.gpu.value))
+        );
+        let html = `<div class="snapshots">`;
+        data.snapshots.forEach((s) => {
+          const npuPct = max ? Math.min(100, Math.round((s.npu.value / max) * 100)) : 0;
+          const gpuPct = max ? Math.min(100, Math.round((s.gpu.value / max) * 100)) : 0;
+          html += `
+  <div class="snapshot-card">
+    <div class="snapshot-label">${s.label}</div>
+    <div class="snapshot-bars">
+      <div class="bar-group">
+        <div class="bar"><div class="bar-fill" style="width:${npuPct}%"></div></div>
+        <div class="bar-meta">NPU ${s.npu.value} ${s.npu.unit}</div>
+      </div>
+      <div class="bar-group">
+        <div class="bar"><div class="bar-fill" style="width:${gpuPct}%"></div></div>
+        <div class="bar-meta">GPU ${s.gpu.value} ${s.gpu.unit}</div>
+      </div>
+    </div>
+  </div>`;
+        });
+        html += `</div><div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>`;
+        impactBar.innerHTML = html;
+        return;
+      }
+
+      // 3) 아무것도 없으면 감춤
+      impactBar.style.display = 'none';
+      if (divider) divider.style.display = 'none';
+    };
+
+    const openModal = (data: ProjectEntry) => {
+      if (!modal) return;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (modalMedia)
+        modalMedia.innerHTML = `<video autoplay muted loop playsinline><source src="${data.video}" type="video/mp4"></video>`;
+      if (modalTitle) modalTitle.innerHTML = data.title;
+      if (modalDesc) modalDesc.innerHTML = data.description;
+      if (modalCta) modalCta.href = data.link;
+      renderImpactOrHighlights(data);
+      if (methodChips) {
+        methodChips.innerHTML = (data.methods || [])
+          .map((m) => `<span class="chip">${m}</span>`)
+          .join('');
+      }
+    };
+
+    const closeModal = () => {
+      if (!modal) return;
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      if (modalMedia) modalMedia.innerHTML = '';
+    };
+
+    // 카드 클릭
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', () => {
+        const idAttr = card.getAttribute('data-project') as ProjectId | null;
+        const fallback: ProjectId[] = ['qc-dashboard', 'llm-inference', 'resnet-inference'];
+        const key = (idAttr || fallback[idx]) as ProjectId;
+        if (projectData[key]) openModal(projectData[key]);
+      });
+    });
+
+    modalClose?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeModal(); };
+    document.addEventListener('keydown', onEsc);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('keydown', onEsc);
+    };
+  }, []);
+
+  return (
+    <section id="projects" className="section fade-in">
+      <div className="container">
+        {/* 헤더: 좌/우 그리드(좌 = mono-tag+title, 우 = 설명) */}
+        <div className="timeline-header">
+          <div>
+            <div className="mono-tag"><span>[</span><span>PROJECTS</span><span>]</span></div>
+            <h3 className="section-title">Featured Work</h3>
+          </div>
+          <p className="timeline-desc">
+            I started building whenever something felt necessary or interesting. There wasn’t a clear goal,
+            but I kept working on things one by one, and eventually, they started to take shape.
+            Some of them I still use, others I used for a while. These are the ones I decided to keep.
+          </p>
+        </div>
+
+        {/* Carousel */}
+        <div className="projects-carousel">
+          <div className="projects-track" id="projectsTrack">
+            {/* 1 */}
+            <div className="project-card" data-project="qc-dashboard">
+              <video autoPlay muted loop playsInline>
+                <source src="https://x2i.dev/wp-content/uploads/2025/10/test.mp4" type="video/mp4" />
+              </video>
+              <div className="project-content">
+                <h3 className="project-title">Server Quality Control Automation Dashboard</h3>
+                <p className="project-desc">
+                 <strong>연간 10,000대+</strong> 이상의 서버 품질검수 과정을 자동화한 웹 대시보드 입니다.<br />
+                                서버 전원 제어부터 OS설치, BIOS 설정값 변경, 모든 테스트 과정을 자동화했습니다.<br />
+                                자동화 시스템 도입 후 일일 처리량 <strong>260% 증가</strong>, 검수 시간 <strong>70% 단축</strong>, 오류율 <strong>0%</strong>를 달성했습니다.
+                </p>
+                <div className="project-tech">
+                  <span className="tech-tag">FastAPI</span>
+                  <span className="tech-tag">Python</span>
+                  <span className="tech-tag">Ansible</span>
+                  <span className="tech-tag">Redfish/IPMI</span>
+                  <span className="tech-tag">Shell Scripting</span>
+                  <span className="tech-tag">iPXE</span>
+                  <span className="tech-tag">MariaDB</span>
+                </div>
+              </div>
+            </div>
+            {/* 2 */}
+            <div className="project-card" data-project="llm-inference">
+              <video autoPlay muted loop playsInline>
+                <source src="https://x2i.dev/wp-content/uploads/2025/10/2025-10-22-21-42-24.mp4" type="video/mp4" />
+              </video>
+              <div className="project-content">
+                <h3 className="project-title">LLM Inference Visualization</h3>
+                <p className="project-desc">
+                  LLM 모델중 하나인 Llama를 활용하여 <strong>Tenstorrent NPU(N300S)</strong> vs <strong>NVIDIA GPU(A100 80GB PCIE *2)</strong>의 추론 성능을 실시간으로 비교·시각화한 데모입니다.<br />
+                                Open WebUI 인터페이스를 통해 응답 속도 및 토큰 생성 속도 차이를 직관적으로 확인할 수 있도록 구현했습니다.                  
+                </p>
+                <div className="project-tech">
+                  <span className="tech-tag">Llama</span>
+                  <span className="tech-tag">vLLM</span>
+                  <span className="tech-tag">Docker</span>
+                  <span className="tech-tag">Open WebUI</span>
+                  <span className="tech-tag">TT-Metalium</span>
+                  <span className="tech-tag">TT-NN</span>
+                </div>
+              </div>
+            </div>
+            {/* 3 */}
+            <div className="project-card" data-project="resnet-inference">
+              <video autoPlay muted loop playsInline>
+                <source src="https://x2i.dev/wp-content/uploads/2025/10/Tenstorrent_ResNe5-50.mp4" type="video/mp4" />
+              </video>
+              <div className="project-content">
+                <h3 className="project-title">ResNet-50 Comparison</h3>
+                <p className="project-desc">
+                  이미지 분류 모델 ResNet-50을 기반으로 <strong>Tenstorrent NPU(N300S)</strong> vs <strong>NVIDIA GPU(A30,A100,H100)</strong>
+                                의 추론 성능을 실시간으로 비교·시각화한 데모입니다. <strong>초당 처리 프레임(FPS),전력효율의 차이를 바로 체감가능 하도록 구현했습니다.</strong><br />         
+                </p>
+                <div className="project-tech">
+                  <span className="tech-tag">ResNet-50</span>
+                  <span className="tech-tag">TT-Metalium</span>
+                  <span className="tech-tag">TT-NN</span>
+                  <span className="tech-tag">PyTorch</span>
+                  <span className="tech-tag">TorchVision</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="carousel-nav">
+            <button className="carousel-btn" id="prevBtn">←</button>
+            <button className="carousel-btn" id="nextBtn">→</button>
+          </div>
+        </div>
+
+        {/* Modal */}
+        <div className="project-modal" id="projectModal">
+          <div className="modal-content">
+            <button className="modal-close" id="modalClose">✕</button>
+
+            <div className="modal-left">
+              <div className="modal-header">
+                <div className="modal-label" id="modalLabel">PROJECT</div>
+                <h2 className="modal-title" id="modalTitle"></h2>
+                <p className="modal-description" id="modalDesc"></p>
+              </div>
+
+              <div className="modal-middle">
+                <div id="impactBar" className="impact-bar"></div>
+                <div className="thin-divider"></div>
+                <div id="methodChips" className="method-chips"></div>
+              </div>
+
+              <a href="#" className="modal-cta" id="modalCta">READ</a>
+            </div>
+
+            <div className="modal-right">
+              <div className="modal-media" id="modalMedia"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+

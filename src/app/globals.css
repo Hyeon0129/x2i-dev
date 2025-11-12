@@ -366,10 +366,14 @@ font-size: 1.3rem;
 }
 
 .skills-box li::before {
-  content: "—";
+  content: "";
   position: absolute;
   left: 0;
-  color: #444;
+  top: 50%;
+  width: 11.7px;            
+  height: 1px;             
+  background: #444;        
+  
 }
 
 .skills-box li:hover {
@@ -451,13 +455,13 @@ font-size: 1.1rem;
   top: 50%;
   left: 0;
   width: 100%;
-  height: 2px; /* ✅ 1px → 2px */
+  height: 0.5px; /* ✅ 1px → 2px */
   transform: translateY(-50%);
   transform-origin: center;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.14); /* ✅ 투명도 낮춰서 실제 두께 체감 동일 */
+  background: rgba(255, 255, 255, 0.239); /* ✅ 선 조금 더 밝게 */
   -webkit-font-smoothing: antialiased;
-  backface-visibility: hidden; /* ✅ 사파리 렌더링 보정 */
+  backface-visibility: hidden; 
 }
 
 .quarter-label::before {
@@ -465,10 +469,10 @@ font-size: 1.1rem;
   position: absolute;
   top: -28px;
   left: 50%;
-  width: 2px; /* ✅ 1px → 2px */
-  height: 33px;
+  width: 0.5px; /* ✅ 1px → 2px */
+  height: 32.7px;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.14); /* ✅ 동일 밝기 유지 */
+  background: rgba(255, 255, 255, 0.239); /* ✅ 선 조금 더 밝게 */
   -webkit-font-smoothing: antialiased;
   backface-visibility: hidden; /* ✅ Safari 블러현상 방지 */
 }

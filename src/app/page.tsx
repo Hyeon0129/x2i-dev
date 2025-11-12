@@ -120,7 +120,9 @@ function TvSection() {
           <h3 className="section-title">My Records</h3>
           <p className="section-sub">
             This is a space where I write down what I learn, what I think, and personal thoughts,
-            questions, and everyday moments. If it helps someone later, that would be great.
+            questions, and everyday moments. If it helps someone later, that would be great. <br />
+            I plan to keep adding to it whenever I get the time.
+            
           </p>
                    <a href="/about" className="tv-cta">
                     <span>explore</span>

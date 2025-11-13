@@ -426,7 +426,6 @@ font-size: 1.1rem;
 
 
 
-/* ===== TIMELINE STYLES ===== */
 .timeline-wrap {
   position: relative;
   width: 100vw;
@@ -436,7 +435,29 @@ font-size: 1.1rem;
   height: 15vh;
   margin-top: 60px;
   margin-bottom: 80px;
+  pointer-events: none; /* ← 내부에서 control 하기 위해 */
 }
+
+/* transform 없는 “선명 전용 레이어” */
+.timeline-inner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 가로선 - SKILLS 와 동일하게 */
+.timeline-inner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.2); /* ← SKILLS 와 동일한 톤 */
+  transform: translateY(-50%);
+}
+
+
 
 .quarter-label {
   position: absolute;
@@ -450,32 +471,16 @@ font-size: 1.1rem;
   z-index: 2;
 }
 
-.timeline-line {
+
+
+.timeline-inner .vertical-line {
   position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 0.5px; /* ✅ 1px → 2px */
-  transform: translateY(-50%);
-  transform-origin: center;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.239); /* ✅ 선 조금 더 밝게 */
-  -webkit-font-smoothing: antialiased;
-  backface-visibility: hidden; 
+  width: 1px;
+  height: 32.4px; /* 기존 너 높이 그대로 */
+  background: rgba(255,255,255,0.2); /* SKILLS와 동일 */
+  pointer-events: none;
 }
 
-.quarter-label::before {
-  content: '';
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  width: 0.5px; /* ✅ 1px → 2px */
-  height: 32.7px;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.239); /* ✅ 선 조금 더 밝게 */
-  -webkit-font-smoothing: antialiased;
-  backface-visibility: hidden; /* ✅ Safari 블러현상 방지 */
-}
 
 
 .quarter-label span {

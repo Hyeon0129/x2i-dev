@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import HeroParticles from '../components/HeroParticles'
 import { createPortal } from 'react-dom';
 
@@ -61,7 +61,7 @@ function Hero() {
           <h1 className="hero-title">
             If It Doesn&apos;t Work,<br />Make It Work
           </h1>
-          <p className="hero-sub">
+          <p className="section-sub">
             I record to learn what I care about, and to organize what I’ve tried and built.
             I just want to keep moving forward each day, and someday get to where I want to be.
           </p>
@@ -338,7 +338,18 @@ function HistorySection() {
 
         {/* ✅ 타임라인 추가 */}
         <div className="timeline-wrap">
-          <div className="timeline-line"></div>
+          <div className="timeline-inner">
+            <div className="vertical-line" style={{ left: '5%',  top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '12%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '19%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '26%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '33%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '40%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '47%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '54%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '61%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '68%', top: 'calc(50% - 33px)' }}></div>
+        </div>
 
           {/* 3개월 간격 라벨들 */}
           <div className="quarter-label" style={{left: '5%'}}><span>JUL 2023</span></div>

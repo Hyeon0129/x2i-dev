@@ -38,6 +38,7 @@ export default function HomePage() {
         <SkillsSection /> {}
         <HistorySection /> {}
         <ProjectsSection /> {}
+        <div className="divider" />
       </div>
     </>
   )

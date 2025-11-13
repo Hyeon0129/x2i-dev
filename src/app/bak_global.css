@@ -414,7 +414,11 @@ font-size: 1.1rem;
   
 }
 
-
+.timeline-placeholder {
+  height: 200px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 40px;
+}
 #history.section {
   padding-top: 120px; /* 90 → 120 으로 상단 공간 30px 추가 */
   overflow: visible; /* ✅ 추가 */
@@ -422,7 +426,6 @@ font-size: 1.1rem;
 
 
 
-/* ===== TIMELINE STYLES ===== */
 .timeline-wrap {
   position: relative;
   width: 100vw;
@@ -432,23 +435,29 @@ font-size: 1.1rem;
   height: 15vh;
   margin-top: 60px;
   margin-bottom: 80px;
+  pointer-events: none; /* ← 내부에서 control 하기 위해 */
 }
 
-/* ✅ 가로선을 SVG로 변경 */
-.timeline-wrap::before {
+/* transform 없는 “선명 전용 레이어” */
+.timeline-inner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 가로선 - SKILLS 와 동일하게 */
+.timeline-inner::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 0;
   width: 100%;
   height: 1px;
+  background: rgba(255,255,255,0.2); /* ← SKILLS 와 동일한 톤 */
   transform: translateY(-50%);
-  z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='1' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cline x1='0' y1='0.5' x2='100%25' y2='0.5' stroke='rgba(255,255,255,0.5)' stroke-width='0.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  pointer-events: none;
 }
+
+
 
 .quarter-label {
   position: absolute;
@@ -462,21 +471,16 @@ font-size: 1.1rem;
   z-index: 2;
 }
 
-/* ❌ .timeline-line 삭제 (::before로 대체됨) */
 
-/* ✅ 세로선을 SVG로 변경 */
-.quarter-label::before {
-  content: '';
+
+.timeline-inner .vertical-line {
   position: absolute;
-  top: -28px;
-  left: 50%;
   width: 1px;
-  height: 33px;
-  transform: translateX(-50%);
-  background-image: url("data:image/svg+xml,%3Csvg width='1' height='33' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0.5' y1='0' x2='0.5' y2='33' stroke='rgba(255,255,255,0.5)' stroke-width='0.5' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  height: 32.4px; /* 기존 너 높이 그대로 */
+  background: rgba(255,255,255,0.2); /* SKILLS와 동일 */
+  pointer-events: none;
 }
+
 
 
 .quarter-label span {

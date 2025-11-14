@@ -1,0 +1,212 @@
+/* blog.module.css */
+
+.blogHeader {
+  text-align: center;
+  padding: 0px 20px;
+  color: #ffffff;
+}
+
+.blogHeader h1 {
+  font-size: 64px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.blogHeader p {
+  font-size: 18px;
+  color: #a5a5a5;
+  margin-top: 10px;
+  font-weight: 300;
+}
+
+/* 카테고리 버튼 영역 */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+/* 버튼 */
+.categoryItem {
+   background: rgba(255, 255, 255, 0.04); /* 완전한 회색 대신 은은한 반투명 톤 */
+    color: #a5a5a5;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Inter', 'Degular', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+    transition: all 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+.categoryItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.categoryItem:active {
+    background: #ffffff;
+    color: #000000;
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+
+.blogList {
+  display: flex;
+  flex-direction: column;
+  gap: 65px;  
+  position: relative;  
+  width: 1080px;     
+  margin: 0 auto;
+}
+
+.timelineLine {  
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #333;
+  z-index: 1;  
+}
+
+/* 개별 포스트 카드 */
+.postItem {
+ position: relative;  
+  width: 100%;
+}
+
+.line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;      /* ← 이게 핵심: 아래 끝까지 자동 확장 */
+  width: 1px;
+  background: #333;
+}
+
+.dot {
+  position: absolute;
+  left: -6px;
+  top: 0;         
+  transform: translateY(0);
+  width: 12px;
+  height: 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  left: 2.5px;
+  top: 2.5px;
+  width: 7px;
+  height: 7px;
+  background: #ff6600;
+  border-radius: 50%;
+}
+
+/* 1140px 내부 grid */
+.postGrid {
+  display: grid;
+  grid-template-columns: 0.4fr 0.6fr;
+  align-items: stretch;
+  gap: 50px;
+  padding-left: 28px; /* 선/점과 여백 */
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+
+/* 날짜 */
+.date {
+  font-size: 0.8rem;
+  color: #888888;
+  text-transform: uppercase;
+  margin: 0;
+ letter-spacing: 0.1em;
+}
+
+/* 제목 */
+.title {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 1px;
+  line-height: 1.4;
+}
+
+/* 카테고리 칩 */
+.category {
+  display: inline-block;
+  padding: 10px 10px; 
+  background-color: #141414; 
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: #B3B3B3;
+  width: fit-content;
+  letter-spacing: 0.6px;
+}
+
+/* 본문 excerpt */
+.excerpt {
+  font-size: 1rem;
+  color: #adadad;
+  line-height: 1.6;
+  margin: 0;
+  line-height: 25px;
+  font-weight: 300;
+  padding-right: 30px;
+}
+
+
+/* READ button */
+.readBtn {
+  display: inline-block;
+  width: fit-content;
+  padding:  0.5rem 1em;
+  border-radius: 9999px;
+    border: 0.1px solid #424242;
+  text-decoration: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.2s;
+  margin-top: auto;
+  text-decoration: none;
+  line-height: 1;
+    
+}
+
+.readBtn:hover {
+  border-color: #fff;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* RIGHT AREA (썸네일) */
+.right {
+  width: 100%;
+}
+
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+}
+
+

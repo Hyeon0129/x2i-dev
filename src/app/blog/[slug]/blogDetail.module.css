@@ -1,3 +1,7 @@
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 /* 전체 컨테이너 */
 .container {
   width: 1080px;
@@ -45,18 +49,36 @@
   width: 100%;
   font-size: 1.05rem;
   line-height: 1.75;
-  color: #ddd;
 }
 
 /* 본문 내부 텍스트 정리 */
 .content p {
-  margin-bottom: 22px;
+  color: #aba9a9;
+  line-height: 1.75;
+  font-size: 16px;
+  
 }
 
-.content h2, .content h3 {
-  margin: 40px 0 18px;
-  font-weight: 600;
+
+.content h1 {
+ font-size: 1.8rem;
+  margin-bottom: 1rem;
+
 }
+
+.content h2 {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+ .content h3 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+ }
+
+
 
 .content a {
   color: #9cb8ff;
@@ -64,10 +86,12 @@
 }
 
 .content code {
-  background: rgba(255,255,255,0.1);
   padding: 3px 6px;
-  font-size: 0.95rem;
-  border-radius: 4px;
+  line-height: 1.6;
+  background-color: #1e1e1e;
+  color: #f97316;
+  font-size: 0.85rem;
+  border-radius: 6px;
 }
 
 .content pre {
@@ -78,5 +102,173 @@
   margin-bottom: 24px;
 }
 
+.content strong {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.content a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 600;
+}
 
 
+
+/* markdown - : li */
+.content>ul>li {
+  padding-left: 0.35em;
+  position: relative;
+}
+
+.content>ul>li::marker {
+  color: #f58300;
+  font-size: 1em;
+}
+
+.content>ul {
+  margin-left: -0.8em;
+}
+/* end */
+
+
+.theme-admonition.theme-admonition-note {
+  background: #131b2e;
+  border: 1px solid #234077;
+  color: #e7eaf3;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 16px 0;
+  position: relative;
+}
+
+/* ========== Admonition 공통 스타일 ========== */
+.admonition {
+  padding: 16px 18px;
+  border-radius: 8px;
+  margin: 24px 0;
+  border-left: 4px solid #3a3a3a;
+  background: #111;
+  position: relative;
+}
+
+/* 제목 */
+.admonition-title {
+  margin: 0 0 10px 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+/* 내용 텍스트 */
+.admonition p {
+  margin: 8px 0;
+  color: #d5d5d5;
+  line-height: 1.65;
+}
+
+
+
+/* ========== 각 타입별 색상 ========== */
+/* NOTE */
+.admonition-note {
+  background: #131b2e;
+  border: 1px solid #234077;
+  color: #e7eaf3;
+}
+
+/* NOTE 제목 색 */
+.admonition-note .admonition-title {
+  color: #c7d6f7;
+}
+
+/* INFO */
+.admonition-info {
+  background: #102a33;
+  border: 1px solid #205d73;
+  color: #d1e9f0;
+}
+
+.admonition-info .admonition-title {
+  color: #b4e1ed;
+}
+
+/* TIP */
+.admonition-tip {
+  background: #102e22;
+  border: 1px solid #1e6f4a;
+  color: #d2f0e3;
+}
+
+.admonition-tip .admonition-title {
+  color: #a5e9c7;
+}
+
+/* WARNING */
+.admonition-warning {
+  background: #332b0b;
+  border: 1px solid #b69313;
+  color: #f5e9c0;
+}
+
+.admonition-warning .admonition-title {
+  color: #f7dc7a;
+}
+
+/* DANGER */
+.admonition-danger {
+  background: #2e1010;
+  border: 1px solid #802020;
+  color: #f2c8c8;
+}
+
+.admonition-danger .admonition-title {
+  color: #ffb3b3;
+}
+
+
+
+/* scrollbar */
+:root {
+  --background-color: #000000;
+  --accent-color-hover:#5c5c5c;
+  --secondary-color: #333333;
+}
+
+
+
+
+:global(.admonition) {
+  padding-left: 20px;
+  padding-right: 6px;
+  border-radius: 8px;
+}
+
+/* NOTE (아이콘 포함) */
+:global(.admonition-note) {
+  background: #131b2e;
+  border: 1px solid #234077;
+  color: #e7eaf3;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 16px 0;
+  position: relative;
+}
+
+/* NOTE 아이콘 */
+:global(.admonition-note .admonition-title::before) {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  background-position: center center; /* 아이콘 중앙 정렬 */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 14 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23e7eaf3' fill-rule='evenodd' d='M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z'/%3E%3C/svg%3E");
+  vertical-align: middle;
+  margin-top: -4px;  
+  margin-right: 8px;
+}
+
+:global(.admonition-title) {
+  color: #ffffff !important;
+}

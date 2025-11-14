@@ -1,5 +1,27 @@
+
+
 body {
   font-family: 'Inter', sans-serif;
+}
+
+/* ===== Scrollbar (horizontal / vertical) ===== */
+pre[class*="language-"]::-webkit-scrollbar {
+  height: 8px !important;   /* 가로 스크롤바 높이 */
+  width: 8px !important;    /* 세로 스크롤바 너비 */
+}
+
+pre[class*="language-"]::-webkit-scrollbar-track {
+  background: #2a2a2a !important;   /* 트랙 배경 */
+  border-radius: 4px !important;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb {
+  background: #4a4a4a !important;   /* 스크롤바 색 */
+  border-radius: 4px !important;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a !important;
 }
 
 /* 전체 컨테이너 */
@@ -9,6 +31,7 @@ body {
   padding-top: 140px;
   color: #fff;
 }
+
 
 /* 날짜 */
 .date {
@@ -85,14 +108,6 @@ body {
   text-decoration: underline;
 }
 
-.content code {
-  padding: 3px 6px;
-  line-height: 1.6;
-  background-color: #1e1e1e;
-  color: #f97316;
-  font-size: 0.85rem;
-  border-radius: 6px;
-}
 
 .content pre {
   background: #111;
@@ -132,111 +147,16 @@ body {
 /* end */
 
 
-.theme-admonition.theme-admonition-note {
-  background: #131b2e;
-  border: 1px solid #234077;
-  color: #e7eaf3;
-  border-radius: 8px;
-  box-shadow: none;
-  margin: 16px 0;
-  position: relative;
+
+.content code {
+  padding: 3px 6px;
+  line-height: 1.6;
+  background-color: #1e1e1e;
+  color: #f97316;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  font-weight:300;
 }
-
-/* ========== Admonition 공통 스타일 ========== */
-.admonition {
-  padding: 16px 18px;
-  border-radius: 8px;
-  margin: 24px 0;
-  border-left: 4px solid #3a3a3a;
-  background: #111;
-  position: relative;
-}
-
-/* 제목 */
-.admonition-title {
-  margin: 0 0 10px 0;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.3px;
-}
-
-/* 내용 텍스트 */
-.admonition p {
-  margin: 8px 0;
-  color: #d5d5d5;
-  line-height: 1.65;
-}
-
-
-
-/* ========== 각 타입별 색상 ========== */
-/* NOTE */
-.admonition-note {
-  background: #131b2e;
-  border: 1px solid #234077;
-  color: #e7eaf3;
-}
-
-/* NOTE 제목 색 */
-.admonition-note .admonition-title {
-  color: #c7d6f7;
-}
-
-/* INFO */
-.admonition-info {
-  background: #102a33;
-  border: 1px solid #205d73;
-  color: #d1e9f0;
-}
-
-.admonition-info .admonition-title {
-  color: #b4e1ed;
-}
-
-/* TIP */
-.admonition-tip {
-  background: #102e22;
-  border: 1px solid #1e6f4a;
-  color: #d2f0e3;
-}
-
-.admonition-tip .admonition-title {
-  color: #a5e9c7;
-}
-
-/* WARNING */
-.admonition-warning {
-  background: #332b0b;
-  border: 1px solid #b69313;
-  color: #f5e9c0;
-}
-
-.admonition-warning .admonition-title {
-  color: #f7dc7a;
-}
-
-/* DANGER */
-.admonition-danger {
-  background: #2e1010;
-  border: 1px solid #802020;
-  color: #f2c8c8;
-}
-
-.admonition-danger .admonition-title {
-  color: #ffb3b3;
-}
-
-
-
-/* scrollbar */
-:root {
-  --background-color: #000000;
-  --accent-color-hover:#5c5c5c;
-  --secondary-color: #333333;
-}
-
-
-
 
 :global(.admonition) {
   padding-left: 20px;
@@ -272,3 +192,6 @@ body {
 :global(.admonition-title) {
   color: #ffffff !important;
 }
+
+
+

@@ -3,6 +3,9 @@
 import MarkdownIt from "markdown-it";
 import prism from "markdown-it-prism";
 import container from "markdown-it-container";
+import "prismjs/themes/prism-tomorrow.css";
+import "prismjs/plugins/toolbar/prism-toolbar.css";
+
 
 // 필요한 언어 import (기존 유지)
 import "prismjs/components/prism-markup";

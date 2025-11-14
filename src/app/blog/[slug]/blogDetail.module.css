@@ -1,0 +1,82 @@
+/* 전체 컨테이너 */
+.container {
+  width: 1080px;
+  margin: 0 auto;
+  padding-top: 140px;
+  color: #fff;
+}
+
+/* 날짜 */
+.date {
+  text-align: center;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  color: #888888; 
+  margin: 0;
+ 
+}
+
+/* 제목 */
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 40px;
+  letter-spacing: -0.3px;
+  line-height: 1.35;
+}
+
+/* 썸네일 */
+.thumbWrapper {
+  width: 100%;
+  margin-bottom: 60px;
+}
+
+.thumb {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 본문 영역 */
+.content {
+  width: 100%;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #ddd;
+}
+
+/* 본문 내부 텍스트 정리 */
+.content p {
+  margin-bottom: 22px;
+}
+
+.content h2, .content h3 {
+  margin: 40px 0 18px;
+  font-weight: 600;
+}
+
+.content a {
+  color: #9cb8ff;
+  text-decoration: underline;
+}
+
+.content code {
+  background: rgba(255,255,255,0.1);
+  padding: 3px 6px;
+  font-size: 0.95rem;
+  border-radius: 4px;
+}
+
+.content pre {
+  background: #111;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+
+

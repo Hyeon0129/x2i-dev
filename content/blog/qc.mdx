@@ -6,4 +6,33 @@ slug: "qc"
 thumbnail: "/images/thumbnails/qc.png"
 ---
 
-In this guide, we will walk you through the setup process for your Tenstorrent NPU wormhole (N300S), including hardware installation, ...
+
+```bash
+sudo apt update && sudo apt install -y wget git python3-pip dkms cargo python-is-python3
+```
+
+```bash
+git clone https://github.com/tenstorrent/tt-kmd.git
+cd tt-kmd
+sudo dkms add .
+sudo dkms install "tenstorrent/$(./tools/current-version)"
+sudo modprobe tenstorrent
+
+## To uninstall ex.. 1.31:./tools/current-version
+sudo modprobe -r tenstorrent
+sudo dkms remove tenstorrent/$(current-version) --all
+
+## Driver Module
+root@test:/# lsmod |grep -i tens
+tenstorrent            49152  0
+```
+
+
+In the previous guide, we introduced the installation of drivers and the basic environment setup required for Tenstorrent NPU . For detailed instructions, please refer to the Tenstorrent NPU Wormhole N300S Setup Guide.
+
+This guide is divided into three parts to walk you through the installation process of Tenstorrent SDKs.
+In this first part, we will cover TT-Buda in detail, focusing on the complete Tenstorrent TT-Buda Installation process.
+Subsequent parts will provide step-by-step instructions on installing and using TT-Metalium and TT-Forge, along with practical examples.
+
+In this guide, we will walk you through the installation of Tenstorrent TT-Buda, the high-level AI/ML SDK that compiles and runs models on Tenstorrent hardware.
+

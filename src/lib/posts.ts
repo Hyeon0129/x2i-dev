@@ -53,6 +53,7 @@ export function getPostBySlug(slug: string) {
   const { data, content } = matter(raw);
 
   return {
+    
     frontMatter: data as PostFrontMatter,
     content,
   };

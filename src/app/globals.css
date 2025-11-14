@@ -1,5 +1,5 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-
+@import "prismjs/themes/prism-tomorrow.css";
 
 :root{
    --background-color: #000000;
@@ -860,4 +860,218 @@ font-size: 1.1rem;
   font-size: 11px;
   color: #666;
   letter-spacing: .4px;
+}
+
+
+
+
+
+/* ===== Docusaurus 완벽 복제 ===== */
+pre *, code * {
+  font-family: inherit !important;
+}
+
+/* 기본 배경 및 텍스트 */
+pre[class*="language-"],
+code[class*="language-"] {
+  background-color: #141414 !important;
+  color: #d4d4d4 !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  text-shadow: none !important;
+  direction: ltr !important;
+  text-align: left !important;
+  white-space: pre !important;
+  word-spacing: normal !important;
+  word-break: normal !important;
+  tab-size: 4 !important;
+  hyphens: none !important;
+}
+
+pre[class*="language-"] {
+  padding: 1.2rem 1.3rem !important;
+  margin: 1rem 0 !important;
+  overflow: auto !important;
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: none !important;
+  position: relative !important;
+	font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* 인라인 코드 */
+:not(pre) > code[class*="language-"] {
+  padding: 0.1em 0.3em !important;
+  border-radius: 0.3em !important;
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+
+/* ===== 토큰 색상 (Docusaurus와 100% 동일) ===== */
+
+/* 주석 - 회색 #727475 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #727475 !important;
+  font-style: normal !important;
+}
+
+
+/* 문자열 - 초록색 #00a67d */
+.token.string,
+.token.builtin,
+.token.attr-value {
+  color: #00a67d !important;
+}
+
+
+/* 함수, 명령어 - 파란색 #2e95d3 */
+.token.function,
+.token.builtin,
+.token.class-name {
+  color: #2e95d3 !important;
+}
+
+/* 키워드 - 파란색 #2e95d3 */
+.token.keyword,
+.token.tag {
+  color: #2e95d3 !important;
+}
+
+/* 숫자, 불린 - 빨간색 #df3079 */
+.token.number,
+.token.boolean,
+.token.constant {
+  color: #df3079 !important;
+}
+
+/* 변수, 속성 - 주황색 #e9950c */
+.token.variable,
+.token.property,
+.token.attr-name {
+  color: #e9950c !important;
+}
+
+/* 구두점 - 기본 텍스트 색상 */
+.token.punctuation {
+  color: #d4d4d4 !important;
+}
+
+/* 연산자 - 기본 텍스트 색상 */
+.token.operator {
+  color: #d4d4d4 !important;
+  background: none !important;
+}
+
+/* ===== Bash 특수 처리 ===== */
+
+/* sudo, apt, install 등 명령어 */
+.language-bash .token.function {
+  color: #2e95d3 !important;
+}
+
+/* -y, --version 등 옵션 */
+.language-bash .token.parameter,
+.language-bash .token.string {
+  color: #e9950c !important;
+}
+
+/* env, activate 등 일반 단어 */
+.language-bash .token.builtin {
+  color: #00a67d !important;
+}
+
+/* ===== 언어 라벨 제거 (bash 중복 방지) ===== */
+pre[class*="language-"] {
+  padding-top: 2.5rem !important;
+}
+
+pre[class*="language-"]::before {
+  content: 'code' !important;
+  position: absolute !important;
+  top: 0.6rem !important;
+  left: 1.2rem !important;
+  font-size: 13px !important;
+  color: #858585 !important;
+
+  letter-spacing: 0.5px !important;
+}
+
+
+pre.language-bash::before { content: 'bash'; }
+pre.language-python::before { content: 'python'; }
+pre.language-javascript::before,
+pre.language-js::before { content: 'javascript'; }
+pre.language-typescript::before,
+pre.language-ts::before { content: 'typescript'; }
+pre.language-json::before { content: 'json'; }
+pre.language-html::before { content: 'html'; }
+pre.language-css::before { content: 'css'; }
+pre.language-yaml::before,
+pre.language-yml::before { content: 'yaml'; }
+/* ===== 복사 버튼 스타일 (아이콘으로) ===== */
+div.code-toolbar {
+  position: relative !important;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute !important;
+  top: 0.6rem !important;
+  right: 0.6rem !important;
+  opacity: 0.5 !important;
+  transition: opacity 0.2s !important;
+  z-index: 10 !important;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1 !important;
+}
+
+/* 버튼 기본 스타일 */
+div.code-toolbar > .toolbar button {
+  background: rgba(45, 45, 45, 0.8) !important;
+  border: 1px solid rgba(80, 80, 80, 0.5) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  padding: 6px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+/* 복사 아이콘 (Copy 텍스트 대신) */
+div.code-toolbar > .toolbar button::before {
+  content: '' !important;
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4d4d4' viewBox='0 0 16 16'%3E%3Cpath d='M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+
+/* 버튼 호버 */
+div.code-toolbar > .toolbar button:hover {
+  background: rgba(60, 60, 60, 0.9) !important;
+  border-color: rgba(100, 100, 100, 0.6) !important;
+}
+
+/* 복사 성공 시 체크 아이콘 */
+div.code-toolbar > .toolbar button[data-copy-state="copy-success"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300a67d' viewBox='0 0 16 16'%3E%3Cpath d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E") !important;
+}
+
+/* 버튼 텍스트 완전 숨김 */
+div.code-toolbar > .toolbar button span {
+  display: none !important;
 }

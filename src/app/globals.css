@@ -60,7 +60,7 @@ body {
 
 .nav a{ font-size:32px; font-weight:200; }
 
-.container{ width:min(92vw, 1420px); margin:0 auto; padding:0 24px; overflow: visible; /* ✅ 추가 */ }
+.container{ width:min(92vw, 1300px); margin:0 auto; padding:0 24px; overflow: visible; /* ✅ 추가 */ }
 
 /* ===== Header ===== */
 .site-header {

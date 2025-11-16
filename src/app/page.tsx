@@ -2,13 +2,21 @@
 
 'use client'
 
+import dynamic from "next/dynamic";
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
-import HeroParticles from '../components/HeroParticles'
 import { createPortal } from 'react-dom';
+import HeroParticles from '../components/HeroParticles'
+
+
+
 
 const HERO_IMG = 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'
 const TV_IMG   = 'https://x2i.dev/wp-content/uploads/2025/04/abm.png'
+const BlogSection = dynamic(() => import("../components/BlogSection"), {
+  ssr: true,  // ← 이 옵션이 핵심! 서버에서만 렌더링되어 fs 에러 피함
+});
+
 
 export default function HomePage() {
 
@@ -40,6 +48,7 @@ export default function HomePage() {
         <SkillsSection /> {}
         <HistorySection /> {}
         <ProjectsSection /> {}
+        <BlogSection /> {}
         <div className="divider" />
       </div>
     </>
@@ -869,5 +878,4 @@ useEffect(() => setMounted(true), []);
     </section>
   );
 }
-
 

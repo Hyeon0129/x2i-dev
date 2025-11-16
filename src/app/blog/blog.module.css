@@ -61,10 +61,12 @@
 .blogList {
   display: flex;
   flex-direction: column;
-  gap: 65px;  
-  position: relative;  
-  width: 1080px;     
+  gap: 65px;
+  position: relative;
+  width: 1080px;
   margin: 0 auto;
+  margin-bottom: 180px; 
+  
 }
 
 .timelineLine {  

@@ -54,8 +54,9 @@ export default function HomePage() {
         <div className="divider" />
         <div style={{ height: "20px" }} />
         <BlogSection /> {}
+        <div style={{ height: "40px" }} />
         <div className="divider" />
-        <div style={{ height: "60px" }} />
+        
       </div>
     </>
   )

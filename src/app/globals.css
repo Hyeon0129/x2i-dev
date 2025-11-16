@@ -1420,3 +1420,62 @@ pre code {
     border-radius: 6px;
   }
 }
+
+/* ============================================
+   FOOTER
+============================================ */
+
+.footer {
+  margin-top: 120px;
+  padding: 40px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.875rem;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+}
+
+.footer-logo {
+  font-family: var(--font-geist-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.85);
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-link {
+  font-family: var(--font-geist-mono);
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: rgba(255,255,255,0.85);
+}
+
+.footer-right {
+  font-family: var(--font-geist-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+}

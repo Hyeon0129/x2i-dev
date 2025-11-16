@@ -44,10 +44,12 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
                 />
               </Link>
             </div>
-
+          
           </div>
         </div>
+        
       ))}
+      
     </div>
   );
 }

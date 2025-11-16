@@ -8,6 +8,7 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
+    <>
     <div className="container" style={{ paddingTop: "120px" }}>
 
       {/* 🔥 Blog Header Section */}
@@ -79,8 +80,10 @@ export default function BlogPage() {
 
           </div>
         ))}
+        
       </div>
-
     </div>
+    <div className="divider" />
+    </>
   );
 }

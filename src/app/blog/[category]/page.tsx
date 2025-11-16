@@ -11,12 +11,12 @@ type CategoryPageProps = {
 };
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  // 🔥 params는 Promise이므로 await 해서 꺼내야 한다!
+  
   const { category } = await params;
 
   const normalizedCategory = category.toLowerCase();
 
-  // 🔥 post, category 안전 체크 필수
+  
   const filteredPosts: PostFrontMatter[] = getAllPosts().filter((post) => {
     if (!post) return false;
     if (!post.category) return false;
@@ -24,6 +24,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   });
 
   return (
+    <>
     <div className="container" style={{ paddingTop: "120px" }}>
       {/* Header */}
       <div className={styles.blogHeader}>
@@ -41,8 +42,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       <div style={{ height: "125px" }} />
 
-      {/* 🔥 필터링된 포스트만 보여준다 */}
+      
       <BlogList posts={filteredPosts} />
     </div>
+    <div className="divider" />
+    </>
   );
 }

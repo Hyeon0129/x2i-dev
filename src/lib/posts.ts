@@ -61,15 +61,11 @@ export function getPostBySlug(slug: string) {
 
 export function formatDate(dateStr: string) {
   const date = new Date(dateStr);
-
-  const month = date.toLocaleString("en-US", {
-    month: "long",
-  }).toUpperCase(); // → SEPTEMBER
-
-  const day = date.getDate(); // → 1~31 (leading zero 없음)
-  const year = date.getFullYear();
-
-  return `${month} ${day}, ${year}`;
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  }).toUpperCase();
 }
 
 

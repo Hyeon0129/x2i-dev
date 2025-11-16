@@ -1,4 +1,4 @@
-//src/app/blog/[slug]/page.tsx
+//src/app/blog/[category]/[slug]/page.tsx
 import { getPostBySlug } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { renderMarkdown } from "@/lib/markdown";

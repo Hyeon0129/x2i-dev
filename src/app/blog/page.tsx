@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getAllPosts } from "@/lib/posts";
 import styles from "./blog.module.css";
 import Image from "next/image";
+
 export default function BlogPage() {
   const posts = getAllPosts();
 
@@ -16,32 +17,35 @@ export default function BlogPage() {
 
         <div className={styles.categories}>
           <Link href="/blog" className={styles.categoryItem}>All</Link>
-          <Link href="/blog/category/insights" className={styles.categoryItem}>Insights</Link>
-          <Link href="/blog/category/guides" className={styles.categoryItem}>Guides</Link>
-          <Link href="/blog/category/projects" className={styles.categoryItem}>Projects</Link>
-          <Link href="/blog/category/life" className={styles.categoryItem}>Life</Link>
+          <Link href="/blog/insights" className={styles.categoryItem}>Insights</Link>
+          <Link href="/blog/guides" className={styles.categoryItem}>Guides</Link>
+          <Link href="/blog/projects" className={styles.categoryItem}>Projects</Link>
+          <Link href="/blog/life" className={styles.categoryItem}>Life</Link>
         </div>
       </div>
 
-      {/* 🔥 리스트와 헤더 사이 여백 */}
+      {/*  리스트와 헤더 사이 여백 */}
       <div style={{ height: "125px" }} />
 
-   
-  {/* 🔥 post 카드 리스트 */}
+      {/*  post 카드 리스트 */}
       <div className={styles.blogList}>
-      <div className={styles.timelineLine}></div>
+        <div className={styles.timelineLine}></div>
 
         {posts.map((post) => (
           <div key={post.slug} className={styles.postItem}>
-            
-           
 
             <div className={styles.postGrid}>
+              {/* LEFT AREA */}
               <div className={styles.left}>
-                <div className={styles.dot}></div>      {/* ← dot 위치 이동 */}
+                <div className={styles.dot}></div>
+
                 <p className={styles.date}>{post.dateFormatted}</p>
 
-                <Link href={`/blog/${post.slug}`} className={styles.title}>
+                {/* 상세 페이지 링크 변경됨! */}
+                <Link
+                  href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}
+                  className={styles.title}
+                >
                   {post.title}
                 </Link>
 
@@ -49,28 +53,34 @@ export default function BlogPage() {
 
                 <p className={styles.excerpt}>{post.excerpt}</p>
 
-                <Link href={`/blog/${post.slug}`} className={styles.readBtn}>
+                <Link
+                  href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}
+                  className={styles.readBtn}
+                >
                   READ
                 </Link>
               </div>
 
-              {/* RIGHT AREA (썸네일) */}
+              {/* RIGHT AREA (Thumbnail) */}
               <div className={styles.right}>
-                <Link href={`/blog/${post.slug}`}>
-               <Image
-                src={post.thumbnail!}
-                alt={post.title}
-                width={800}   
-                height={500}  
-                className={styles.thumb}
-              />
+                <Link
+                  href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}
+                >
+                  <Image
+                    src={post.thumbnail!}
+                    alt={post.title}
+                    width={800}
+                    height={500}
+                    className={styles.thumb}
+                  />
                 </Link>
               </div>
-
             </div>
+
           </div>
         ))}
       </div>
+
     </div>
   );
 }

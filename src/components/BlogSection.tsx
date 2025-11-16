@@ -69,7 +69,7 @@ export default function BlogSection() {
           <div className="blog-list">
             {posts.map((post, index) => (
               <article key={post.slug || index} className="blog-card">
-                <Link href={`/blog/${post.slug}`} className="blog-card-link">
+                <Link href={`/blog/${post.category}/${post.slug}`} className="blog-card-link">
                   <div className="blog-left">
                     <div className="blog-meta">
                       <span className="blog-date">{post.dateFormatted || post.date}</span>

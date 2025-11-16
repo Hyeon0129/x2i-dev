@@ -54,7 +54,7 @@ export default function BlogSection() {
             <span>]</span>
           </div>
           <div className="blog-header-row">
-            <h3 className="section-title">Latest news</h3>
+            <h3 className="section-title">Latest Articles</h3>
             <Link href="/blog" className="blog-explore">
               VIEW ALL
             </Link>

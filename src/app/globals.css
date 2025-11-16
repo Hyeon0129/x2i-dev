@@ -277,6 +277,7 @@ font-size: 1.3rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
   cursor: pointer;
+  margin-top: 40px;
 }
 
 .tv-cta:hover {
@@ -304,6 +305,7 @@ font-size: 1.3rem;
 
 .tv-side {
   transform: translateX(50px);
+  margin-top: 20px;
 }
 
 
@@ -411,6 +413,18 @@ font-size: 1.3rem;
 }
 
 /* ✅ 오른쪽 텍스트를 mono-tag 높이만큼 아래로 */
+
+.about-desc {
+ font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.45;
+  color: hsl(215, 5%, 60%); /* ✅ 원본 톤: 밝은 그레이+살짝 따뜻함 */
+  opacity: 1; /* 원본은 투명도 없이 선명하게 렌더됨 */
+  -webkit-font-smoothing: antialiased; 
+  margin:40px 0 0 0;
+}
+
 .timeline-desc {
  font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 font-size: 1.1rem;
@@ -420,7 +434,6 @@ font-size: 1.1rem;
   opacity: 1; /* 원본은 투명도 없이 선명하게 렌더됨 */
   -webkit-font-smoothing: antialiased; 
   margin:40px 0 0 0;
-  
 }
 
 .timeline-placeholder {
@@ -1100,7 +1113,7 @@ pre code {
 ============================================ */
 
 .blog-header {
-  margin-bottom: 80px;
+  margin-bottom: 75px;
 }
 
 .blog-header-row {

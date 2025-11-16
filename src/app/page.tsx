@@ -129,6 +129,7 @@ function TvSection() {
           </div>
         </div>
 
+                    
         <div className="tv-side">
           <div className="mono-tag">
             <span>[</span>
@@ -136,7 +137,7 @@ function TvSection() {
             <span>]</span>
           </div>
           <h3 className="section-title">My Records</h3>
-          <p className="section-sub">
+          <p className="about-desc">
             This is a space where I write down what I learn, what I think, and personal thoughts,
             questions, and everyday moments. If it helps someone later, that would be great. <br />
             I plan to keep adding to it whenever I get the time.

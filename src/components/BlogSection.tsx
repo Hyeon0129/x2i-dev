@@ -74,9 +74,10 @@ export default function BlogSection() {
                       <Image 
                         src={post.thumbnail || 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'} 
                         alt={post.title}
-                        width={400}
-                        height={225}
+                        width={528}
+                        height={330}
                         className="blog-image"
+                        unoptimized
                       />
                     </div>
                   </div>

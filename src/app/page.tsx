@@ -46,10 +46,16 @@ export default function HomePage() {
       <div className="below-bg">
         <TvSection />
         <SkillsSection /> {}
+        <div style={{ height: "20px" }} />
         <HistorySection /> {}
+        <div style={{ height: "50px" }} />
         <ProjectsSection /> {}
+        <div style={{ height: "60px" }} />
+        <div className="divider" />
+        <div style={{ height: "20px" }} />
         <BlogSection /> {}
         <div className="divider" />
+        <div style={{ height: "60px" }} />
       </div>
     </>
   )
@@ -878,4 +884,5 @@ useEffect(() => setMounted(true), []);
     </section>
   );
 }
+
 

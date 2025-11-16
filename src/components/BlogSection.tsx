@@ -5,6 +5,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+function recreateExcerpt(text: string = "", wordCount = 40) {
+  const words = text.split(/\s+/);
+  return words.slice(0, wordCount).join(" ") + (words.length > wordCount ? "…" : "");
+}
+
 interface Post {
   title: string;
   date: string;
@@ -13,6 +18,7 @@ interface Post {
   category?: string;
   slug?: string;
   thumbnail?: string;
+  content?: string; 
 }
 
 export default function BlogSection() {
@@ -23,9 +29,15 @@ export default function BlogSection() {
     fetch('/api/posts')
       .then(res => res.json())
       .then(data => {
-        setPosts(data);
-        setLoading(false);
-      })
+  // excerpt를 40 단어로 강제 재생성
+  const override = data.map((post: Post) => ({
+    ...post,
+    excerpt: recreateExcerpt(post.content || post.excerpt || "", 26),
+  }));
+
+  setPosts(override);
+  setLoading(false);
+})
       .catch(err => {
         console.error('Failed to fetch posts:', err);
         setLoading(false);
@@ -44,7 +56,7 @@ export default function BlogSection() {
           <div className="blog-header-row">
             <h3 className="section-title">Latest news</h3>
             <Link href="/blog" className="blog-explore">
-              EXPLORE MORE
+              VIEW ALL
             </Link>
           </div>
         </div>
@@ -62,11 +74,13 @@ export default function BlogSection() {
                     <div className="blog-meta">
                       <span className="blog-date">{post.dateFormatted || post.date}</span>
                     </div>
-                    <h4 className="blog-title">{post.title}</h4>
-                    <p className="blog-description">{post.excerpt}</p>
-                    <div className="blog-footer">
-                      <span className="blog-category">{post.category || 'ARTICLE'}</span>
-                      <button className="blog-read-btn">READ</button>
+                    <div className="blog-content">
+                      <h4 className="blog-title">{post.title}</h4>
+                      <p className="blog-description">{post.excerpt}</p>
+                      <div className="blog-footer">
+                        <span className="blog-category">{post.category || 'ARTICLE'}</span>
+                        <button className="blog-read-btn">READ</button>
+                      </div>
                     </div>
                   </div>
                   <div className="blog-right">

@@ -175,8 +175,7 @@
   width: fit-content;
   padding:  0.5rem 1em;
   border-radius: 9999px;
-    border: 0.1px solid #424242;
-  text-decoration: none;
+  border: 0.1px solid #424242;
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -188,9 +187,10 @@
 }
 
 .readBtn:hover {
-  border-color: #fff;
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 /* RIGHT AREA (썸네일) */

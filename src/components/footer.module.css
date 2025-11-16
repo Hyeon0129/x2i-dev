@@ -1,0 +1,248 @@
+/* /src/components/footer.module.css */
+.footer {
+  position: relative;
+  width: 100%;
+  padding: 96px 0 72px;
+  background:
+    radial-gradient(circle at 50% 0%, #181818 0%, #050505 55%, #000 100%);
+  overflow: hidden;
+  color: #fff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 상단 중앙에서 살짝 퍼지는 글로우 (블랙과 자연스럽게 섞이도록 채도 낮춤) */
+.gradient {
+  position: absolute;
+  top: -220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 520px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 40%, transparent 70%),
+    radial-gradient(circle at 20% 0%, rgba(255, 120, 40, 0.09) 0%, transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(255, 90, 20, 0.08) 0%, transparent 55%);
+  filter: blur(140px);
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr) minmax(0, 1.5fr) minmax(0, 1.6fr);
+  column-gap: 72px;
+  row-gap: 40px;
+  align-items: flex-start;
+}
+
+/* LEFT: 로고 + 브랜드 설명 */
+.colLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo {
+  filter: drop-shadow(0 0 8px rgba(255, 120, 40, 0.35));
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 14px rgba(255, 140, 60, 0.55));
+}
+
+.brand {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tagline {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 280px;
+}
+
+.copy {
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.8rem;
+}
+
+/* 공통 컬럼 */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.heading {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  margin-bottom: 10px;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.92rem;
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  padding: 2px 0;
+  transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.link:hover {
+  color: #ffffff;
+  transform: translateX(3px);
+  opacity: 1;
+}
+
+/* 포커스 텍스트용 (카테고리 / 포지셔닝) */
+.metaItem {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.7;
+}
+
+/* RIGHT: 연락처 + 소셜 + 현재 상태 */
+.colRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+.caption {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: right;
+}
+
+.social {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.socialLink:hover {
+  background-color: rgba(255, 120, 40, 0.12);
+  border-color: rgba(255, 120, 40, 0.7);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Bottom Line: 그라디언트가 라인까지 번지지 않도록 살짝만 강조 */
+.bottomLine {
+  margin: 56px auto 0;
+  max-width: 1280px;
+  padding: 0 48px;
+}
+
+.bottomLine::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 120, 40, 0.25),
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 80px 0 64px;
+  }
+
+  .inner {
+    padding: 0 32px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+  }
+
+  .colRight {
+    align-items: flex-start;
+  }
+
+  .caption {
+    text-align: left;
+  }
+
+  .social {
+    justify-content: flex-start;
+  }
+
+  .bottomLine {
+    padding: 0 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 72px 0 56px;
+  }
+
+  .inner {
+    padding: 0 24px;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+
+  .colLeft {
+    order: 0;
+  }
+
+  .col {
+    order: 1;
+  }
+
+  .colRight {
+    order: 2;
+    align-items: flex-start;
+  }
+
+  .bottomLine {
+    margin-top: 40px;
+    padding: 0 24px;
+  }
+}

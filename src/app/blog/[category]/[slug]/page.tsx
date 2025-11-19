@@ -20,6 +20,7 @@ export default async function BlogPostPage({
   const fm = post.frontMatter;
 
   return (
+    <>
     <div className={styles.container}>
       
       {/* 날짜 */}
@@ -48,5 +49,8 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>
+    <div style={{ height: "125px" }} />
+    <div className="divider" />
+    </>
   );
 }

@@ -89,7 +89,7 @@ body {
   display:flex; gap:38px; margin-left:8px;
   letter-spacing:.06em; color:#d4d4d4;
 }
-.nav a{ color:#888888; text-decoration:none; font-size:17px; font-weight:300;  }
+.nav a{ color:#888888; text-decoration:none; font-size:0.88rem; font-weight:300;  }
 .nav a:hover{ color:#ffffff; }
 .nav-right{ margin-left:auto; display:flex; align-items:center; }
 .globe {
@@ -1420,3 +1420,9 @@ pre code {
     border-radius: 6px;
   }
 }
+
+/* ============================================
+   FOOTER
+============================================ */
+
+

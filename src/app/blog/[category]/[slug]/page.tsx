@@ -49,7 +49,8 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>
-    <div style={{ height: "125px" }} />
+    
+    <div style={{ height: "165px" }} />
     <div className="divider" />
     </>
   );

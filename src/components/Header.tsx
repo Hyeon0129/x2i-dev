@@ -15,11 +15,11 @@ export default function Header() {
         </Link>
 
         <nav className="nav">
-          <Link href="/">Home</Link>
-          <Link href="/about">About</Link>
-          <Link href="/project">Project</Link>
-          <Link href="/blog">Blog</Link>
-          <Link href="/docs">Docs</Link>
+          <Link href="/">HOME</Link>
+          <Link href="/about">ABOUT</Link>
+          <Link href="/project">PROJECT</Link>
+          <Link href="/blog">BLOG</Link>
+          <Link href="/docs">DOCS</Link>
         </nav>
 
         <div className="nav-right">

@@ -1,11 +1,12 @@
 //src/lib/markdown.ts
 
 import MarkdownIt from "markdown-it";
-import prism from "markdown-it-prism";
 import container from "markdown-it-container";
+import Prism from "prismjs";
+
+// 기존 CSS import 유지
 import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
-
 
 // 필요한 언어 import (기존 유지)
 import "prismjs/components/prism-markup";
@@ -26,6 +27,16 @@ const md = new MarkdownIt({
   html: true,
   breaks: true,
   linkify: true,
+  highlight: function (str: string, lang: string) {
+    if (lang && Prism.languages[lang]) {
+      try {
+        return `<pre class="language-${lang}"><code class="language-${lang}">${Prism.highlight(str, Prism.languages[lang], lang)}</code></pre>`;
+      } catch (err) {
+        console.error('Prism highlight error:', err);
+      }
+    }
+    return `<pre class="language-none"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+  }
 });
 
 type Token = {
@@ -33,23 +44,16 @@ type Token = {
   info: string;
 };
 
-// Prism 플러그인 등록 (기존 유지)
-md.use(prism, {
-  plugins: ["show-language", "toolbar", "copy-to-clipboard"],
-});
-
-// Admonition 컨테이너 추가 (note, info, tip, danger, warning)
+// Admonition 컨테이너 추가 (note, info, tip, 'danger', warning)
 const admonitionTypes = ['note', 'info', 'tip', 'danger', 'warning'];
 
 admonitionTypes.forEach((type) => {
   md.use(container, type, {
     validate: (name: string) => name === type,
-    render: (tokens: Token[], idx: number) => {  // ← tokens: Token[]로 변경
+    render: (tokens: Token[], idx: number) => {
       if (tokens[idx].nesting === 1) {
-        // opening tag
         return `<div class="admonition admonition-${type}">\n<p class="admonition-title">${type.toUpperCase()}</p>\n`;
       } else {
-        // closing tag
         return '</div>\n';
       }
     },

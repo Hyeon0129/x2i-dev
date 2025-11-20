@@ -139,13 +139,12 @@ function TvSection() {
           </div>
           <h3 className="section-title">My Records</h3>
           <p className="about-desc">
-            This is a space where I write down what I learn, what I think, and personal thoughts,
-            questions, and everyday moments. If it helps someone later, that would be great. <br />
-            I plan to keep adding to it whenever I get the time.
+            This is a space where I write down what I learn,  <br /> what I think, and personal thoughts, 
+            questions, and everyday moments. If it helps someone later,  <br />that would be great.    I plan to keep adding to it whenever I get the time.
             
           </p>
                    <a href="/about" className="tv-cta">
-                    <span>explore</span>
+                    <span>CV Explore</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"

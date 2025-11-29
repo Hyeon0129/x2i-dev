@@ -1,14 +1,21 @@
 ---
-title: "THIS IS TEST"
-date: "2025-05-10"
+title: "Tenstorrent NPU Setup Guide: Install Drivers & SDK"
+date: "2025-03-10"
 category: "Guides"
-slug: "xogus"
-thumbnail: "/images/thumbnails/qc.png"
+slug: "tenstorrent_npu_setup_guide"
+thumbnail: "/images/thumbnails/guides-tenstorrent-npu-setup-guide-install-drivers-and-sdk-thumbnail.png"
 ---
 
 
 
-## 1. Prerequisites
+In this guide, we will walk you through the setup process for your **Tenstorrent NPU wormhole (N300S)**, including hardware installation, driver setup
+
+:::note
+Currently, the Tenstorrent Demo is designed for either a single-card or a 4-card setup. If you are using a multi-card (4 cards) configuration, you must configure the topology to run the demo properly.
+:::
+
+
+### 1. Prerequisites
 Grayskull is no longer supported by Tenstorrent. If you are still using Grayskull, you will need to rely on the last available software versions or consider upgrading to a newer Tenstorrent NPU.
 
 The last supported versions of Tenstorrent’s software for Grayskull are:
@@ -29,10 +36,11 @@ Note the current compatibility matrix:
 | T3000 (Wormhole)     | Ubuntu 22.04    | 3.10     | v1.33 or above     | fw_pack-80.17.0.0 (v80.17.0.0)             | v3.0.12 or above      | v1.2.5 or above, `mesh` config |
 | Blackhole            | Ubuntu 22.04    | 3.10     | v1.33 or above     | fw_pack-80.18.0.0 (v80.18.0.0)             | v3.0.12 or above       | N/A                            |
 
+<br />
+<br />
 
 
-
-## 2.  Install [TT-KMD](https://github.com/tenstorrent/tt-kmd) for Tenstorrent Wormhole N300S
+### 2.  Install [TT-KMD](https://github.com/tenstorrent/tt-kmd) for Tenstorrent Wormhole N300S
 Installing the Kernel-Mode Driver (TT-KMD) is an essential step for setting up the
 **Tenstorrent Wormhole N300S** system correctly.
 
@@ -62,8 +70,9 @@ tenstorrent            49152  0
  ```
 
 <br />
+<br />
 
-## 3. Update Device [TT-Firmware](https://github.com/tenstorrent/tt-flash) with [TT-Flash](https://github.com/tenstorrent/tt-firmware)
+### 3. Update Device [TT-Firmware](https://github.com/tenstorrent/tt-flash) with [TT-Flash](https://github.com/tenstorrent/tt-firmware)
 The TT-Firmware file needs to be installed using the TT-Flash utility.
 Firmware updates are required only once when the card is first unboxed or when updating to a new firmware version.
 
@@ -107,6 +116,7 @@ command:
 ```                        
 
 <br />
+
 Download TT-Firmware and Update:
 
 ```bash title="bash"
@@ -180,7 +190,9 @@ FLASH SUCCESS
 ```
 
 <br />
-## 4. Set Up HugePages
+<br />
+
+### 4. Set Up HugePages
 HugePages lets your system allocate dedicated memory to accelerate communication with Tenstorrent devices. Set up HugePages by running these commands in the terminal:
 
 ```bash title="bash"
@@ -197,11 +209,11 @@ sudo reboot
 ```
 
 <br />
+<br />
 
-## 5. Install the System Management Interface [TT-SMI](https://github.com/tenstorrent/tt-smi)
+### 5. Install the System Management Interface TT-SMI
+
 Install Tenstorrent Software Management Interface [TT-SMI](https://github.com/tenstorrent/tt-smi):
-
-
 To Build from git (development):
 
 ```bash title="bash"
@@ -231,20 +243,19 @@ tt-smi
 
 <br />
 
-A display with device information, telemetry, and firmware will appear:
-
-
+You will see a display with device information, telemetry, and firmware:
+![tt-smi](/images/posts/guides/tenstorrent_npu_setup_guide/tt-smi.png)
 
 <br />
 
 You can check the results of the firmware update to 80.15.0.0 applied previously.
-
+![tt-smi-fimrware-update](/images/posts/guides/tenstorrent_npu_setup_guide/tt-smi-firmware-update.png)
 
 <br />
 
-## 6. Optional : Multi-Card Configuration [TT-Topology](https://github.com/tenstorrent/tt-topology)
+### 6. Optional : Multi-Card Configuration TT-Topology
 If you have installed a multi-card Wormhole system (4 cards), install the Tenstorrent Topology utility and configure a mesh topology by running the following commands in the terminal.
-TT-Topology is a command line utility used to flash multiple NB cards on a system to use specific eth routing configurations.
+[TT-Topology](https://github.com/tenstorrent/tt-topology) is a command line utility used to flash multiple NB cards on a system to use specific eth routing configurations.
 
 In this guide, we will walk you through the setup process for your Tenstorrent NPU, including hardware installation, driver setup, and SDK configuration.
 
@@ -253,6 +264,14 @@ Currently, the Tenstorrent Demo is designed for either a single-card or a 4-card
 :::
 
 <br />
+
+- `Flash all the boards to default` – set all eth port disables to 0 and reset coordinates to (0,0) for local chips and (1,0) for n300 remote chips.
+- Issue a board level reset to apply the new flash to the chips.
+- Generate a mapping of all possible connections and their type between the available chips.
+- `Using a graph algorithm generate coordinates for each chip based on user input.` These layouts are discussed in detail in the sections below.
+- Write the new coordinates to the chips.
+- Issue a board level reset to apply the new flash to the chips.
+- `Return a png with a graphic representation of the layout` and a .json log file with details of the above steps.
 
 For other configurations or detailed explanations, please refer to [this](https://github.com/tenstorrent/tt-topology).
 
@@ -263,14 +282,34 @@ git clone https://github.com/tenstorrent/tt-topology.git
 cd tt-topology
 pip3 install --upgrade pip
 pip3 install .
+tt-topology -l mesh -p mesh_layout.png
 ```
 
 <br />
 
+#### Mesh
+In the mesh layout is a trivalent graph where each node can have a max of 3 connection. The system assigns the coordinates using a BFS algorithm. Command to generate a mesh layout
 
+![tt-topology-mesh](/images/posts/guides/tenstorrent_npu_setup_guide/tt-topology-mesh.png)
 
 <br />
 
 You can see the configuration as shown in the image below.
 After completing the setup, you can check that the Coords values have changed by running tt-smi.
+![tt-smi-topology](/images/posts/guides/tenstorrent_npu_setup_guide/tt-smi-topology.png)
 
+<br />
+
+Now, all the basic configurations are complete.
+Tenstorrent provides three open-source SDKs for developing on Tensix Processors:
+
+- TT-Buda to run existing models
+- TT-Metalium/TT-NN to build your own kernels and models
+- TT-Forge/TT-MLIR to create, compile, and optimize graph operations
+
+Each SDK will have its own system dependency requirements and installation process.
+As of October 2024, TT-Buda development has been discontinued. It is planned to be integrated with other SDKs in the future.
+TT-Metalium/TT-NN and TT-Forge/TT-MLIR are currently under active development.
+In the next section, we will document the installation of the SDK and run example demos. N300S
+
+Thank you.

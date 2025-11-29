@@ -4,6 +4,11 @@ import { getAllPosts } from "@/lib/posts";
 import styles from "./blog.module.css";
 import Image from "next/image";
 
+
+export const metadata = {
+  title: "Blog – Pyron",
+};
+
 export default function BlogPage() {
   const posts = getAllPosts();
 

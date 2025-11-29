@@ -6,7 +6,7 @@ import Image from "next/image";
 import styles from "./footer.module.css";
 
 const LOGO =
-  "https://x2i.dev/wp-content/uploads/2025/10/cropped-cropped-cropped-cropped-logo-Photoroom-1.png";
+  "/images/logo.png";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -24,7 +24,7 @@ export default function Footer() {
             alt="x2i.dev logo"
             className={styles.logo}
           />
-          <p className={styles.copy}>© {year} X2I Blog. All rights reserved.</p>
+          <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
         </div>
 
         
@@ -32,8 +32,8 @@ export default function Footer() {
         <div className={styles.col}>
           <p className={styles.heading}>Site</p>
           <Link href="/" className={styles.link}>Home</Link>
-          <Link href="/about" className={styles.link}>About</Link>
-          <Link href="/project" className={styles.link}>Projects</Link>
+          <Link href="/#records" scroll={true} className={styles.link}>About</Link>
+          <Link href="/#projects" scroll={true} className={styles.link}>Project</Link>
           <Link href="/blog" className={styles.link}>Blog</Link>
           <Link href="/docs" className={styles.link}>Docs</Link>
         </div>

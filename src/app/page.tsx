@@ -1,6 +1,7 @@
 //src/app/page.tsx
-
 'use client'
+
+
 
 import dynamic from "next/dynamic";
 import Image from 'next/image'
@@ -16,6 +17,7 @@ const TV_IMG   = '/images/abm.png';
 const BlogSection = dynamic(() => import("../components/BlogSection"), {
   ssr: true,  // ← 이 옵션이 핵심! 서버에서만 렌더링되어 fs 에러 피함
 });
+
 
 
 export default function HomePage() {
@@ -609,7 +611,7 @@ useEffect(() => setMounted(true), []);
         Llama-3 기반 모델을 사용해 인터페이스 상에서 문장이 출력되는 속도와 GPU의 사용률·전력 소모를 함께 표현해,
         두 하드웨어 간의 차이를 직관적으로 확인할 수 있습니다.
         `,
-        video: 'https://x2i.dev/wp-content/uploads/2025/10/2025-10-22-21-42-24.mp4',
+        video: '/videos/intro/npu-open-webui.mp4',
         link: '#',
         snapshots: [
         { label: 'Llama-3 70B', npu: { value: 15, unit: 'tok/s', percent: 75 }, gpu: { value: 20, unit: 'tok/s', percent: 100 } },
@@ -625,7 +627,7 @@ useEffect(() => setMounted(true), []);
         동일한 조건에서의 성능 차이를 직관적으로 비교할 수 있습니다.  
         이를 통해 특정 AI 워크로드에서 NPU가 GPU 대비 더 높은 처리 효율과 전력 최적화를 달성할 수 있음을 보여줍니다.
         `,
-        video: 'https://x2i.dev/wp-content/uploads/2025/10/Tenstorrent_ResNe5-50.mp4',
+        video: '/videos/intro/npu-resnet50.mp4',
         link: '#',
         snapshots: [
           { label: 'FPS',   npu: { value: 8000, unit: 'FPS', percent: 100  }, gpu: { value: 5000, unit: 'FPS' , percent: 62.5 } },
@@ -804,7 +806,7 @@ useEffect(() => setMounted(true), []);
             {/* 2 */}
             <div className="project-card" data-project="llm-inference">
               <video autoPlay muted loop playsInline>
-                <source src="https://x2i.dev/wp-content/uploads/2025/10/2025-10-22-21-42-24.mp4" type="video/mp4" />
+                <source src="/videos/intro/npu-open-webui.mp4" type="video/mp4" />
               </video>
               <div className="project-content">
                 <h3 className="project-title">LLM Inference Visualization</h3>
@@ -825,7 +827,7 @@ useEffect(() => setMounted(true), []);
             {/* 3 */}
             <div className="project-card" data-project="resnet-inference">
               <video autoPlay muted loop playsInline>
-                <source src="https://x2i.dev/wp-content/uploads/2025/10/Tenstorrent_ResNe5-50.mp4" type="video/mp4" />
+                <source src="/videos/intro/npu-resnet50.mp4" type="video/mp4" />
               </video>
               <div className="project-content">
                 <h3 className="project-title">ResNet-50 Comparison</h3>

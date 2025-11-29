@@ -10,6 +10,10 @@ type CategoryPageProps = {
   }>;
 };
 
+export const metadata = {
+  title: "Blog – Pyron",
+};
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   
   const { category } = await params;

@@ -3,6 +3,7 @@
 import MarkdownIt from "markdown-it";
 import container from "markdown-it-container";
 import Prism from "prismjs";
+import markdownItAnchor from "markdown-it-anchor";
 
 // 기존 CSS import 유지
 import "prismjs/themes/prism-tomorrow.css";
@@ -23,6 +24,8 @@ import "prismjs/plugins/show-language/prism-show-language";
 import "prismjs/plugins/toolbar/prism-toolbar";
 import "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard";
 
+
+
 const md = new MarkdownIt({
   html: true,
   breaks: true,
@@ -39,13 +42,15 @@ const md = new MarkdownIt({
   }
 });
 
+md.use(markdownItAnchor);
+
 type Token = {
   nesting: number;
   info: string;
 };
 
 // Admonition 컨테이너 추가 (note, info, tip, 'danger', warning)
-const admonitionTypes = ['note', 'info', 'tip', 'danger', 'warning'];
+const admonitionTypes = ['note', 'imfortant', 'tip', 'danger', 'warning'];
 
 admonitionTypes.forEach((type) => {
   md.use(container, type, {

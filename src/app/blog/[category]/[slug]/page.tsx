@@ -6,6 +6,28 @@ import styles from "./blogDetail.module.css";
 import Image from "next/image";
 import { formatDate } from "@/lib/posts";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  const post = getPostBySlug(slug);
+
+  if (!post) {
+    return {
+      title: "Post Not Found – Pyron",
+    };
+  }
+
+  return {
+    title: `${post.frontMatter.title} | Pyron`,
+    description: post.frontMatter.excerpt || "",
+  };
+}
+
+
 export default async function BlogPostPage({
   params,
 }: {

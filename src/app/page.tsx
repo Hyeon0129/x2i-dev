@@ -11,8 +11,8 @@ import HeroParticles from '../components/HeroParticles'
 
 
 
-const HERO_IMG = 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'
-const TV_IMG   = 'https://x2i.dev/wp-content/uploads/2025/04/abm.png'
+const HERO_IMG = '/images/intro.png';
+const TV_IMG   = '/images/abm.png';
 const BlogSection = dynamic(() => import("../components/BlogSection"), {
   ssr: true,  // ← 이 옵션이 핵심! 서버에서만 렌더링되어 fs 에러 피함
 });
@@ -593,7 +593,7 @@ useEffect(() => setMounted(true), []);
         서버 전원 제어부터 BIOS 설정, OS 자동 설치, 상태 점검 및 실시간 이상 알림까지 모든 과정을 버튼 한 번으로 수행할 수 있습니다.
         뿐만 아니라 웹 새디보드를 통해 대량의 서버에 대한 작업 배포, 상태를 실시간으로 시각화해 전체 프로세스의 진행 상황을 직관적으로 확인할 수 있도록 구현했습니다.
         `,
-        video: 'https://x2i.dev/wp-content/uploads/2025/10/test.mp4',
+        video: '/videos/intro/qc-automation.mp4',
         link: 'https://x2i.dev/blog/how-i-made-work-5x-faster-with-automation/',
         metrics: [
           { label: '처리량 증가 ↑', value: 260, suffix: '%', dir: 'up' },
@@ -781,7 +781,7 @@ useEffect(() => setMounted(true), []);
             {/* 1 */}
             <div className="project-card" data-project="qc-dashboard">
               <video autoPlay muted loop playsInline>
-                <source src="https://x2i.dev/wp-content/uploads/2025/10/test.mp4" type="video/mp4" />
+                <source src="/videos/intro/qc-automation.mp4" type="video/mp4" />
               </video>
               <div className="project-content">
                 <h3 className="project-title">Server Quality Control Automation Dashboard</h3>

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const LOGO =
-  'https://x2i.dev/wp-content/uploads/2025/10/cropped-cropped-cropped-cropped-logo-Photoroom-1.png'
+  '/images/logo.png';
 
 export default function Header() {
   return (

@@ -4,8 +4,6 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// 글 메타데이터 타입 (frontmatter)
-
 export type PostFrontMatter = {
   title: string;
   date: string;
@@ -14,8 +12,12 @@ export type PostFrontMatter = {
   category?: string;
   slug?: string;
   thumbnail?: string;
+  
+  
+  description?: string;
+  keywords?: string[];
+  author?: string;
 };
-
 
 const POSTS_DIR = path.join(process.cwd(), "content/blog");
 
@@ -26,8 +28,6 @@ export function getAllPosts(): PostFrontMatter[] {
     .filter((file) => file.endsWith(".mdx"))
     .map((file) => {
       const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
-
-      // ⬅ 여기서 content 포함해서 가져와야 excerpt를 만들 수 있음
       const { data, content } = matter(raw);
 
       const meta = data as PostFrontMatter;
@@ -35,7 +35,7 @@ export function getAllPosts(): PostFrontMatter[] {
       return {
         ...meta,
         slug: meta.slug ?? file.replace(/\.mdx$/, ""),
-        excerpt: createExcerpt(content), // ⬅ 이제 정상적으로 동작함
+        excerpt: meta.excerpt || createExcerpt(content),
         dateFormatted: formatDate(meta.date),
       };
     });
@@ -53,7 +53,6 @@ export function getPostBySlug(slug: string) {
   const { data, content } = matter(raw);
 
   return {
-    
     frontMatter: data as PostFrontMatter,
     content,
   };
@@ -67,7 +66,6 @@ export function formatDate(dateStr: string) {
     year: "numeric"
   }).toUpperCase();
 }
-
 
 export function createExcerpt(content: string, wordCount = 26) {
   const words = content.split(/\s+/);

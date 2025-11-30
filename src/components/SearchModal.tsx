@@ -111,29 +111,25 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                   <div className="search-group-label">{category}</div>
 
                   {posts.map((post) => {
-                    const categoryPath = (post.category || 'uncategorized').toLowerCase();
-                    const href = `/blog/${categoryPath}/${post.slug}`;
+  const categoryPath = (post.category || 'uncategorized').toLowerCase();
+  const href = `/blog/${categoryPath}/${post.slug}`;
 
-                    return (
-                      <Link
-                        key={post.slug}
-                        href={href}
-                        className={
-                          'search-result-item' +
-                          (previewPost?.slug === post.slug ? ' active' : '')
-                        }
-                        onClick={onClose}
-                        onMouseEnter={() => setActivePost(post)}
-                      >
-                        <div className="search-result-title">{post.title}</div>
-                        {post.excerpt && (
-                          <div className="search-result-excerpt">
-                            {post.excerpt}
-                          </div>
-                        )}
-                      </Link>
-                    );
-                  })}
+  return (
+    <Link
+      key={post.slug}
+      href={href}
+      className={
+        'search-result-item' +
+        (previewPost?.slug === post.slug ? ' active' : '')
+      }
+      onClick={onClose}
+      onMouseEnter={() => setActivePost(post)}
+    >
+      {/* 좌측 리스트: 제목만 표시 */}
+      <div className="search-result-title">{post.title}</div>
+    </Link>
+  );
+})}
                 </div>
               ))
             )}
@@ -151,17 +147,15 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
               </div>
             ) : (
               <>
-                {previewPost.category && (
-                  <div className="search-preview-category">
-                    {previewPost.category}
-                  </div>
-                )}
-                <h2 className="search-preview-title">{previewPost.title}</h2>
+
                 {(previewPost.dateFormatted || previewPost.date) && (
                   <div className="search-preview-date">
                     {previewPost.dateFormatted || previewPost.date}
                   </div>
                 )}
+              
+                <h2 className="search-preview-title">{previewPost.title}</h2>
+              
                 {previewPost.excerpt && (
                   <p className="search-preview-excerpt">
                     {previewPost.excerpt}

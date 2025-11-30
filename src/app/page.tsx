@@ -134,12 +134,14 @@ function TvSection() {
             <span>]</span>
           </div>
           <h3 className="section-title">My Records</h3>
-          <p className="about-desc"> 
-            This is a space where I write down what I learn,  <br /> what I think, and personal thoughts, 
-            questions, and everyday moments. If it helps someone later,  <br />that would be great.    I plan to keep adding to it whenever I get the time.            
-          </p>
+            <p className="about-desc">
+              This is a space where I write down what I learn and think,
+              along with personal thoughts, questions, and everyday moments.
+              If it helps someone later, that would be great.
+              I plan to keep adding to it whenever I get the time.
+            </p>
                    <a href="/cv/cv_kth.pdf" target="_blank" rel="noopener noreferrer" className="tv-cta">
-                    <span>View CV</span>
+                    <span>About me</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -354,28 +356,26 @@ function HistorySection() {
         <div className="timeline-wrap">
           <div className="timeline-inner">
             <div className="vertical-line" style={{ left: '5%',  top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '12%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '19%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '26%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '33%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '40%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '47%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '54%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '61%', top: 'calc(50% - 33px)' }}></div>
-            <div className="vertical-line" style={{ left: '68%', top: 'calc(50% - 33px)' }}></div>
-        </div>
+            <div className="vertical-line" style={{ left: '12.5%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '17.5%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '22.5%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '27.5%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '35.5%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '42%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '49%', top: 'calc(50% - 33px)' }}></div>
+            <div className="vertical-line" style={{ left: '56%', top: 'calc(50% - 33px)' }}></div>
+          </div>
 
-          {}
-          <div className="quarter-label" style={{left: '5%'}}><span>JUL 2023</span></div>
-          <div className="quarter-label" style={{left: '12%'}}><span>OCT 2023</span></div>
-          <div className="quarter-label" style={{left: '19%'}}><span>JAN 2024</span></div>
-          <div className="quarter-label" style={{left: '26%'}}><span>APR 2024</span></div>
-          <div className="quarter-label" style={{left: '33%'}}><span>JUL 2024</span></div>
-          <div className="quarter-label" style={{left: '40%'}}><span>OCT 2024</span></div>
-          <div className="quarter-label" style={{left: '47%'}}><span>JAN 2025</span></div>
-          <div className="quarter-label" style={{left: '54%'}}><span>APR 2025</span></div>
-          <div className="quarter-label" style={{left: '61%'}}><span>JUL 2025</span></div>
-          <div className="quarter-label" style={{left: '68%'}}><span>OCT 2025</span></div>
+          {/* Quarter Labels */}
+          <div className="quarter-label" style={{ left: '5%'  }}><span>NOV 1998</span></div>
+          <div className="quarter-label" style={{ left: '12.5%' }}><span>MAR 2019</span></div>
+          <div className="quarter-label" style={{ left: '17.5%' }}><span>JAN 2020</span></div>
+          <div className="quarter-label" style={{ left: '22.5%' }}><span>MAR 2021</span></div>
+          <div className="quarter-label" style={{ left: '27.5%' }}><span>FEB 2022</span></div>
+          <div className="quarter-label" style={{ left: '35.5%' }}><span>DEC 2023</span></div>
+          <div className="quarter-label" style={{ left: '42%' }}><span>SEP 2024</span></div>
+          <div className="quarter-label" style={{ left: '49%' }}><span>AUG 2025</span></div>
+          <div className="quarter-label" style={{ left: '56%' }}><span>DEC 2025</span></div>
 
           <div id="highlightBox"></div>
 
@@ -386,77 +386,93 @@ function HistorySection() {
           </div>
 
           {/*  */}
-          <div className="event-dot" style={{left: '8%'}} 
-            data-date="09 APR" 
-            data-title="New Beginning" 
-            data-desc="Completed military service and moved to Japan for studies, seeking a new direction.">
+
+          {/* Event dots */}
+          <div className="event-dot" style={{ left: '5%' }}
+            data-date="30 NOV 1998"
+            data-title="Birth"
+            data-desc="Born in South Korea — the beginning of the timeline.">
           </div>
 
-          <div className="event-dot" style={{left: '14%'}} 
-            data-date="15 JAN" 
-            data-title="Becoming a Father" 
-            data-desc="My son was born — a turning point that changed my sense of responsibility and priorities.">
+          <div className="event-dot" style={{ left: '13%' }}
+            data-date="09 MAR 2019"
+            data-title="Military Discharge"
+            data-desc="Completed mandatory military service.">
           </div>
 
-          <div className="event-dot" style={{left: '22%'}} 
-            data-date="20 MAR" 
-            data-title="First Career" 
-            data-desc="Returned to Korea and joined Eslim Korea, starting my first full-time role in server manufacturing.">
+          <div className="event-dot" style={{ left: '16%' }}
+            data-date="MAY 2019"
+            data-title="Japan Study"
+            data-desc="Moved to Japan for language and technical studies.">
           </div>
 
-          <div className="event-dot" style={{left: '29%'}} 
-            data-date="12 JUN" 
-            data-title="Linux & Infrastructure" 
-            data-desc="Began studying Linux and system automation — the foundation of my engineering path.">
+          <div className="event-dot" style={{ left: '18%' }}
+            data-date="28 JAN 2020"
+            data-title="Becoming a Father"
+            data-desc="My son was born — a life-changing moment.">
           </div>
 
-          <div className="event-dot" style={{left: '35%'}} 
-            data-date="05 DEC" 
-            data-title="Server Dispatch Dashboard" 
-            data-desc="Built a web dashboard to manage server shipment processes — my first automation project.">
+          <div className="event-dot" style={{ left: '23%' }}
+            data-date="17 MAR 2021"
+            data-title="Return to Korea & Joined Eslim"
+            data-desc="Returned to Korea and began my first career in server manufacturing.">
           </div>
 
-          <div className="event-dot" style={{left: '38%'}} 
-            data-date="18 JUN" 
-            data-title="QC Automation System" 
-            data-desc="Began developing a full server quality control (QC) automation dashboard, focusing on replacing manual inspection with a web-based system.">
+          <div className="event-dot" style={{ left: '29%' }}
+            data-date="17 MAR 2022"
+            data-title="Marriage"
+            data-desc="Married in the Philippines.">
           </div>
 
-          <div className="event-dot" style={{left: '43%'}} 
-            data-date="25 MAR" 
-            data-title="QC Automation Launch" 
-            data-desc="Officially launched the QC automation system — achieving 260% increase in throughput, 70% reduction in inspection time, and 0% error rate.">
+          <div className="event-dot" style={{ left: '31%' }}
+            data-date="01 JUN 2022"
+            data-title="QC Engineering"
+            data-desc="Transitioned to server quality control (QC).">
           </div>
 
-          <div className="event-dot" style={{left: '48%'}} 
-            data-date="10 OCT" 
-            data-title="Tenstorrent NPU PoC" 
-            data-desc="Began Proof-of-Concept work for Tenstorrent NPU — exploring AI inference and hardware integration.">
+          <div className="event-dot" style={{ left: '36%' }}
+            data-date="09 DEC 2023"
+            data-title="QC Automation Dashboard"
+            data-desc="Developed a full server QC automation system.">
           </div>
 
-          <div className="event-dot" style={{left: '52%'}} 
-            data-date="08 FEB" 
-            data-title="LLM Inference Demo" 
-            data-desc="Successfully served a Korean fine-tuned LLaMA model on Tenstorrent NPU using vLLM + Open WebUI — first in Korea.">
+          <div className="event-dot" style={{ left: '45%' }}
+            data-date="29 OCT 2024"
+            data-title="Tenstorrent NPU PoC"
+            data-desc="Started the NPU Proof-of-Concept project.">
           </div>
 
-          <div className="event-dot" style={{left: '57%'}} 
-            data-date="22 MAY" 
-            data-title="ResNet-50 Benchmark" 
-            data-desc="Proved NPU's superior inference efficiency on ResNet-50 workloads — first in Korea.">
+          <div className="event-dot" style={{ left: '49.5%' }}
+            data-date="29 AUG 2025"
+            data-title="Resignation"
+            data-desc="Left Eslim Korea and worked at a logistics center.">
           </div>
 
-          <div className="event-dot" style={{left: '63%'}} 
-            data-date="14 AUG" 
-            data-title="New Chapter" 
-            data-desc="Resigned from Eslim Korea to focus on personal projects and build my own direction as an independent engineer.">
+          <div className="event-dot" style={{ left: '53%' }}
+            data-date="10 NOV 2025"
+            data-title="Left Logistics Job"
+            data-desc="Quit the logistics job.">
           </div>
 
-          <div className="event-dot" style={{left: '66%'}} 
-            data-date="09 NOV" 
-            data-title="Today" 
-            data-desc="Taking stock of where I've been and redefining the path ahead.">
+          <div className="event-dot" style={{ left: '55%' }}
+            data-date="17 NOV 2025"
+            data-title="Joined SecuLayer"
+            data-desc="Joined SecuLayer as a server engineer.">
           </div>
+
+          <div className="event-dot" style={{ left: '57%' }}
+            data-date="01 DEC 2025"
+            data-title="Left SecuLayer"
+            data-desc="Left shortly after joining.">
+          </div>
+
+          <div className="event-dot" style={{ left: '59%' }}
+            data-date="03 DEC 2025"
+            data-title="Today"
+            data-desc="Taking time to reset and redefine my path — wandering, but moving forward.">
+          </div>
+
+          
         </div>
       </div>
     </section>
@@ -500,7 +516,7 @@ function ProjectsSection() {
   const [mounted, setMounted] = useState(false);
 useEffect(() => setMounted(true), []);
   useEffect(() => {
-  if (!mounted) return; // Portal 렌더 전엔 실행 안 함
+  if (!mounted) return; 
 
   // ---------- DOM helpers ----------
   const $ = <T extends Element = Element>(sel: string, root: ParentNode = document) =>
@@ -583,25 +599,26 @@ useEffect(() => setMounted(true), []);
       'qc-dashboard': {
         title: 'Server QC Automation Dashboard',
         description: `
-          반복적인 서버 품질관리 과정을 자동화해, 사람이 육안으로 확인하던 모든 단계를 시스템이 대신 처리하도록 설계하고 구축했습니다.<br>
-        서버 전원 제어부터 BIOS 설정, OS 자동 설치, 상태 점검 및 실시간 이상 알림까지 모든 과정을 버튼 한 번으로 수행할 수 있습니다.
-        뿐만 아니라 웹 새디보드를 통해 대량의 서버에 대한 작업 배포, 상태를 실시간으로 시각화해 전체 프로세스의 진행 상황을 직관적으로 확인할 수 있도록 구현했습니다.
+        Automated the repetitive server QC process—eliminating manual checks by letting the system handle everything from power control to BIOS config, 
+        OS installation, and real-time alerts.
+        Built a web dashboard to deploy tasks across multiple servers and visualize progress at a glance.
         `,
         video: '/videos/intro/qc-automation.mp4',
         link: 'https://x2i.dev/blog/how-i-made-work-5x-faster-with-automation/',
         metrics: [
-          { label: '처리량 증가 ↑', value: 260, suffix: '%', dir: 'up' },
-          { label: '검수 시간 단축 ↓', value: 70, suffix: '%', dir: 'down' },
-          { label: '오류율', value: 0, suffix: '%', dir: 'neutral' },
+          { label: 'Throughput ↑', value: 260, suffix: '%', dir: 'up' },
+          { label: 'Inspection Time ↓', value: 70, suffix: '%', dir: 'down' },
+          { label: 'Error Rate', value: 0, suffix: '%', dir: 'neutral' },
         ],
         methods: ['Ansible', 'Shell Scripting', 'Redfish/IPMI', 'iPXE', 'FastAPI', 'Python'],
       },
       'llm-inference': {
         title: 'LLM Inference Visualization',
         description: `
-          Tenstorrent NPU(N300S)와 NVIDIA A100 GPU 환경에서 LLM의 응답 속도와 리소스 사용 변화를 실시간으로 비교·시각화한 데모입니다.<br>
-        Llama-3 기반 모델을 사용해 인터페이스 상에서 문장이 출력되는 속도와 GPU의 사용률·전력 소모를 함께 표현해,
-        두 하드웨어 간의 차이를 직관적으로 확인할 수 있습니다.
+        Real-time comparison demo of LLM inference performance between Tenstorrent NPU (N300S) and NVIDIA A100 GPU. <br />
+        Using a Llama-3 based model, the interface visualizes token generation speed alongside GPU utilization and power 
+        consumption—making hardware differences instantly clear.
+
         `,
         video: '/videos/intro/npu-open-webui.mp4',
         link: '#',
@@ -614,10 +631,9 @@ useEffect(() => setMounted(true), []);
       'resnet-inference': {
         title: 'ResNet-50 Comparison',
         description: `
-          ResNet-50 기반 추론을 NPU(N300S)와 GPU(A30·A100·H100) 환경에서 동시에 실행해, 초당 처리 속도(FPS)와 전력 사용량(W)을 실시간으로 측정했습니다. <br>
-        캔버스를 통해 하드웨어별 처리 효율을 시각적으로 표현했으며,  
-        동일한 조건에서의 성능 차이를 직관적으로 비교할 수 있습니다.  
-        이를 통해 특정 AI 워크로드에서 NPU가 GPU 대비 더 높은 처리 효율과 전력 최적화를 달성할 수 있음을 보여줍니다.
+        Benchmarked ResNet-50 inference across NPU (N300S) and GPUs (A30, A100, H100), measuring FPS and power consumption in real time. <br />
+        Visualized hardware efficiency through canvas rendering, making performance differences instantly comparable under identical conditions.
+        Demonstrates how NPU achieves superior throughput efficiency and power optimization for specific AI workloads.
         `,
         video: '/videos/intro/npu-resnet50.mp4',
         link: '#',
@@ -698,7 +714,7 @@ useEffect(() => setMounted(true), []);
           </div>`;
       });
       html += '</div>'; 
-      html += '<div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>'; 
+      html += '<div class="snap-caption">* Demo snapshot values — may vary based on environment and configuration.</div>';
       impactBar.innerHTML = html;
       if (divider) divider.style.display = 'block';
       return;
@@ -780,9 +796,9 @@ useEffect(() => setMounted(true), []);
               <div className="project-content">
                 <h3 className="project-title">Server Quality Control Automation Dashboard</h3>
                 <p className="project-desc">
-                 <strong>연간 10,000대+</strong> 이상의 서버 품질검수 과정을 자동화한 웹 대시보드 입니다.<br />
-                                서버 전원 제어부터 OS설치, BIOS 설정값 변경, 모든 테스트 과정을 자동화했습니다.<br />
-                                자동화 시스템 도입 후 일일 처리량 <strong>260% 증가</strong>, 검수 시간 <strong>70% 단축</strong>, 오류율 <strong>0%</strong>를 달성했습니다.
+                 This web dashboard automates QC for <strong>10,000+ servers annually</strong>.<br />
+                It handles power control, OS installs, BIOS configuration, and all test steps automatically.<br />
+                Resulted in <strong>260% higher throughput</strong>, <strong>70% faster inspections</strong>, and <strong>0% errors</strong>.
                 </p>
                 <div className="project-tech">
                   <span className="tech-tag">FastAPI</span>
@@ -803,8 +819,9 @@ useEffect(() => setMounted(true), []);
               <div className="project-content">
                 <h3 className="project-title">LLM Inference Visualization</h3>
                 <p className="project-desc">
-                  LLM 모델중 하나인 Llama를 활용하여 <strong>Tenstorrent NPU(N300S)</strong> vs <strong>NVIDIA GPU(A100 80GB PCIE *2)</strong>의 추론 성능을 실시간으로 비교·시각화한 데모입니다.<br />
-                                Open WebUI 인터페이스를 통해 응답 속도 및 토큰 생성 속도 차이를 직관적으로 확인할 수 있도록 구현했습니다.                  
+                  This demo uses the Llama model to compare real-time inference performance between the <strong>Tenstorrent NPU (N300S)</strong>
+                  and the <strong>NVIDIA A100 80GB PCIe ×2 GPUs</strong>. It visualizes response and token generation speed differences 
+                  through an Open WebUI-based real-time interface.
                 </p>
                 <div className="project-tech">
                   <span className="tech-tag">Llama</span>
@@ -824,8 +841,9 @@ useEffect(() => setMounted(true), []);
               <div className="project-content">
                 <h3 className="project-title">ResNet-50 Comparison</h3>
                 <p className="project-desc">
-                  이미지 분류 모델 ResNet-50을 기반으로 <strong>Tenstorrent NPU(N300S)</strong> vs <strong>NVIDIA GPU(A30,A100,H100)</strong>
-                                의 추론 성능을 실시간으로 비교·시각화한 데모입니다. <strong>초당 처리 프레임(FPS),전력효율의 차이를 바로 체감가능 하도록 구현했습니다.</strong><br />         
+                  This demo compares real-time inference performance of the ResNet-50 model between the <strong>Tenstorrent NPU (N300S)</strong>
+                  and <strong>NVIDIA GPUs (A30, A100, H100)</strong>. It visualizes differences in FPS and power efficiency
+                  to make hardware performance gaps immediately noticeable.
                 </p>
                 <div className="project-tech">
                   <span className="tech-tag">ResNet-50</span>

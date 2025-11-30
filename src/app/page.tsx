@@ -134,7 +134,7 @@ function TvSection() {
             <span>]</span>
           </div>
           <h3 className="section-title">My Records</h3>
-          <p className="about-desc">
+          <p className="about-desc"> 
             This is a space where I write down what I learn,  <br /> what I think, and personal thoughts, 
             questions, and everyday moments. If it helps someone later,  <br />that would be great.    I plan to keep adding to it whenever I get the time.            
           </p>

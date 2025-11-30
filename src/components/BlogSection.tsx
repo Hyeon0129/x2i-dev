@@ -29,7 +29,7 @@ export default function BlogSection() {
     fetch('/api/posts')
       .then(res => res.json())
       .then(data => {
-  // excerpt를 40 단어로 강제 재생성
+  // excerpt max : 40 
   const override = data.map((post: Post) => ({
     ...post,
     excerpt: recreateExcerpt(post.content || post.excerpt || "", 26),

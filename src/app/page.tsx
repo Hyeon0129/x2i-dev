@@ -137,7 +137,7 @@ function TvSection() {
             <p className="about-desc">
               This is a space where I write down what I learn and think,
               along with personal thoughts, questions, and everyday moments.
-              If it helps someone later, that would be great.
+              If it helps someone later, <br /> that would be great.
               I plan to keep adding to it whenever I get the time.
             </p>
                    <a href="/cv/cv_kth.pdf" target="_blank" rel="noopener noreferrer" className="tv-cta">

@@ -93,15 +93,18 @@ body {
 .nav a{ color:#888888; text-decoration:none; font-size:0.88rem; font-weight:300;  }
 .nav a:hover{ color:#ffffff; }
 .nav-right{ margin-left:auto; display:flex; align-items:center; }
+
+
 .globe {
   width: 25px;
   height: 25px;
-  background: url("https://x2i.dev/wp-content/uploads/2025/10/globe.svg") no-repeat center / contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2L15 22L11 13L2 9L22 2Z'/%3E%3C/svg%3E") no-repeat center / contain;
   border: none;
   cursor: pointer;
   filter: brightness(0.9);
   transition: filter .25s ease;
 }
+
 .globe:hover {
   filter: brightness(1.1);
 }
@@ -113,7 +116,8 @@ body {
 }
 .globe:hover img {
   opacity:1;
-}
+} 
+
 
 /* ===== Hero ===== */
 .hero{ position:relative; min-height:100svh; display:flex; align-items:center; overflow:hidden; }

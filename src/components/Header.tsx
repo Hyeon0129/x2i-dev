@@ -23,10 +23,10 @@ export default function Header() {
         </nav>
 
         <div className="nav-right">
-  <button className="globe" aria-label="language">
-  
-</button>
-</div>
+        <button className="globe" aria-label="language">
+        
+      </button>
+      </div>
       </div>
     </header>
   )

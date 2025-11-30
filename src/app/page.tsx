@@ -15,14 +15,14 @@ import HeroParticles from '../components/HeroParticles'
 const HERO_IMG = '/images/intro.png';
 const TV_IMG   = '/images/abm.png';
 const BlogSection = dynamic(() => import("../components/BlogSection"), {
-  ssr: true,  // ← 이 옵션이 핵심! 서버에서만 렌더링되어 fs 에러 피함
+  ssr: true,  
 });
 
 
 
 export default function HomePage() {
 
-  // ✅ fade-in 스크롤 애니메이션 추가
+  
   useEffect(() => {
     const elements = document.querySelectorAll('.fade-in');
     const observer = new IntersectionObserver(
@@ -40,7 +40,7 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, []);
 
-  // ✅ 기존 return 그대로 유지
+  
   return (
     <>
       <Hero />
@@ -68,7 +68,7 @@ export default function HomePage() {
 function Hero() {
   return (
     <section className="hero">
-      {/* 파티클: 섹션 내부에만 렌더(=divider 위로만) */}
+      { }
       <HeroParticles />
 
       <div className="container hero-grid">
@@ -136,11 +136,10 @@ function TvSection() {
           <h3 className="section-title">My Records</h3>
           <p className="about-desc">
             This is a space where I write down what I learn,  <br /> what I think, and personal thoughts, 
-            questions, and everyday moments. If it helps someone later,  <br />that would be great.    I plan to keep adding to it whenever I get the time.
-            
+            questions, and everyday moments. If it helps someone later,  <br />that would be great.    I plan to keep adding to it whenever I get the time.            
           </p>
-                   <a href="/about" className="tv-cta">
-                    <span>CV Explore</span>
+                   <a href="/cv/cv_kth.pdf" target="_blank" rel="noopener noreferrer" className="tv-cta">
+                    <span>View CV</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -351,7 +350,7 @@ function HistorySection() {
 
         </div>
 
-        {/* ✅ 타임라인 추가 */}
+        {}
         <div className="timeline-wrap">
           <div className="timeline-inner">
             <div className="vertical-line" style={{ left: '5%',  top: 'calc(50% - 33px)' }}></div>
@@ -366,7 +365,7 @@ function HistorySection() {
             <div className="vertical-line" style={{ left: '68%', top: 'calc(50% - 33px)' }}></div>
         </div>
 
-          {/* 3개월 간격 라벨들 */}
+          {}
           <div className="quarter-label" style={{left: '5%'}}><span>JUL 2023</span></div>
           <div className="quarter-label" style={{left: '12%'}}><span>OCT 2023</span></div>
           <div className="quarter-label" style={{left: '19%'}}><span>JAN 2024</span></div>
@@ -386,7 +385,7 @@ function HistorySection() {
             <div className="detail-desc" id="detailDesc"></div>
           </div>
 
-          {/* 이벤트 점들 */}
+          {/*  */}
           <div className="event-dot" style={{left: '8%'}} 
             data-date="09 APR" 
             data-title="New Beginning" 
@@ -479,7 +478,6 @@ function ProjectsSection() {
   interface SnapshotPoint {
   value: number;
   unit: string;
-  /** 0~100 (%). 지정하면 이 값 그대로 사용, 없으면 value 기준으로 자동 계산 */
   percent?: number;
 }
   interface SnapshotRow {
@@ -572,7 +570,7 @@ useEffect(() => setMounted(true), []);
   interface SnapshotPoint {
   value: number;
   unit: string;
-  percent?: number; // ✅ ← 이 한 줄 추가!
+  percent?: number; 
 }
   interface SnapshotRow { label: string; npu: SnapshotPoint; gpu: SnapshotPoint; }
   interface ProjectEntry {
@@ -651,15 +649,15 @@ useEffect(() => setMounted(true), []);
   const renderImpactOrHighlights = (data: ProjectEntry) => {
   if (!impactBar) return;
   impactBar.innerHTML = '';
-  impactBar.removeAttribute('style'); // ✅ 기존 grid/flex 스타일 초기화
+  impactBar.removeAttribute('style'); 
   if (divider) divider.style.display = 'block';
 
     if (data.metrics && data.metrics.length) {
       const cols = Math.min(3, data.metrics.length);
       impactBar.style.display = 'grid';
       impactBar.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-      impactBar.style.columnGap = '15px'; // ✅ 가로 간격 확실히 지정
-      impactBar.style.justifyContent = 'space-between'; // ✅ 양쪽 여백 유지
+      impactBar.style.columnGap = '15px'; 
+      impactBar.style.justifyContent = 'space-between'; 
 
 
       impactBar.innerHTML = data.metrics.map(m => `
@@ -674,7 +672,7 @@ useEffect(() => setMounted(true), []);
     }
 
     if (data.snapshots && data.snapshots.length) {
-     // ✅ 스냅샷: 원본 구조 + caption 순서 수정
+
       impactBar.classList.remove('impact-bar');
       impactBar.style.display = 'block';
 
@@ -699,8 +697,8 @@ useEffect(() => setMounted(true), []);
             </div>
           </div>`;
       });
-      html += '</div>'; // ✅ snapshots 닫기 먼저
-      html += '<div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>'; // ✅ 그다음 caption 추가
+      html += '</div>'; 
+      html += '<div class="snap-caption">* 데모 스냅샷 값 — 환경/설정에 따라 달라질 수 있습니다.</div>'; 
       impactBar.innerHTML = html;
       if (divider) divider.style.display = 'block';
       return;
@@ -732,7 +730,7 @@ useEffect(() => setMounted(true), []);
     if (modalMedia) modalMedia.innerHTML = '';
   };
 
-  // 카드 클릭
+  
   cards.forEach((card, idx) => {
     card.addEventListener('click', () => {
       const idAttr = card.getAttribute('data-project') as ProjectId | null;
@@ -747,7 +745,7 @@ useEffect(() => setMounted(true), []);
   const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') closeModal(); };
   document.addEventListener('keydown', onEsc);
 
-  // ✅ cleanup
+  
   return () => {
     window.removeEventListener('resize', onResize);
     document.removeEventListener('keydown', onEsc);
@@ -759,7 +757,7 @@ useEffect(() => setMounted(true), []);
   return (
     <section id="projects" className="section fade-in">
       <div className="container">
-        {/* 헤더: 좌/우 그리드(좌 = mono-tag+title, 우 = 설명) */}
+        {/*  */}
         <div className="timeline-header">
           <div>
             <div className="mono-tag"><span>[</span><span>PROJECTS</span><span>]</span></div>

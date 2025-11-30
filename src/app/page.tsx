@@ -391,7 +391,7 @@ function HistorySection() {
           <div className="event-dot" style={{ left: '5%' }}
             data-date="30 NOV 1998"
             data-title="Birth"
-            data-desc="Born in South Korea — the beginning of the timeline.">
+            data-desc="Born in South Korea.">
           </div>
 
           <div className="event-dot" style={{ left: '13%' }}
@@ -402,20 +402,20 @@ function HistorySection() {
 
           <div className="event-dot" style={{ left: '16%' }}
             data-date="MAY 2019"
-            data-title="Japan Study"
-            data-desc="Moved to Japan for language and technical studies.">
+            data-title="Moved to Japan"
+            data-desc="Relocated to Japan for studies, looking for a new direction in life.">
           </div>
 
           <div className="event-dot" style={{ left: '18%' }}
             data-date="28 JAN 2020"
             data-title="Becoming a Father"
-            data-desc="My son was born — a life-changing moment.">
+            data-desc="My son was born—everything changed.">
           </div>
 
           <div className="event-dot" style={{ left: '23%' }}
             data-date="17 MAR 2021"
-            data-title="Return to Korea & Joined Eslim"
-            data-desc="Returned to Korea and began my first career in server manufacturing.">
+            data-title="Returned to Korea"
+            data-desc="Came back to Korea and started my first job at Eslim Korea.">
           </div>
 
           <div className="event-dot" style={{ left: '29%' }}
@@ -427,7 +427,7 @@ function HistorySection() {
           <div className="event-dot" style={{ left: '31%' }}
             data-date="01 JUN 2022"
             data-title="QC Engineering"
-            data-desc="Transitioned to server quality control (QC).">
+            data-desc="Began working in server quality control (QC).">
           </div>
 
           <div className="event-dot" style={{ left: '36%' }}
@@ -451,25 +451,25 @@ function HistorySection() {
           <div className="event-dot" style={{ left: '53%' }}
             data-date="10 NOV 2025"
             data-title="Left Logistics Job"
-            data-desc="Quit the logistics job.">
+            data-desc="Left the logistics center.">
           </div>
 
           <div className="event-dot" style={{ left: '55%' }}
             data-date="17 NOV 2025"
             data-title="Joined SecuLayer"
-            data-desc="Joined SecuLayer as a server engineer.">
+            data-desc="Moved into a Security Solution Engineer role at SecuLayer.">
           </div>
 
           <div className="event-dot" style={{ left: '57%' }}
             data-date="01 DEC 2025"
             data-title="Left SecuLayer"
-            data-desc="Left shortly after joining.">
+            data-desc="Realized it wasn't the right fit and left shortly after.">
           </div>
 
           <div className="event-dot" style={{ left: '59%' }}
             data-date="03 DEC 2025"
             data-title="Today"
-            data-desc="Taking time to reset and redefine my path — wandering, but moving forward.">
+            data-desc="Taking time to figure things out and find my next step.">
           </div>
 
           

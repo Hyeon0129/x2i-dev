@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
 
@@ -12,7 +13,6 @@ interface SearchModalProps {
 
 /**
  * 검색에서 사용할 포스트 타입
- * /api/search 응답 구조에 맞춰서 필요한 필드만 정의
  */
 type SearchPost = {
   slug: string;
@@ -39,7 +39,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
           new Fuse(data, {
             keys: ['title', 'excerpt'],
             threshold: 0.3,
-          }),
+          })
         );
       })
       .catch((err) => {
@@ -85,11 +85,11 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
   return (
     <div className="search-overlay" onClick={onClose}>
       <div className="search-modal" onClick={(e) => e.stopPropagation()}>
-        {/* 검색 인풋 */}
+        {/* 상단 검색 인풋 (테두리 없는 형태) */}
         <input
           autoFocus
           type="text"
-          placeholder="Search blog posts…"
+          placeholder="Search documentation..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
@@ -111,25 +111,28 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                   <div className="search-group-label">{category}</div>
 
                   {posts.map((post) => {
-  const categoryPath = (post.category || 'uncategorized').toLowerCase();
-  const href = `/blog/${categoryPath}/${post.slug}`;
+                    const categoryPath = (
+                      post.category || 'uncategorized'
+                    ).toLowerCase();
+                    const href = `/blog/${categoryPath}/${post.slug}`;
 
-  return (
-    <Link
-      key={post.slug}
-      href={href}
-      className={
-        'search-result-item' +
-        (previewPost?.slug === post.slug ? ' active' : '')
-      }
-      onClick={onClose}
-      onMouseEnter={() => setActivePost(post)}
-    >
-      {/* 좌측 리스트: 제목만 표시 */}
-      <div className="search-result-title">{post.title}</div>
-    </Link>
-  );
-})}
+                    return (
+                      <Link
+                        key={post.slug}
+                        href={href}
+                        className={
+                          'search-result-item' +
+                          (previewPost?.slug === post.slug ? ' active' : '')
+                        }
+                        onClick={onClose}
+                        onMouseEnter={() => setActivePost(post)}
+                      >
+                        <div className="search-result-title">
+                          {post.title}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               ))
             )}
@@ -147,22 +150,39 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
               </div>
             ) : (
               <>
-
                 {(previewPost.dateFormatted || previewPost.date) && (
                   <div className="search-preview-date">
                     {previewPost.dateFormatted || previewPost.date}
                   </div>
                 )}
-              
-                <h2 className="search-preview-title">{previewPost.title}</h2>
-              
+
+                <h2 className="search-preview-title">
+                  {previewPost.title}
+                </h2>
+
                 {previewPost.excerpt && (
                   <p className="search-preview-excerpt">
-                    {previewPost.excerpt}
+                    {previewPost.excerpt.length > 50
+                      ? previewPost.excerpt.slice(0, 50) + '…'
+                      : previewPost.excerpt}
                   </p>
                 )}
               </>
             )}
+          </div>
+        </div>
+
+        {/* 하단 바: 좌측 로고만 */}
+        <div className="search-footer">
+          <div className="search-footer-left">
+            <Image
+              src="/images/logo.png"
+              alt="x2i.dev"
+              width={25}
+              height={25}
+              className="search-footer-logo"
+            />
+            
           </div>
         </div>
       </div>

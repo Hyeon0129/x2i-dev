@@ -25,7 +25,7 @@ export default function Header() {
             <Link href="/#records" scroll={true}>ABOUT</Link>
             <Link href="/#projects" scroll={true}>PROJECT</Link>
             <Link href="/blog">BLOG</Link>
-            <Link href="/docs">DOCS</Link>
+            <Link href="https://docs.pyron.dev" target="_blank">DOCS</Link>
           </nav>
 
           <div className="nav-right">

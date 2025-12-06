@@ -54,7 +54,7 @@ export default function Footer() {
           
           <div className={styles.social}>
             <a 
-              href="https://github.com/yourusername" 
+              href="https://github.com/Hyeon0129" 
               target="_blank" 
               rel="noopener noreferrer" 
               className={styles.socialLink}
@@ -78,7 +78,7 @@ export default function Footer() {
               </svg>
             </a>
             <a 
-              href="mailto:contact@x2i.dev" 
+              href="mailto:zhtmah6795@gmail.com" 
               className={styles.socialLink}
               aria-label="Email"
             >

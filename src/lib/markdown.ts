@@ -4,7 +4,6 @@ import MarkdownIt from "markdown-it";
 import container from "markdown-it-container";
 import Prism from "prismjs";
 import markdownItAnchor from "markdown-it-anchor";
-
 import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 

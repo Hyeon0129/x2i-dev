@@ -5,11 +5,9 @@ import container from "markdown-it-container";
 import Prism from "prismjs";
 import markdownItAnchor from "markdown-it-anchor";
 
-// 기존 CSS import 유지
 import "prismjs/themes/prism-tomorrow.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 
-// 필요한 언어 import (기존 유지)
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
@@ -19,7 +17,7 @@ import "prismjs/components/prism-python";
 import "prismjs/components/prism-json";
 import "prismjs/components/prism-yaml";
 
-// 플러그인 import (기존 유지)
+
 import "prismjs/plugins/show-language/prism-show-language";
 import "prismjs/plugins/toolbar/prism-toolbar";
 import "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard";
@@ -49,7 +47,7 @@ type Token = {
   info: string;
 };
 
-// Admonition 컨테이너 추가 (note, info, tip, 'danger', warning)
+// Admonition (note, info, tip, 'danger', warning)
 const admonitionTypes = ['note', 'imfortant', 'tip', 'danger', 'warning'];
 
 admonitionTypes.forEach((type) => {

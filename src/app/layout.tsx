@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
 
-        <Footer /> {/* ← 모든 페이지에서 공통으로 표시됨 */}
+        <Footer /> {/*   */}
       </body>
     </html>
   );

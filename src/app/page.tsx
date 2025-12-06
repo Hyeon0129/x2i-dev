@@ -778,7 +778,7 @@ useEffect(() => setMounted(true), []);
             <h3 className="section-title">Featured Work</h3>
           </div>
           <p className="timeline-desc">
-            Built from curiosity and necessity small experiments that eventually became real projects.
+            Built from curiosity and necessity small experiments that eventually became real projects. 
           </p>
         </div>
 

@@ -16,16 +16,14 @@ export async function GET() {
       .map((file) => {
         const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
         const { data, content } = matter(raw);
-
-        // 🔧 frontmatter 타입 명시
         const meta = data as PostFrontMatter;
 
         const post = {
           ...meta,
           slug: meta.slug ?? file.replace(/\.mdx$/, ''),
           dateFormatted: formatDate(meta.date),
-          excerpt: createExcerpt(content, 26), // 기본 26 단어
-          content, // 🔥 전체 본문 추가
+          excerpt: createExcerpt(content, 26), 
+          content, 
         };
 
         return post;
@@ -36,7 +34,7 @@ export async function GET() {
         return bTime - aTime;
       });
 
-    // 최신 3개만
+  
     return NextResponse.json(posts.slice(0, 3));
   } catch (error) {
     console.error(error);

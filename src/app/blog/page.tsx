@@ -16,7 +16,7 @@ export default function BlogPage() {
     <>
     <div className="container" style={{ paddingTop: "120px" }}>
 
-      {/* 🔥 Blog Header Section */}
+      { }
       <div className={styles.blogHeader}>
         <h1>Blog</h1>
         <p>Read the latest insights from our journey.</p>
@@ -30,10 +30,10 @@ export default function BlogPage() {
         </div>
       </div>
 
-      {/*  리스트와 헤더 사이 여백 */}
+      { }
       <div style={{ height: "125px" }} />
 
-      {/*  post 카드 리스트 */}
+      { }
       <div className={styles.blogList}>
         <div className={styles.timelineLine}></div>
 
@@ -41,13 +41,13 @@ export default function BlogPage() {
           <div key={post.slug} className={styles.postItem}>
 
             <div className={styles.postGrid}>
-              {/* LEFT AREA */}
+              {/*  */}
               <div className={styles.left}>
                 <div className={styles.dot}></div>
 
                 <p className={styles.date}>{post.dateFormatted}</p>
 
-                {/* 상세 페이지 링크 변경됨! */}
+                {/*  */}
                 <Link
                   href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}
                   className={styles.title}

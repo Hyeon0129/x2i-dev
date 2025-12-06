@@ -13,9 +13,9 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
-      {/* 상단 4컬럼 */}
+      {}
       <div className={styles.inner}>
-        {/* LEFT: 로고 + 카피 */}
+        {/*  */}
         <div className={styles.colLeft}>
           <Image
             src={LOGO}
@@ -91,10 +91,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* 상단 그리드 아래 얇은 라인 */}
+      { }
       <div className={styles.bottomLine} />
 
-      {/* 맨 아래 © 라인 */}
+      { }
 
     </footer>
   );

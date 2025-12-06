@@ -38,7 +38,7 @@ export async function GET() {
         const excerpt =
           meta.excerpt && meta.excerpt.length > 0
             ? meta.excerpt
-            : createExcerpt(content, 26);
+            : createExcerpt(content, 80);
 
         const dateFormatted =
           meta.dateFormatted ||

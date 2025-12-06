@@ -32,7 +32,7 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
               </Link>
             </div>
 
-            {/* RIGHT - 썸네일 */}
+            {/* RIGHT - thumbnail */}
             <div className={styles.right}>
               <Link href={`/blog/${post.category}/${post.slug}`}>
                 <Image

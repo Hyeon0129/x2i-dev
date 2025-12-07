@@ -75,8 +75,8 @@ export default function BlogPage() {
                   <Image
                     src={post.thumbnail!}
                     alt={post.title}
-                    width={800}
-                    height={500}
+                    width={3840}
+                    height={2160}
                     className={styles.thumb}
                   />
                 </Link>

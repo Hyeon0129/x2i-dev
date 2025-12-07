@@ -88,8 +88,8 @@ export default function BlogSection() {
                       <Image 
                         src={post.thumbnail || 'https://x2i.dev/wp-content/uploads/2025/03/intro-1.png'} 
                         alt={post.title}
-                        width={528}
-                        height={330}
+                        width={3840}
+                        height={2160}
                         className="blog-image"
                         unoptimized
                       />

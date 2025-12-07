@@ -79,8 +79,8 @@ export default async function BlogPostPage({
             <Image
               src={fm.thumbnail}
               alt={fm.title}
-              width={1080}
-              height={600}
+              width={3840}
+              height={2160}
               className={styles.thumb}
               priority
             />

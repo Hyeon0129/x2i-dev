@@ -454,17 +454,7 @@ function HistorySection() {
             data-desc="Left the logistics center.">
           </div>
 
-          <div className="event-dot" style={{ left: '53%' }}
-            data-date="17 NOV"
-            data-title="Joined SecuLayer"
-            data-desc="Moved into a Security Solution Engineer role at SecuLayer.">
-          </div>
-
-          <div className="event-dot" style={{ left: '55%' }}
-            data-date="01 DEC"
-            data-title="Left SecuLayer"
-            data-desc="Realized it wasn't the right fit and left shortly after.">
-          </div>
+      
 
           <div className="event-dot" style={{ left: '57%' }}
             data-date="03 DEC"

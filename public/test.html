@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>복리 계산기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text: #1a1a18;
+    --muted: #888780;
+    --accent: #185FA5;
+    --accent-light: #e6f1fb;
+    --accent-mid: #B5D4F4;
+    --green: #3B6D11;
+    --green-light: #eaf3de;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Noto Sans KR', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 20px 32px;
+    min-height: 400px;
+  }
+
+  .header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 3px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .controls { grid-template-columns: 1fr; }
+  }
+
+  .ctrl-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .ctrl-card label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ctrl-card .val {
+    font-family: var(--mono);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .ctrl-card input[type=range] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e0e0dc;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .ctrl-card input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--accent);
+    cursor: pointer;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .stats { grid-template-columns: 1fr; }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .stat-card .slbl {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+
+  .stat-card .snum {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .stat-card.accent-card .snum { color: var(--accent); }
+
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 16px 12px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 220px;
+  }
+
+  .rule72 {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--green-light);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #5F5E5A;
+    line-height: 1.6;
+  }
+
+  .rule72 strong {
+    color: var(--green);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>복리 성장 계산기</h2>
+  <span class="tag">Compound Interest</span>
+</div>
+
+<div class="controls">
+  <div class="ctrl-card">
+    <label>원금</label>
+    <span class="val" id="v-principal">₩1,000만</span>
+    <input type="range" id="principal" min="100" max="10000" step="100" value="1000">
+  </div>
+  <div class="ctrl-card">
+    <label>연 수익률</label>
+    <span class="val" id="v-rate">7.0%</span>
+    <input type="range" id="rate" min="1" max="20" step="0.5" value="7">
+  </div>
+  <div class="ctrl-card">
+    <label>투자 기간</label>
+    <span class="val" id="v-years">20년</span>
+    <input type="range" id="years" min="1" max="40" step="1" value="20">
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="slbl">원금</div>
+    <div class="snum" id="s-p">₩1,000만</div>
+  </div>
+  <div class="stat-card accent-card">
+    <div class="slbl">이자 수익</div>
+    <div class="snum" id="s-i">₩2,870만</div>
+  </div>
+  <div class="stat-card">
+    <div class="slbl">최종 금액</div>
+    <div class="snum" id="s-t">₩3,870만</div>
+  </div>
+</div>
+
+<div class="chart-wrap">
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#B5D4F4;"></span>원금</span>
+    <span><span class="legend-dot" style="background:#185FA5;"></span>복리 수익</span>
+    <span><span class="legend-dot" style="background:#D3D1C7; width:18px; height:3px; border-radius:2px;"></span>단순 이자 (비교)</span>
+  </div>
+  <div class="chart-canvas-wrap">
+    <canvas id="chart"></canvas>
+  </div>
+  <div class="rule72">
+    <strong>72의 법칙</strong> — 72 ÷ 수익률 = 원금이 2배 되는 기간 &nbsp;→&nbsp;
+    <strong id="r72">약 10.3년</strong>
+  </div>
+</div>
+
+<script>
+  let chartInst = null;
+
+  const fmtWon = (n) => {
+    const v = Math.round(n);
+    if (v >= 100000000) return '₩' + (v / 100000000).toFixed(1) + '억';
+    if (v >= 10000) return '₩' + Math.round(v / 10000) + '만';
+    return '₩' + v.toLocaleString('ko-KR');
+  };
+
+  function update() {
+    const p = +document.getElementById('principal').value * 10000;
+    const r = +document.getElementById('rate').value / 100;
+    const y = +document.getElementById('years').value;
+
+    document.getElementById('v-principal').textContent = fmtWon(p);
+    document.getElementById('v-rate').textContent = (+document.getElementById('rate').value).toFixed(1) + '%';
+    document.getElementById('v-years').textContent = y + '년';
+
+    const labels = [], compound = [], interestOnly = [], simple = [];
+    for (let i = 0; i <= y; i++) {
+      labels.push(i === 0 ? '0' : i + '년');
+      const cv = Math.round(p * Math.pow(1 + r, i));
+      compound.push(cv);
+      interestOnly.push(Math.max(0, cv - p));
+      simple.push(Math.round(p * (1 + r * i)));
+    }
+
+    const final = compound[y];
+    document.getElementById('s-p').textContent = fmtWon(p);
+    document.getElementById('s-i').textContent = fmtWon(final - p);
+    document.getElementById('s-t').textContent = fmtWon(final);
+    document.getElementById('r72').textContent = '약 ' + (72 / (+document.getElementById('rate').value)).toFixed(1) + '년';
+
+    const ctx = document.getElementById('chart').getContext('2d');
+    if (chartInst) chartInst.destroy();
+    chartInst = new Chart(ctx, {
+      data: {
+        labels,
+        datasets: [
+          {
+            type: 'bar',
+            label: '원금',
+            data: Array(y + 1).fill(p),
+            backgroundColor: '#B5D4F4',
+            stack: 'c',
+            borderWidth: 0,
+            order: 2,
+          },
+          {
+            type: 'bar',
+            label: '복리 수익',
+            data: interestOnly,
+            backgroundColor: '#185FA5',
+            stack: 'c',
+            borderWidth: 0,
+            order: 2,
+          },
+          {
+            type: 'line',
+            label: '단순 이자',
+            data: simple,
+            borderColor: '#C8C7BE',
+            backgroundColor: 'transparent',
+            borderDash: [5, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            order: 1,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (item) => ' ' + item.dataset.label + ': ' + fmtWon(item.raw)
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            grid: { display: false },
+            ticks: { autoSkip: true, maxTicksLimit: 9, font: { size: 10, family: 'JetBrains Mono, monospace' }, color: '#aaa' }
+          },
+          y: {
+            stacked: true,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: { font: { size: 10, family: 'JetBrains Mono, monospace' }, color: '#aaa', callback: (v) => fmtWon(v) }
+          }
+        }
+      }
+    });
+  }
+
+  ['principal', 'rate', 'years'].forEach(id => {
+    document.getElementById(id).addEventListener('input', update);
+  });
+  update();
+</script>
+</body>
+</html>

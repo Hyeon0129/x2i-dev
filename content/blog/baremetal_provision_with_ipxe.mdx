@@ -4,8 +4,8 @@ date: "2026-03-22"
 category: "Guides"
 slug: "baremetal_provision_with_ipxe"
 thumbnail: "/images/thumbnails/ipxe.png"
-description: "A detailed review of the 2026 Pearl Abyss System Engineer interview process. Covers document screening, the written test experience, technical interview questions (CS, Linux), and personal reflections on bridging the gap between practical experience and theoretical fundamentals."
-keywords: [Pearl Abyss, System Engineer, Interview Review, DevOps, Infrastructure, CS Knowledge, Linux Test, Career Growth, Recruitment]
+description: "A complete guide to setting up an iPXE server from scratch — covering DHCP/TFTP configuration, HTTP file serving, Samba for Windows installs, and automated OS provisioning with Kickstart and Preseed."
+keywords: [iPXE, PXE Boot, Bare Metal Provisioning, dnsmasq, DHCP, TFTP, Kickstart, Preseed, CentOS, Ubuntu, Network Boot, Linux, Samba]
 author: "KIM TAE HYEON"
 ---
 
@@ -518,10 +518,9 @@ d-i finish-install/reboot_in_progress note
 iPXE is one of those tools that looks simple on the surface but opens up a lot once you get it running — you can boot diagnostics tools, memory testers, custom live environments, or chain to completely different provisioning systems, all from the same server.
 If something isn't working, the most common culprits are firewall rules, SELinux, and incorrect file paths in the dnsmasq configuration — those three cover the majority of issues.
 
----
 
 
-
+<br />
 
 ### References
 

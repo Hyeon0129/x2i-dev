@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 660" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#000000"/>
+
+  <style>
+    .step-num { 
+      fill: #666666; 
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; 
+      font-size: 12px; 
+      font-weight: 600; 
+      letter-spacing: 2px; 
+    }
+    .title { 
+      fill: #ffffff; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      font-size: 22px; 
+      font-weight: 700; 
+      letter-spacing: -0.5px; 
+    }
+    .desc { 
+      fill: #888888; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      font-size: 15px; 
+      line-height: 1.5;
+    }
+    .line { 
+      stroke: #222222; 
+      stroke-width: 1; 
+    }
+    .dot { 
+      fill: #ea580c; /* pyron.dev 테마 오렌지 포인트 */
+    }
+    .dot-glow { 
+      fill: none; 
+      stroke: #ea580c; 
+      stroke-width: 1; 
+      stroke-opacity: 0.3; 
+    }
+    .code-bg {
+      fill: #0a0a0a;
+      stroke: #1a1a1a;
+      stroke-width: 1;
+      rx: 6px;
+    }
+  </style>
+
+  <line x1="60" y1="40" x2="60" y2="620" class="line"/>
+
+  <g transform="translate(0, 80)">
+    <circle cx="60" cy="0" r="12" class="dot-glow"/>
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 01</text>
+    <text x="90" y="32" class="title">Firmware Boot</text>
+    <text x="90" y="56" class="desc">Server firmware (BIOS/UEFI) initiates network boot.</text>
+  </g>
+
+  <g transform="translate(0, 170)">
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 02</text>
+    <text x="90" y="32" class="title">DHCP Discovery</text>
+    <text x="90" y="56" class="desc">DHCP server provides IP address and boot file location.</text>
+  </g>
+
+  <g transform="translate(0, 260)">
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 03</text>
+    <text x="90" y="32" class="title">iPXE Execution</text>
+    <text x="90" y="56" class="desc">iPXE bootloader downloads and runs on the client server.</text>
+  </g>
+
+  <g transform="translate(0, 350)">
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 04</text>
+    <text x="90" y="32" class="title">Menu Fetch</text>
+    <text x="90" y="56" class="desc">iPXE loads the boot menu configuration over HTTP.</text>
+  </g>
+
+  <g transform="translate(0, 440)">
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 05</text>
+    <text x="90" y="32" class="title">Kernel &amp; Initrd Load</text>
+    <text x="90" y="56" class="desc">OS kernel and initrd are fetched over the network.</text>
+  </g>
+
+  <g transform="translate(0, 530)">
+    <circle cx="60" cy="0" r="12" class="dot-glow"/>
+    <circle cx="60" cy="0" r="3.5" class="dot"/>
+    <text x="90" y="4" class="step-num" dominant-baseline="middle">STEP 06</text>
+    <text x="90" y="32" class="title">OS Provisioning</text>
+    <text x="90" y="56" class="desc">Installation begins (manual or automated via Kickstart/Preseed).</text>
+  </g>
+</svg>

@@ -22,12 +22,16 @@ export async function generateMetadata({
   }
 
   const fm = post.frontMatter;
+  const category = (fm.category || 'uncategorized').toLowerCase();
 
   return {
     title: `${fm.title} | Pyron`,
     description: fm.description || fm.excerpt || "",
     keywords: fm.keywords || [],
     authors: fm.author ? [{ name: fm.author }] : undefined,
+    alternates: {
+      canonical: `/blog/${category}/${slug}`,
+    },
     
     
     openGraph: {

@@ -1,11 +1,19 @@
 //src/app/blog/[category]/[slug]/page.tsx
-import { getPostBySlug } from "@/lib/posts";
+import { getPostBySlug, getAllPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import styles from "./blogDetail.module.css";
 import Image from "next/image";
 import { formatDate } from "@/lib/posts";
 import type { Metadata } from "next";
+
+export async function generateStaticParams() {
+  const posts = getAllPosts();
+  return posts.map((post) => ({
+    category: (post.category || "uncategorized").toLowerCase(),
+    slug: post.slug,
+  }));
+}
 
 export async function generateMetadata({
   params,

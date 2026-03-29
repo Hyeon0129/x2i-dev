@@ -14,6 +14,14 @@ export const metadata = {
   title: "Blog – Pyron",
 };
 
+export async function generateStaticParams() {
+  const posts = getAllPosts();
+  const categories = Array.from(
+    new Set(posts.map((post) => (post.category || "uncategorized").toLowerCase()))
+  );
+  return categories.map((category) => ({ category }));
+}
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   
   const { category } = await params;

@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pyron.dev"),
   title: "Welcome | Pyron",
   description: "Personal portfolio and engineering blog",
-  alternates: {
-    canonical: "/",
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

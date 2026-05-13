@@ -1,0 +1,1060 @@
+---
+title: "Baremetal Provisioning with Ironic"
+date: "2026-05-13"
+category: "Guides"
+slug: "openstack_ironic"
+thumbnail: "/images/thumbnails/openstack_ironic.png"
+description: "A detailed review of the 2026 Pearl Abyss System Engineer interview process. Covers document screening, the written test experience, technical interview questions (CS, Linux), and personal reflections on bridging the gap between practical experience and theoretical fundamentals."
+keywords: [Pearl Abyss, System Engineer, Interview Review, DevOps, Infrastructure, CS Knowledge, Linux Test, Career Growth, Recruitment]
+author: "KIM TAE HYEON"
+---
+
+# Bifrost (OpenStack Ironic 경량 솔루션) 운영 가이드
+
+> **OS 환경**: Ubuntu 22.04.5 LTS (CLI)  
+> **최종 수정**: 2026-04
+
+
+
+## 목차
+
+1. [개요](#1-개요)
+2. [시스템 업데이트 및 패키지 설치](#2-시스템-업데이트-및-패키지-설치)
+3. [Bifrost 다운로드](#3-bifrost-다운로드)
+4. [Bifrost 설치](#4-bifrost-설치)
+5. [설치 확인 및 초기 설정](#5-설치-확인-및-초기-설정)
+6. [노드 드라이버 설정](#6-노드-드라이버-설정)
+7. [Nginx httpboot 설정](#7-nginx-httpboot-설정)
+8. [Custom IPA initramfs 생성](#8-custom-ipa-initramfs-생성)
+9. [배포 이미지 빌드](#9-배포-이미지-빌드)
+10. [노드 배포](#10-노드-배포)
+11. [SW RAID 구성 및 해제](#11-sw-raid-구성-및-해제)
+12. [노드 배포 해제](#12-노드-배포-해제)
+13. [부록](#13-부록)
+
+---
+
+## 1. 개요
+
+**Bifrost**는 OpenStack의 베어메탈 프로비저닝 서비스인 **Ironic**을 독립적으로 운용할 수 있도록 경량화한 솔루션입니다.  
+전체 OpenStack 스택 없이도 PXE 부팅 → IPA(Ironic Python Agent) → 이미지 배포까지의 전체 베어메탈 배포 파이프라인을 구성할 수 있습니다.
+
+### 주요 컴포넌트
+
+| 컴포넌트 | 역할 |
+|---|---|
+| Ironic | 베어메탈 프로비저닝 엔진 |
+| IPA (Ironic Python Agent) | 노드에서 실행되는 에이전트 (ramdisk) |
+| Nginx (httpboot) | 커널/이미지 파일 제공 (HTTP) |
+| dnsmasq | PXE 부팅용 DHCP/TFTP |
+
+### 노드 상태 흐름
+
+```
+PXE 부팅 → enroll → manageable → available → deploying → active
+```
+
+| 상태 | 설명 |
+|---|---|
+| `enroll` | PXE 부팅 후 자동 등록된 초기 상태 |
+| `manageable` | IPMI/Redfish 접속 검증 완료, 관리 가능 상태 |
+| `available` | 배포 대기 상태 (clean 완료 후) |
+| `deploying` | OS 이미지 배포 진행 중 |
+| `active` | 배포 완료, OS 운영 중 |
+| `cleaning` | 디스크 초기화 진행 중 |
+| `clean failed` | 초기화 실패 |
+| `maintenance` | 점검 모드 (자동 전원 상태 동기화 비활성화) |
+
+---
+
+## 2. 시스템 업데이트 및 패키지 설치
+
+```bash
+sudo apt update -y && sudo apt upgrade -y
+
+sudo apt install -y \
+  git \
+  python3-pip \
+  python3-venv \
+  python3-dev \
+  libffi-dev \
+  libssl-dev \
+  build-essential \
+  libguestfs-tools \
+  qemu-utils \
+  diskimage-builder
+```
+
+---
+
+## 3. Bifrost 다운로드
+
+```bash
+git clone https://opendev.org/openstack/bifrost /opt/bifrost
+cd /opt/bifrost
+```
+
+---
+
+## 4. Bifrost 설치
+
+> **변수 안내**: `<...>` 형태의 항목은 환경에 맞게 변경하세요.
+
+### 4-1. VM 환경 (IPMI 없음 / manual-management)
+
+```bash
+./bifrost-cli install \
+  --network-interface <NETWORK_INTERFACE> \      # 예: enp1s0
+  --dhcp-pool <DHCP_START_IP>-<DHCP_END_IP> \   # 예: 192.168.122.100-192.168.122.200
+  --hardware-types manual-management \
+  -e enable_inspector=true \
+  -e enable_inspector_discovery=true \
+  -e inspector_rule_default_node_driver=manual-management \
+  -e ironic_auth_strategy=noauth
+```
+
+### 4-2. 실제 베어메탈 서버 (IPMI / Redfish)
+
+```bash
+./bifrost-cli install \
+  --network-interface <NETWORK_INTERFACE> \      # 예: enp2s0
+  --dhcp-pool <DHCP_START_IP>-<DHCP_END_IP> \   # 예: 192.168.240.100-192.168.240.200
+  --hardware-types ipmi,redfish \
+  -e enable_inspector=true \
+  -e enable_inspector_discovery=true \
+  -e inspector_rule_default_node_driver=ipmi \
+  -e default_boot_mode=uefi \
+  -e ironic_auth_strategy=noauth
+```
+
+> **중요**: `-e ironic_auth_strategy=noauth` 옵션을 반드시 포함하세요.  
+> 누락 시 `http_basic` 인증 모드로 설치되어 `baremetal` CLI 명령이 `401 Unauthorized` 오류를 반환합니다.
+
+### 4-3. 설치 전 clouds.yaml 생성
+
+설치 전에 아래 파일을 미리 생성해두면 설치 검증 단계에서 실패하지 않습니다.
+
+```bash
+mkdir -p ~/.config/openstack
+cat > ~/.config/openstack/clouds.yaml << 'EOF'
+clouds:
+  bifrost:
+    auth_type: none
+    baremetal_endpoint_override: http://<CONTROLLER_IP>:6385
+    ironic_inspector_endpoint_override: http://<CONTROLLER_IP>:5050
+    region_name: RegionOne
+EOF
+```
+
+---
+
+## 5. 설치 확인 및 초기 설정
+
+설치가 완료되면 다음 메시지가 출력됩니다.
+
+```
+Ironic is installed and running, try it yourself:
+  source /opt/stack/bifrost/bin/activate
+  export OS_CLOUD=bifrost
+  baremetal driver list
+```
+
+### 5-1. 환경 활성화
+
+```bash
+source /opt/stack/bifrost/bin/activate
+export OS_CLOUD=bifrost
+
+# 드라이버 목록 확인
+baremetal driver list
+
+# 노드 목록 확인 (빈 목록이면 정상)
+baremetal node list
+```
+
+### 5-2. 서비스 상태 확인
+
+```bash
+systemctl status ironic
+systemctl status ironic-inspector
+systemctl status dnsmasq
+systemctl status nginx
+```
+
+### 5-3. noauth 확인 및 수동 수정
+
+```bash
+grep auth_strategy /etc/ironic/ironic.conf
+```
+
+`http_basic` 또는 `keystone`으로 되어 있다면 수동으로 변경합니다.
+
+```bash
+sed -i 's/auth_strategy = .*/auth_strategy = noauth/' /etc/ironic/ironic.conf
+systemctl restart ironic
+```
+
+### 5-4. 경고 메시지 숨기기 (선택)
+
+`baremetal` 명령 실행 시 Eventlet deprecated 경고가 표시될 수 있습니다. 동작에는 영향 없으나, 숨기려면 아래를 `.bashrc`에 추가합니다.
+
+```bash
+echo "export PYTHONWARNINGS=ignore" >> ~/.bashrc
+source ~/.bashrc
+```
+
+---
+
+## 6. 노드 드라이버 설정
+
+### 6-1. IPMI 드라이버
+
+```bash
+NODE=<NODE_UUID>
+
+baremetal node set $NODE \
+  --driver ipmi \
+  --driver-info ipmi_address=<IPMI_IP> \        # 예: 192.168.1.100
+  --driver-info ipmi_port=623 \
+  --driver-info ipmi_username=<USERNAME> \       # 예: ADMIN
+  --driver-info ipmi_password=<PASSWORD>
+```
+
+### 6-2. Redfish 드라이버
+
+Supermicro, HPE iLO, Dell iDRAC 등 Redfish를 지원하는 서버에 사용합니다.
+
+```bash
+NODE=<NODE_UUID>
+
+baremetal node set $NODE \
+  --driver redfish \
+  --driver-info redfish_address=https://<BMC_IP> \           # 예: https://192.168.1.100
+  --driver-info redfish_username=<USERNAME> \                 # 예: ADMIN
+  --driver-info redfish_password=<PASSWORD> \
+  --driver-info redfish_system_id=/redfish/v1/Systems/1 \
+  --driver-info redfish_verify_ca=False \                     # 자체 서명 인증서 허용
+  --bios-interface redfish \
+  --boot-interface redfish-virtual-media \
+  --deploy-interface direct \
+  --inspect-interface agent \
+  --management-interface redfish \
+  --power-interface redfish \
+  --raid-interface agent \
+  --vendor-interface no-vendor
+```
+
+> **주의**: `redfish_verify_cafile=False`가 아닌 `redfish_verify_ca=False`를 사용해야 합니다.  
+> 잘못된 파라미터 사용 시 SSL 인증서 오류로 `power failure` 상태가 됩니다.
+
+### 6-3. manual-management 드라이버 (VM/테스트 환경)
+
+전원 제어가 불필요한 환경에서 사용합니다.
+
+```bash
+baremetal node set $NODE \
+  --driver manual-management \
+  --management-interface noop \
+  --power-interface fake \
+  --boot-interface ipxe \
+  --deploy-interface direct \
+  --inspect-interface no-inspect \
+  --vendor-interface no-vendor \
+  --raid-interface no-raid \
+  --bios-interface no-bios
+```
+
+### 6-4. SSL 오류로 인한 maintenance 해제
+
+```bash
+# maintenance 해제
+baremetal node maintenance unset $NODE
+
+# 전원 상태 확인
+baremetal node show $NODE | grep -E "power_state|fault|maintenance"
+```
+
+---
+
+## 7. Nginx httpboot 설정
+
+### 7-1. 파일 경로
+
+| 항목 | 경로 |
+|---|---|
+| Ironic httpboot 루트 | `/var/lib/ironic/httpboot` |
+| Nginx 설정 파일 | `/etc/nginx/conf.d/bifrost-httpboot.conf` |
+
+### 7-2. 기본 Nginx 설정
+
+```nginx
+server {
+    listen 8080;
+    server_name <SERVER_HOSTNAME>;    # 예: pxeserver
+
+    root /var/lib/ironic/httpboot;
+
+    location / {
+        autoindex on;
+    }
+}
+```
+
+설정 변경 후 재시작합니다.
+
+```bash
+nginx -t && systemctl reload nginx
+```
+
+---
+
+## 8. Custom IPA initramfs 생성
+
+기본 `ipa.initramfs`는 사용자 계정이 없어 트러블슈팅 시 직접 접속이 어렵습니다.  
+아래 두 가지 방법으로 커스텀 이미지를 생성할 수 있습니다.
+
+### 방법 A. devuser 포함하여 새로 빌드
+
+로그인 가능한 계정과 추가 패키지를 포함한 IPA 이미지를 빌드합니다.
+
+SSH 키가 없으면 먼저 생성합니다.
+
+```bash
+ssh-keygen -t rsa -b 4096
+```
+
+#### 환경변수 설정
+
+```bash
+export ELEMENTS_PATH=/opt/stack/bifrost/share/ironic-python-agent-builder/dib
+
+export DIB_DEV_USER_USERNAME=<USERNAME>           # 예: ipauser
+export DIB_DEV_USER_PASSWORD=<PASSWORD>           # 예: changeme123
+export DIB_DEV_USER_PWDLESS_SUDO=yes
+export DIB_DEV_USER_AUTHORIZED_KEYS=/root/.ssh/id_rsa.pub
+export DIB_RELEASE=jammy
+export DIB_DEV_USER_SHELL=/bin/bash
+```
+
+#### 빌드
+
+```bash
+ironic-python-agent-builder \
+  -o /opt/custom-ipa \
+  -e devuser \
+  ubuntu 2>&1 | tee /opt/ipa-build.log
+```
+
+#### 빌드 결과 복사
+
+```bash
+cp /opt/custom-ipa.kernel     /var/lib/ironic/httpboot/ipa.kernel
+cp /opt/custom-ipa.initramfs  /var/lib/ironic/httpboot/ipa.initramfs
+chmod 644 /var/lib/ironic/httpboot/ipa.*
+```
+
+---
+
+### 방법 B. 기존 initramfs 압축 해제 후 직접 수정 (재패키징)
+
+계정 설정 외에 추가 서비스 변경이 필요할 때 사용합니다.
+
+#### 압축 해제
+
+```bash
+mkdir -p /opt/ipa-custom && cd /opt/ipa-custom
+zcat /var/lib/ironic/httpboot/ipa.initramfs | cpio -idmv
+```
+
+#### root 비밀번호 변경
+
+```bash
+chroot . /bin/bash
+passwd root
+exit
+```
+
+#### SSH 접속 허용
+
+```bash
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/'                  etc/ssh/sshd_config
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/'    etc/ssh/sshd_config
+
+# cloud-img 추가 설정 파일이 있는 경우
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' \
+  etc/ssh/sshd_config.d/60-cloudimg-settings.conf
+```
+
+#### 부팅 지연 제거
+
+ramdisk 부팅 시 네트워크 대기로 인한 지연을 방지합니다.
+
+```bash
+rm -f etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
+rm -f etc/systemd/system/network-online.target.wants/ifupdown-wait-online.service
+```
+
+#### 재패키징
+
+```bash
+cd /opt/ipa-custom
+find . | cpio -H newc -o | gzip -9 > /var/lib/ironic/httpboot/ipa.initramfs
+chmod 644 /var/lib/ironic/httpboot/ipa.initramfs
+```
+
+---
+
+## 9. 배포 이미지 빌드
+
+### 9-1. disk-image-create를 이용한 커스텀 이미지 빌드
+
+`wget`으로 다운로드한 클라우드 이미지는 파티션 구성이 고정되어 있어 유연한 파티셔닝이 불가능합니다.  
+`disk-image-create`를 사용하면 파티션 레이아웃, 설치 패키지, 부트로더를 자유롭게 구성할 수 있습니다.
+
+#### 환경변수 설정
+
+```bash
+# Ubuntu 배포판 버전 (jammy=22.04, noble=24.04)
+export DIB_RELEASE=jammy
+
+# 임시 디렉토리 (빌드 작업 공간, 여유 공간 충분한 경로 지정)
+export TMPDIR=/tmp
+
+# 패키지 다운로드 미러 (국내 미러 사용 시 빌드 속도 향상)
+export DIB_DISTRIBUTION_MIRROR=http://mirror.kakao.com/ubuntu
+
+# 이미지 크기 (GiB 단위, 최소 운영에 필요한 크기로 설정)
+export DIB_IMAGE_SIZE=10
+```
+
+#### 파티션 레이아웃 설정
+
+아래는 UEFI 부팅을 지원하는 표준 4-파티션 구성 예시입니다.  
+`size` 값을 환경에 맞게 조정하세요.
+
+```bash
+export DIB_BLOCK_DEVICE_CONFIG='
+- local_loop:
+    name: image0
+
+- partitioning:
+    base: image0
+    label: gpt
+    partitions:
+      - name: esp
+        type: EF00
+        size: 512MiB
+        mkfs:
+          type: vfat
+          mount:
+            mount_point: /boot/efi
+            fstab:
+              options: umask=0077
+              fsck-passno: 1
+
+      - name: bios
+        type: EF02
+        size: 8MiB
+
+      - name: boot
+        type: 8300
+        size: 1GiB
+        mkfs:
+          type: ext4
+          mount:
+            mount_point: /boot
+            fstab:
+              options: defaults
+              fsck-passno: 2
+
+      - name: root
+        type: 8300
+        size: 100%
+        mkfs:
+          type: ext4
+          mount:
+            mount_point: /
+            fstab:
+              options: defaults
+              fsck-passno: 1
+'
+```
+
+> **파티션 구성 안내**
+> - `esp` (EF00): UEFI 부트 파티션. 최소 256MiB, 권장 512MiB.
+> - `bios` (EF02): BIOS 호환 부팅용 파티션. 크기 변경 불필요.
+> - `boot` (8300): `/boot` 마운트. 커널 여러 개 유지 시 크기 늘리세요.
+> - `root` (8300): 루트 파티션. `100%`로 설정하면 나머지 공간을 전부 사용합니다.
+
+#### 이미지 빌드
+
+```bash
+disk-image-create \
+  ubuntu \
+  bootloader \
+  grub2 \
+  block-device-efi \
+  cloud-init \
+  growroot \
+  -p openssh-server,curl,vim,net-tools,htop,mdadm,\
+grub-efi-amd64,grub-efi-amd64-signed,shim-signed \
+  -t qcow2 \
+  -o /var/lib/ironic/httpboot/ubuntu-22.04-baremetal \
+  2>&1 | tee /tmp/image-build.log
+```
+
+> **elements(빌드 구성 요소) 안내**
+> - `ubuntu`: Ubuntu 기본 OS
+> - `bootloader`: GRUB 부트로더 설치
+> - `grub2`: GRUB2 설정
+> - `block-device-efi`: UEFI 파티션 구성 활성화
+> - `cloud-init`: cloud-init 포함 (배포 시 user-data 처리)
+> - `growroot`: 첫 부팅 시 루트 파티션 자동 확장
+>
+> **`-p` 패키지 안내**: 쉼표로 구분하여 추가하고 싶은 패키지를 자유롭게 지정합니다.  
+> `mdadm`: SW RAID 사용 시 필수. 불필요하면 제거 가능합니다.
+
+#### 빌드 결과 확인
+
+```bash
+ls -lh /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2
+```
+
+---
+
+### 9-2. UEFI 부트 파일 패치 (필요 시)
+
+빌드 후 `/boot/efi/EFI/ubuntu` 경로가 생성되지 않는 경우 아래 패치를 적용합니다.
+
+```bash
+guestfish -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 << 'EOF'
+run
+mount /dev/sda4 /
+mount /dev/sda3 /boot
+mount /dev/sda1 /boot/efi
+
+mkdir-p /boot/efi/EFI/ubuntu
+mkdir-p /boot/efi/EFI/BOOT
+
+copy-out /usr/lib/shim/shimx64.efi /tmp/
+copy-in /tmp/shimx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+copy-in /tmp/shimx64.efi /boot/efi/EFI/ubuntu/shimx64.efi
+
+copy-out /usr/lib/grub/x86_64-efi-signed/grubx64.efi.signed /tmp/
+copy-in /tmp/grubx64.efi.signed /boot/efi/EFI/ubuntu/grubx64.efi
+copy-in /tmp/grubx64.efi.signed /boot/efi/EFI/BOOT/grubx64.efi
+
+write /boot/efi/EFI/ubuntu/grub.cfg \
+  "search --no-floppy --label --set=root mkfs_boot\nset prefix=(\$root)/grub\nconfigfile \$prefix/grub.cfg\n"
+write /boot/efi/EFI/BOOT/grub.cfg \
+  "search --no-floppy --label --set=root mkfs_boot\nset prefix=(\$root)/grub\nconfigfile \$prefix/grub.cfg\n"
+
+sh "sed -i 's|search --no-floppy --fs-uuid --set=root.*|search --no-floppy --label --set=root mkfs_boot|g' /boot/grub/grub.cfg"
+EOF
+```
+
+> **파티션 번호 주의**: 빌드 환경에 따라 `/dev/sda1`, `/dev/sda3`, `/dev/sda4` 번호가 다를 수 있습니다.  
+> 아래 명령으로 실제 파티션 구조를 먼저 확인하세요.
+> ```bash
+> guestfish -a <이미지 경로> run : list-filesystems
+> ```
+
+---
+
+### 9-3. virt-customize를 이용한 이미지 커스터마이징
+
+빌드 완료 후 추가 설정을 적용합니다.
+
+```bash
+virt-customize -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
+  --root-password password:<ROOT_PASSWORD> \
+  --ssh-inject root:file:/root/.ssh/id_rsa.pub \
+  --run-command 'echo "PermitRootLogin yes" >> /etc/ssh/sshd_config' \
+  --run-command 'echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config' \
+  --run-command 'ssh-keygen -A' \
+  --run-command 'systemctl disable systemd-networkd-wait-online.service' \
+  --run-command 'systemctl mask systemd-networkd-wait-online.service' \
+  --run-command 'echo "network: {config: disabled}" > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg' \
+  --run-command 'cloud-init clean --logs --seed'
+```
+
+#### virt-customize 주요 옵션 레퍼런스
+
+**계정 / 패스워드**
+```bash
+--root-password password:<PASSWORD>
+--password <USERNAME>:password:<PASSWORD>
+```
+
+**SSH**
+```bash
+--ssh-inject root:file:/root/.ssh/id_rsa.pub
+--ssh-inject <USERNAME>:string:"ssh-rsa AAAA..."
+```
+
+**파일 작업**
+```bash
+--upload /local/file:/remote/path
+--write '/etc/hosts:127.0.0.1 myhost'
+--delete /path/to/file
+--mkdir /new/directory
+```
+
+**명령 실행**
+```bash
+--run-command 'apt-get install -y nginx'
+--firstboot /path/to/script.sh         # 첫 부팅 시 스크립트 실행
+--firstboot-command 'systemctl start app'
+```
+
+**패키지**
+```bash
+--install nginx,curl,vim
+--uninstall apache2
+--update
+```
+
+**시스템**
+```bash
+--hostname <HOSTNAME>
+--timezone Asia/Seoul
+--truncate /path/to/file
+```
+
+---
+
+### 9-4. SHA256 체크섬 생성
+
+```bash
+sha256sum /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
+  > /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2.sha256
+
+cat /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2.sha256
+```
+
+---
+
+### 9-5. cloud-init config-drive 준비
+
+#### user-data.yaml 예시
+
+아래는 표준적인 cloud-init 구성 예시입니다.
+
+```yaml
+#cloud-config
+
+# 호스트명 설정
+hostname: baremetal-node-01
+
+# 사용자 계정 설정
+users:
+  - name: admin
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+    # openssl passwd -6 <password> 로 생성
+    passwd: "$6$rounds=4096$saltsalt$hashedpassword..."
+    ssh_authorized_keys:
+      - ssh-rsa AAAA...your-public-key...
+
+# SSH 패스워드 인증 허용
+ssh_pwauth: true
+
+# 패키지 업데이트 및 설치
+package_update: true
+package_upgrade: true
+packages:
+  - curl
+  - vim
+  - htop
+  - net-tools
+  - tmux
+
+# 네트워크 설정 (netplan)
+write_files:
+  - path: /etc/netplan/99-baremetal.yaml
+    permissions: '0600'
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp1s0:
+            dhcp4: true
+          enp2s0:
+            dhcp4: false
+            addresses:
+              - 192.168.240.100/24
+
+# 부팅 후 실행 명령
+runcmd:
+  - netplan apply
+  - systemctl restart ssh
+  - echo "Provisioning complete: $(date)" >> /var/log/provision.log
+```
+
+> **패스워드 해시 생성**:
+> ```bash
+> openssl passwd -6 <원하는패스워드>
+> ```
+
+#### config-drive 디렉토리 방식
+
+```bash
+mkdir -p /opt/configdrive/openstack/latest
+cp user-data.yaml /opt/configdrive/openstack/latest/user_data
+echo '{"uuid": "<NODE_UUID>"}' > /opt/configdrive/openstack/latest/meta_data.json
+```
+
+#### config-drive JSON 인라인 방식
+
+user-data를 JSON으로 인코딩하여 노드에 직접 설정합니다.
+
+```bash
+python3 << 'EOF'
+import json
+with open('/var/lib/ironic/httpboot/user-data.yaml') as f:
+    userdata = f.read()
+with open('/tmp/configdrive.json', 'w') as out:
+    json.dump({'user_data': userdata}, out)
+EOF
+
+baremetal node set $NODE \
+  --instance-info configdrive="$(cat /tmp/configdrive.json)"
+```
+
+---
+
+## 10. 노드 배포
+
+### 10-1. 노드 등록 확인
+
+베어메탈 서버가 PXE 부팅하면 Ironic에 자동 등록됩니다.
+
+```bash
+baremetal node list
+# provision_state: enroll 상태로 등록됨
+```
+
+### 10-2. manageable 상태로 전환
+
+```bash
+NODE=<NODE_UUID>
+
+baremetal node manage $NODE
+```
+
+> - `manual-management` 드라이버: 즉시 `manageable`로 전환  
+> - `ipmi` / `redfish` 드라이버: BMC 접속 검증 후 `manageable`로 전환
+
+### 10-3. automated clean 제어
+
+`provide` 명령 실행 시 `/etc/ironic/ironic.conf`의 `automated_clean = True` 설정에 따라 자동 clean이 실행됩니다.
+
+**clean 없이 바로 available로 전환 (노드별 비활성화)**
+
+```bash
+baremetal node set $NODE --no-automated-clean
+baremetal node provide $NODE
+```
+
+**clean 다시 활성화**
+
+```bash
+baremetal node set $NODE --automated-clean
+```
+
+**전역 비활성화 (모든 노드 적용)**
+
+```bash
+# /etc/ironic/ironic.conf
+[conductor]
+automated_clean = False
+```
+
+```bash
+systemctl restart ironic
+```
+
+### 10-4. available 상태로 전환
+
+```bash
+baremetal node provide $NODE
+```
+
+### 10-5. 노드에 이미지 정보 설정
+
+```bash
+CONTROLLER_IP=<CONTROLLER_IP>    # 예: 192.168.240.1
+IMAGE_NAME=ubuntu-22.04-baremetal
+
+baremetal node set $NODE \
+  --instance-info image_source=http://${CONTROLLER_IP}:8080/${IMAGE_NAME}.qcow2 \
+  --instance-info image_os_hash_algo=sha256 \
+  --instance-info image_os_hash_value=$(curl -s http://${CONTROLLER_IP}:8080/${IMAGE_NAME}.qcow2.sha256 | awk '{print $1}')
+```
+
+### 10-6. 배포 시작
+
+**방법 A: config-drive 디렉토리 방식**
+
+```bash
+baremetal node deploy $NODE --config-drive /opt/configdrive/
+```
+
+**방법 B: config-drive JSON 인라인 방식**
+
+user-data를 별도 파일 없이 JSON으로 인코딩하여 배포합니다.
+
+```bash
+python3 << 'EOF'
+import json
+with open('/var/lib/ironic/httpboot/user-data.yaml') as f:
+    userdata = f.read()
+with open('/tmp/configdrive.json', 'w') as out:
+    json.dump({'user_data': userdata}, out)
+EOF
+
+baremetal node set $NODE \
+  --instance-info configdrive="$(cat /tmp/configdrive.json)"
+
+baremetal node deploy $NODE
+```
+
+### 10-7. 배포 상태 확인
+
+```bash
+# 실시간 상태 모니터링
+watch -n2 "baremetal node list 2>/dev/null"
+```
+
+배포 진행 중 상태 흐름:
+
+```
+available → deploying → wait call-back → active
+```
+
+`active` 상태가 되면 배포 완료입니다. IPMI/Redfish 등록 서버는 배포 후 로컬 디스크로 자동 재부팅됩니다.
+
+---
+
+## 11. SW RAID 구성 및 해제
+
+### 11-1. RAID 설정 파일 작성
+
+아래는 RAID 1 (미러링) 구성 예시입니다.
+
+```bash
+cat > /opt/sw-raid-config.json << 'EOF'
+{
+  "logical_disks": [
+    {
+      "size_gb": "MAX",
+      "raid_level": "1",
+      "controller": "software",
+      "is_root_volume": true
+    }
+  ]
+}
+EOF
+```
+
+> **raid_level 옵션**: `0` (스트라이핑), `1` (미러링), `5` (패리티), `10` (미러+스트라이핑)
+
+### 11-2. RAID 설정 적용
+
+`manageable` 상태에서 진행합니다.
+
+```bash
+baremetal node set $NODE --raid-interface agent
+baremetal node set $NODE --target-raid-config /opt/sw-raid-config.json
+```
+
+### 11-3. Clean step으로 RAID 생성
+
+```bash
+baremetal node clean $NODE \
+  --clean-steps '[
+    {"interface": "deploy", "step": "erase_devices_metadata"},
+    {"interface": "raid",   "step": "create_configuration"}
+  ]'
+```
+
+Clean 완료 후 서버에 SSH 접속하여 RAID 구성을 확인합니다.
+
+```bash
+cat /proc/mdstat
+mdadm --detail /dev/md0
+```
+
+### 11-4. RAID 해제
+
+> RAID를 제거하고 초기 상태로 되돌립니다. `manageable` 상태에서 진행합니다.
+
+RAID 삭제 후 디스크 메타데이터까지 함께 제거하면 다음 배포 시 충돌을 방지할 수 있습니다.
+
+```bash
+baremetal node clean $NODE \
+  --clean-steps '[
+    {"interface": "raid",   "step": "delete_configuration"},
+    {"interface": "deploy", "step": "erase_devices_metadata"}
+  ]'
+```
+
+RAID 인터페이스를 완전히 초기화할 경우:
+
+```bash
+baremetal node set $NODE --raid-interface no-raid
+```
+
+---
+
+## 12. 노드 배포 해제
+
+### 12-1. 배포 해제 (undeploy)
+
+```bash
+baremetal node undeploy $NODE
+```
+
+`active` → `cleaning` → `available` 순으로 상태가 변경됩니다.  
+clean 과정에서 ramdisk로 재부팅하여 디스크 메타데이터를 초기화합니다.
+
+> **RAID 구성된 노드 주의**: undeploy가 아닌 ramdisk 부팅 후 `delete_configuration` clean step을 먼저 실행해야 합니다.  
+> undeploy 전에 RAID를 해제하지 않으면 다음 배포 시 파티션 충돌이 발생할 수 있습니다.
+
+### 12-2. 수동 Clean
+
+```bash
+baremetal node clean $NODE \
+  --clean-steps '[{"interface": "deploy", "step": "erase_devices_metadata"}]'
+```
+
+### 12-3. 노드 삭제
+
+노드를 완전히 제거하려면 `manageable` 상태에서 실행합니다.
+
+```bash
+# manageable 상태로 전환
+baremetal node manage $NODE
+
+# 삭제
+baremetal node delete $NODE
+```
+
+---
+
+## 13. 부록
+
+### 13-1. 노드 상태 전환 요약
+
+| 현재 상태 | 명령 | 다음 상태 |
+|---|---|---|
+| `enroll` | `baremetal node manage` | `manageable` |
+| `manageable` | `baremetal node provide` | `available` (clean 실행 후) |
+| `manageable` | `baremetal node provide` (no-automated-clean) | `available` (즉시) |
+| `available` | `baremetal node deploy` | `deploying` → `active` |
+| `active` | `baremetal node undeploy` | `cleaning` → `available` |
+| `any` | `baremetal node maintenance set` | `maintenance` |
+| `maintenance` | `baremetal node maintenance unset` | 이전 상태 |
+| `manageable` | `baremetal node delete` | (삭제) |
+| `clean failed` | `baremetal node manage` → `baremetal node provide` | `manageable` → `available` |
+
+### 13-2. clean 완료 후 전원 제어
+
+Ironic은 clean/inspect 완료 후 기본적으로 전원을 OFF합니다. 이를 방지하려면 노드별로 설정합니다.
+
+```bash
+# clean 완료 후 전원 ON 유지
+baremetal node set $NODE --disable-power-off
+
+# 원복
+baremetal node set $NODE --enable-power-off
+```
+
+clean 완료 후 상태를 감지하여 자동으로 다음 작업을 수행하려면 아래 스크립트를 활용합니다.
+
+```bash
+#!/bin/bash
+NODE=$1
+TARGET_STATE=${2:-available}
+
+echo "노드 $NODE 의 상태 변화를 모니터링합니다..."
+while true; do
+    STATE=$(baremetal node show $NODE -f value -c provision_state 2>/dev/null)
+    POWER=$(baremetal node show $NODE -f value -c power_state 2>/dev/null)
+    echo "$(date '+%H:%M:%S') state=$STATE power=$POWER"
+
+    if [ "$STATE" = "$TARGET_STATE" ]; then
+        echo "목표 상태 도달: $TARGET_STATE"
+        break
+    elif [[ "$STATE" == *"failed"* ]]; then
+        echo "오류 발생: $STATE"
+        exit 1
+    fi
+    sleep 5
+done
+```
+
+### 13-3. 트러블슈팅
+
+**baremetal 명령 401 Unauthorized**
+
+```bash
+grep auth_strategy /etc/ironic/ironic.conf
+# noauth 가 아니면 수정
+sed -i 's/auth_strategy = .*/auth_strategy = noauth/' /etc/ironic/ironic.conf
+systemctl restart ironic
+```
+
+**clean failed 복구**
+
+```bash
+baremetal node maintenance unset $NODE
+baremetal node manage $NODE
+baremetal node provide $NODE
+```
+
+**power failure / Redfish SSL 오류**
+
+```bash
+# redfish_verify_ca=False 재설정
+baremetal node set $NODE --driver-info redfish_verify_ca=False
+# 기존 잘못된 파라미터 제거
+baremetal node unset $NODE --driver-info redfish_verify_cafile
+baremetal node maintenance unset $NODE
+```
+
+**PXE 부팅 후 IP 미할당**
+
+```bash
+# dnsmasq 로그 확인
+journalctl -u dnsmasq -f
+
+# DHCP Discover 패킷 도달 여부 확인
+tcpdump -i <PXE_INTERFACE> port 67 or port 68 -n
+```
+
+**노드가 enroll 상태에서 등록 안 됨**
+
+```bash
+# Inspector 상태 확인
+systemctl status ironic-inspector
+journalctl -u ironic-inspector -f
+
+# Inspector 포트 확인
+ss -tlnp | grep 5050
+```
+
+### 13-4. 주요 경로 및 파일
+
+| 항목 | 경로 |
+|---|---|
+| Ironic 설정 | `/etc/ironic/ironic.conf` |
+| dnsmasq 설정 | `/etc/dnsmasq.conf`, `/etc/dnsmasq.d/` |
+| httpboot 루트 | `/var/lib/ironic/httpboot/` |
+| deploy 커널/ramdisk | `/var/lib/ironic/httpboot/ipa.kernel`, `ipa.initramfs` |
+| deploy 로그 | `/var/log/ironic/deploy/` |
+| DHCP 호스트 설정 | `/etc/dnsmasq.d/bifrost.dhcp-hosts.d/` |
+| DHCP 옵션 설정 | `/etc/dnsmasq.d/bifrost.dhcp-opts.d/` |
+| clouds.yaml | `~/.config/openstack/clouds.yaml` |

@@ -1,19 +1,19 @@
 ---
-title: 서버 QC 자동화시스템
+title: Server QC Automation System
 date: "2026-01-10"
 category: "Projects"
 slug: "qc_automation"
 thumbnail: "/images/thumbnails/qcauto.png"
-description: "Step-by-step guide to install Tenstorrent TT-Metal SDK on Ubuntu. Covers installation from source, Docker, and wheel package with TT-NN and TT-Metalium setup for AI model development."
-keywords: [Tenstorrent, TT-Metal, TT-NN, TT-Metalium, NPU SDK, AI accelerator, Ubuntu installation, Docker setup, wheel package]
+description: "How I built a fully automated server QC pipeline using Python and FastAPI, eliminating manual processes and boosting daily throughput by 260% through IPMI, Redfish API, and iPXE integration."
+keywords: [server QC automation, FastAPI, IPMI, Redfish API, iPXE, PXE boot, server provisioning, infrastructure automation, MariaDB, Python automation]
 author: "KIM TAE HYEON"
 ---
 
-수작업으로 진행되던 서버 출고 공정을 Python/FastAPI 기반으로 100% 자동화하여, 생산성을 260% 증대시킨 인프라 자동화 프로젝트
+A solo infrastructure automation project that eliminated all manual steps in the server shipping QC process using Python and FastAPI, boosting productivity by 260%.
 
-## 1. 프로젝트 개요
-* **기간:** 2023.11 ~ 2024.05 (약 6개월, 1인 프로젝트)
-* **역할:** 전체 시스템 설계 및 개발, 운영 프로세스 구축
+## 1. Project Overview
+* **Duration:** Nov 2023 – May 2024 (approx. 6 months, solo project)
+* **Role:** Full system design, development, and operational process establishment
 * **Tech Stack:**
   * **Language:** `Python`, `Bash Shell`
   * **Framework:** `FastAPI` (Backend/Dashboard), `iPXE` (OS Booting)
@@ -22,78 +22,80 @@ author: "KIM TAE HYEON"
 
 ---
 
-## 2. 문제 정의 
-**시작 계기 및 목적**
-기존의 서버 QC공정은 평균 한사이클에 60대정도를 진행했습니다. 그 과정에서 사람이 직접 서버의 전원제어부터 BIOS 진입 및 설정, OS 설치 및 과정, Bash Script실행등등 모든 단계를 직접 실행하고 확인하고 OS설치가 잘 되고 있는지, Script실행이 제대로 되고 있는지, 설정 값이 적용이 됬는지 모든 단계를 사람이 모두 확인 했었습니다. 그로 인해 아무리 작업자가 숙련되더라도 절대 시간이 필요했으며, 갑자기 납품 물량이 늘어나게 된다면 
+## 2. Problem Statement
+**What sparked this project and why**
 
-그로 인해 늦은 시간까지 밤을 새면서 작업을 해야했고 이는 작업자의 컨디션에 즉각적으로 영향을 미쳤으며 작업자의 컨디션에 따라 서버품질의 결과가 좌우되는 문제가 있었습니다.
-- 1 (낮은 생산성): 엔지니어가 물리적으로 서버를 제어하고 눈으로 확인 (일일 최대 150대 한계).
-- 2 (휴먼 에러): 모든 과정을 사람이 하므로 컨디션에 따라 품질 저하 발생.
-- 3 (대량물량 대응불가): 아무리 숙련된 인력일지라도 절대 시간이 필요하므로 대량납품에 대해 즉각적으로 대응 불가능.
+Our existing server QC process typically handled around 60 units per cycle. Every single step — powering on the server, entering and configuring the BIOS, installing the OS, running Bash scripts — had to be done by hand. Someone had to physically watch whether the OS was installing correctly, whether the scripts were running as expected, and whether the configuration values were actually applied. Every step required human eyes.
 
+No matter how skilled the operator was, there was always an unavoidable time floor. And when delivery volumes suddenly spiked, the only answer was to work through the night.
 
-평소 저는 **Dell, HP** 같은 글로벌 제조사나 **Naver, Kakao** 같은 국내 빅테크 기업들이 수천 대의 서버를 어떻게 관리하는지, 그들의 인프라 운영 방식에 늘 관심을 두고 있었습니다. 그러던 중 중국 대형 제조사(Inspur)의 공장을 견학하고 오신 상무님을 통해 "그들은 중앙에서 모든 공정을 자동화하여 관리하고 있다"는 사실을 전해 듣게 되었고, 우리 공정에도 이러한 '중앙 집중형 자동화 시스템'을 도입할 수 있겠다는 생각을 가졌습니다.
+That meant late nights became the norm during busy periods, and when that happens, operator fatigue directly impacts quality. The faster you need to go, the more mistakes creep in — and that was a structural problem we couldn't solve just by getting better at the job.
 
-또한, 매년 특정 시기마다 납품 물량이 몰리는 경향이 있었는데, 그때마다 밤샘 야근으로 대응해야 하는 상황이 반복되었습니다. 아무리 작업자의 숙련도가 높아져도 물리적인 작업 시간의 한계는 명확했기에,  기존 방식으로는 작업 시간을 획기적으로 단축할 수 없다고 판단했습니다.
+The core issues were:
+- **1 (Low productivity):** Engineers had to physically control and visually verify each server — hard ceiling of ~150 units per day.
+- **2 (Human error):** Since every step was manual, quality fluctuated with the operator's condition.
+- **3 (No scalability):** No matter how experienced the team, there's a physical limit to what humans can do — we couldn't respond quickly to large-volume orders.
 
-처음에는 전원 제어와 같은 단순한 호기심에서 시작된 기능 구현이었지만, 이를 하나씩 연결하며 시스템화의 가능성을 보았습니다. 결과적으로 저는 작업자가 물리적으로 개입하지 않고 중앙에서 원격으로 통제하며, 속도는 극대화하되 오류율은 0%를 보장하는 '완전 무인 자동화 표준 시스템'을 구축하는 것을 최종 목표로 삼았습니다.
+I'd always been curious about how companies like **Dell** and **HP**, or domestic tech giants like **Naver** and **Kakao**, manage thousands of servers at scale. The turning point came when one of our executives visited a factory run by a major Chinese server manufacturer (Inspur) and came back saying: "They automate and manage every step of the process from a central system." That clicked something for me — if they can do it, why can't we?
 
+And every year, deliveries would bunch up around certain periods, forcing us into the same cycle of all-nighters. No matter how much we improved individual skill, the wall was always there. Brute-forcing our way through it wasn't a strategy.
+
+It started small — just experimenting with remote power control out of curiosity. But as I connected one piece to the next, I started to see the shape of something bigger. Eventually, I set a clear goal: build a **fully unmanned, automated standard system** that requires zero physical intervention, where operators control everything remotely from a central dashboard — maximizing speed while guaranteeing a 0% error rate.
 
 ---
 
-## 3. 구성도
+## 3. System Architecture
 
 ![tt-smi](/images/posts/guides/qc_automation/qc_dashboard.png)
 
 
-**1. 워크플로우 사이드바 (Left Sidebar - Workflow Control)**
+**1. Workflow Sidebar (Left Sidebar - Workflow Control)**
 
-화면 좌측의 메뉴(`Upload Logo` → `Online` → `Script` → `...`)는 실제 검수 공정의 순서대로 배치했습니다.
-작업자는 위에서부터 아래로 버튼을 순차적으로 클릭하는 것만으로, CLI 명령어 입력 없이 **표준화된 검수 프로세스**를 수행할 수 있습니다.
+The left-side menu (`Upload Logo` → `Online` → `Script` → `...`) is arranged in the exact order of the actual QC process.
+Operators simply click buttons from top to bottom — no CLI commands, no guesswork. Just a **standardized QC process** that anyone can follow.
 
-**2. 실시간 상태 모니터링 (Real-time Status Monitoring)**
-Task & Status: 현재 백엔드에서 수행 중인 작업 내용(`Recording in Database...`)과 진행상태을 실시간으로 시각화했습니다.
-Visual Indicator: 로딩 인디케이터(Loading)와 완료 마크(Green Check)를 통해 비동기 작업의 완료 여부를 직관적으로 파악할 수 있습니다.
-Power Control: 각 서버의 전원 상태(On/Off)를 아이콘 색상으로 표시하여, IPMI 연결 상태를 즉시 모니터링합니다.
+**2. Real-time Status Monitoring**
+The Task & Status panel shows what the backend is currently doing (e.g., `Recording in Database...`) and reflects progress in real time.
+A loading indicator and green checkmark make it immediately obvious whether an async task is still running or done.
+Power Control displays each server's power state (On/Off) through icon color, so IPMI connectivity is visible at a glance.
 
-**3. 하드웨어 정보 자동 수집**
-우측 테이블의 `Serial`, `BIOS`, `BMC Firmware` 정보는 **MariaDB**에 저장된 서버 데이터를 불러와 표시한 것입니다.
-작업자가 OS 설치를 완료하면, 스크립트가 자동으로 중앙 서버 DB에 현재 시스템 상태를 전송 및 저장합니다. 이를 통해 작업자는 시스템의 현재 상태와 앞으로 할 작업 여부를 미리 파악할 수 있습니다.
+**3. Automatic Hardware Info Collection**
+The `Serial`, `BIOS`, and `BMC Firmware` values in the right-side table are pulled directly from **MariaDB**.
+Once an operator finishes OS installation, a script automatically sends the current system state to the central DB. This lets operators see what's already been done and what still needs to happen — without asking anyone.
 
-**4. 실시간 서버 상태체크**
-메모리 접촉불량, 메인보드 결함, 디스크이상(RAID깨짐), 파워이중화 결함 등등 서버의 전반적인 상태를 실시간으로 검사하여 대시보드 알람아이콘에 표시합니다.
-문제가 생긴다면 알람아이콘이 움직이며 빨간색으로 변하고 해당 BMC IP와 위험도를 표시합니다.
+**4. Real-time Server Health Check**
+The system continuously checks for issues like faulty memory seating, motherboard defects, disk anomalies (broken RAID), and redundant power supply failures, then surfaces them as alarm icons on the dashboard.
+When a problem is detected, the alarm icon animates and turns red, showing the affected BMC IP and severity level.
 ![tt-smi](/images/posts/guides/qc_automation/health1.png)
 
 <br />
 
-추가정보인 발생시간,문제발생지,상세내역을 표시합니다.
+Additional detail — including timestamp, source of the issue, and a full description — is displayed on demand.
 ![tt-smi](/images/posts/guides/qc_automation/health2.png)
 
 :::imfortant
-해당 문제가 사라지면 알람아이콘과 Health항목은 원래상태로 돌아옵니다.
+Once the issue resolves, the alarm icon and Health status automatically return to their normal state.
 :::
 
 <br />
 
-**5. 실시간 펌웨어 업데이트 진행여부**
-서버의 BIOS, BMC Firmware 업데이트 진행 단계를 매 1초마다 실시간으로 반영해서 대시보드에 표시합니다.
+**5. Real-time Firmware Update Progress**
+BIOS and BMC firmware update progress is reflected on the dashboard every second, so operators always know exactly where each server is in the update process.
 ![tt-smi](/images/posts/guides/qc_automation/bios_update.png)
 
-#### 각 QC공정의 모든 단계는 설계자가 아닌 사용자를 기준으로 설계 되었으며 누구든 쉽고 빠르고 정확하게 QC를 할수 있도록 설계되었습니다.
+#### Every step of the QC process was designed with the end user in mind — not the developer. The goal was simple: anyone should be able to run a complete QC cycle quickly, correctly, and without prior expertise.
 ---
 
-## 4. 핵심 성과 
-- **생산성 증대:** 일일 처리량 150대 → 540대 (260% ▲)
-- **품질 확보:** 휴먼 에러로 인한 출고 불량률 0% 달성
-- **운영 효율화:** 비숙련자도 매뉴얼만 있다면 운영 가능한 표준 시스템 정착
+## 4. Key Results
+- **Productivity:** Daily throughput increased from 150 → 540 units (**+260%**)
+- **Quality:** Shipping defect rate due to human error reduced to **0%**
+- **Operational efficiency:** A standardized system that anyone can operate with just a manual — no deep technical background required
 
 ---
 
-## 5. 실제 시연 영상 
+## 5. Demo Video
 
-사전에 정의해둔 기준치(Firmware 버전, 각종 파츠 장착 여부, IPMI설정, BIOS설정 등 모든단계를 검사)에 벗어나지 않는다면 **PASS**로 간주합니다.
+Any server that meets all predefined criteria — firmware version, component presence, IPMI configuration, BIOS settings, and every other checkpoint — is marked **PASS** automatically.
 <video controls width="100%">
   <source src="/videos/intro/qc-automation.mp4" type="video/mp4">
 </video>
-

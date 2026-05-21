@@ -6,35 +6,36 @@ import { getAllPosts } from '@/lib/posts';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://pyron.dev';
 
+  const posts = getAllPosts();
+
+  // 카테고리 목록 (중복 제거)
+  const categories = Array.from(
+    new Set(posts.map((p) => (p.category || 'uncategorized').toLowerCase()))
+  );
+
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
-    {
-      url: `${baseUrl}/#projects`,
+    // 카테고리 페이지
+    ...categories.map((cat) => ({
+      url: `${baseUrl}/blog/${cat}`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/#records`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
   ];
 
 
-  const posts = getAllPosts(); // [{ slug, category, date, ... }]
   const postRoutes: MetadataRoute.Sitemap = posts.map((post) => {
     const category = (post.category || 'uncategorized').toLowerCase();
 

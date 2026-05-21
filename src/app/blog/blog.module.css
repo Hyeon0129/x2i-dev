@@ -64,8 +64,110 @@
   position: relative;
   width: 1080px;
   margin: 0 auto;
-  margin-bottom: 180px; 
-  
+  margin-bottom: 80px;
+}
+
+/* ============================================
+   PAGINATION
+============================================ */
+
+/*
+  paginationWrap : blogList(1080px)와 동일한 폭·중앙 정렬로
+  pagination nav 를 감싸는 컨테이너
+*/
+.paginationWrap {
+  width: 1080px;
+  margin: 0 auto;
+  padding-bottom: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ── 숫자 버튼 ── */
+.pageNum {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.pageNum:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* 현재 페이지 — 흰색 텍스트 + 오렌지 닷 (블로그 타임라인 dot 과 동일) */
+.pageNumActive {
+  color: #fff !important;
+  font-weight: 600;
+  pointer-events: none;
+  cursor: default;
+}
+
+
+/* ── 화살표 버튼 ── */
+.pageArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+  margin: 0 6px;
+}
+
+.pageArrow:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pageArrowDisabled {
+  opacity: 0.18;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* ── 말줄임표 ── */
+.pageEllipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: rgba(255, 255, 255, 0.18);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  padding-bottom: 4px;
 }
 
 .timelineLine {  
@@ -217,7 +319,12 @@
   .blogList {
     width: min(94vw, 960px);
     gap: 48px;
-    margin-bottom: 140px;
+    margin-bottom: 60px;
+  }
+
+  .paginationWrap {
+    width: min(94vw, 960px);
+    padding-bottom: 80px;
   }
 
   
@@ -292,8 +399,13 @@
   .blogList {
     width: 100%;
     padding: 0 18px 60px;
-    margin: 0 auto 80px;
+    margin: 0 auto 40px;
     gap: 18px;
+  }
+
+  .paginationWrap {
+    width: 100%;
+    padding: 0 18px 60px;
   }
 
   

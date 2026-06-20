@@ -228,25 +228,24 @@
 
 
 .date {
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 300 !important;
-  font-size: 0.75rem; 
-  letter-spacing: 0.1em;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
   white-space: nowrap;
   margin:0;
 }
 
 
 .title {
+  font-family: 'Inter', sans-serif;
   font-size: 1.7rem;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 500;
+  color: rgb(255, 255, 255);
   text-decoration: none;
-  letter-spacing: 1px;
+  letter-spacing: -1.2px;
   line-height: 1.4;
-  
+
 }
 
 

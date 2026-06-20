@@ -64,7 +64,7 @@ export function formatDate(dateStr: string) {
     month: "short",
     day: "numeric",
     year: "numeric"
-  }).toUpperCase();
+  });
 }
 
 export function createExcerpt(content: string, wordCount = 26) {

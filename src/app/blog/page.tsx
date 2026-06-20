@@ -80,7 +80,7 @@ export default async function BlogPage({ searchParams }: Props) {
                     {post.title}
                   </Link>
                   <span className={styles.category}>{post.category}</span>
-                  <p className={styles.excerpt}>{post.excerpt}</p>
+                  <p className={styles.excerpt}>{post.description || post.excerpt}</p>
                   <Link
                     href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}
                     className={styles.readBtn}

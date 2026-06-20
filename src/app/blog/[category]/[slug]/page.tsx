@@ -3,8 +3,6 @@ import { getPostBySlug, getAllPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import styles from "./blogDetail.module.css";
-import Image from "next/image";
-import { formatDate } from "@/lib/posts";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://pyron.dev";
@@ -85,6 +83,12 @@ export default async function BlogPostPage({
       : `${BASE_URL}${fm.thumbnail}`
     : undefined;
 
+  const detailDate = new Date(fm.date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
   // JSON-LD 구조화 데이터
   const jsonLd = {
     "@context": "https://schema.org",
@@ -119,22 +123,12 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className={styles.container}>
-        <p className={styles.date}>{formatDate(fm.date)}</p>
+        <p className={styles.date}>{detailDate}</p>
         <h1 className={styles.title}>{fm.title}</h1>
-
-        {fm.thumbnail && (
-          <div className={styles.thumbWrapper}>
-            <Image
-              src={fm.thumbnail}
-              alt={fm.title}
-              width={3840}
-              height={2160}
-              className={styles.thumb}
-              priority
-            />
-          </div>
+        {fm.description && (
+          <p className={styles.description}>{fm.description}</p>
         )}
-
+        <hr className={styles.divider} />
         <div
           className={styles.content}
           dangerouslySetInnerHTML={{ __html: html }}

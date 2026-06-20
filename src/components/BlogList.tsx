@@ -25,7 +25,7 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
 
               <span className={styles.category}>{post.category}</span>
 
-              <p className={styles.excerpt}>{post.excerpt}</p>
+              <p className={styles.excerpt}>{post.description || post.excerpt}</p>
 
               <Link href={`/blog/${post.category}/${post.slug}`} className={styles.readBtn}>
                 READ

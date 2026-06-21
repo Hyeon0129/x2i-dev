@@ -22,8 +22,8 @@ export async function GET() {
           ...meta,
           slug: meta.slug ?? file.replace(/\.mdx$/, ''),
           dateFormatted: formatDate(meta.date),
-          excerpt: createExcerpt(content, 26), 
-          content, 
+          excerpt: meta.description || createExcerpt(content, 26),
+          content,
         };
 
         return post;

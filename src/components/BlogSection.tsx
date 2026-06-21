@@ -15,10 +15,11 @@ interface Post {
   date: string;
   dateFormatted?: string;
   excerpt?: string;
+  description?: string;
   category?: string;
   slug?: string;
   thumbnail?: string;
-  content?: string; 
+  content?: string;
 }
 
 export default function BlogSection() {
@@ -29,10 +30,9 @@ export default function BlogSection() {
     fetch('/api/posts')
       .then(res => res.json())
       .then(data => {
-  // excerpt max : 40 
   const override = data.map((post: Post) => ({
     ...post,
-    excerpt: recreateExcerpt(post.content || post.excerpt || "", 26),
+    excerpt: post.description || recreateExcerpt(post.content || post.excerpt || "", 26),
   }));
 
   setPosts(override);

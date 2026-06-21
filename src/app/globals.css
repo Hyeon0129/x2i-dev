@@ -7,13 +7,20 @@
 @import "prismjs/themes/prism-tomorrow.css";
 @import "prismjs/plugins/toolbar/prism-toolbar.css";
 
+@font-face {
+  font-family: 'Universal Sans Display';
+  src: url('/fonts/UniversalSansDisplay.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 
 :root{
   --background-color: #000000;
   --accent-color-hover:#5c5c5c;
   --secondary-color: #333333;
-  --bg-top: #000000;   
-  --bg-below: #000000; 
+  --bg-top: #000000;
+  --bg-below: #000000;
   --muted: #9aa3af;
   --scrollbar-width: calc(100vw - 100%);
 }
@@ -858,10 +865,10 @@ font-size: 1.1rem;
 
 pre[class*="language-"],
 code[class*="language-"] {
-  background-color: #141414 !important;
-  color: #d4d4d4 !important;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
-  font-size: 14px !important;
+  background-color: #121212 !important;
+  color: #e1e4e8 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+  font-size: 13px !important;
   line-height: 1.6 !important;
   text-shadow: none !important;
   direction: ltr !important;
@@ -877,8 +884,8 @@ pre[class*="language-"] {
   padding: 1rem 1rem!important;
   margin: 1rem 0 !important;
   overflow: auto !important;
-  border-radius: 8px !important;
-  border: none !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(31, 34, 40, 0.6) !important;
   box-shadow: none !important;
   position: relative !important;
 	font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
@@ -888,75 +895,113 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #727475 !important;
+  color: #6a737d !important;
   font-style: normal !important;
 }
 
 .token.string,
-.token.builtin,
 .token.attr-value {
-  color: #00a67d !important;
+  color: #9ecbff !important;
 }
 
-.token.function,
 .token.builtin,
+.token.function {
+  color: #79b8ff !important;
+}
+
 .token.class-name {
-  color: #2e95d3 !important;
+  color: #79b8ff !important;
 }
 
 .token.keyword,
-.token.tag {
-  color: #2e95d3 !important;
+.token.tag,
+.token.operator {
+  color: #f97583 !important;
 }
 
 .token.number,
 .token.boolean,
 .token.constant {
-  color: #df3079 !important;
+  color: #ffab70 !important;
 }
 
 .token.variable,
 .token.property,
 .token.attr-name {
-  color: #e9950c !important;
+  color: #ffab70 !important;
 }
 
 .token.punctuation {
-  color: #d4d4d4 !important;
+  color: #e1e4e8 !important;
 }
 
 .token.operator {
-  color: #d4d4d4 !important;
+  color: #f97583 !important;
   background: none !important;
 }
 
 /* ===== Bash  ===== */
-/* sudo, apt, install  */
+/* curl, sudo, apt, install — command name */
 .language-bash .token.function {
-  color: #2e95d3 !important;
+  color: #b392f0 !important;
 }
 
 /* -y, --version  */
 .language-bash .token.parameter,
 .language-bash .token.string {
-  color: #e9950c !important;
+  color: #ffab70 !important;
 }
 
 /* env, activate  */
 .language-bash .token.builtin {
-  color: #00a67d !important;
+  color: #9ecbff !important;
 }
 
 pre[class*="language-"] {
-  padding-top: 4rem !important;
+  padding-top: 3rem !important;
 }
 
 pre[class*="language-"]::before {
   position: absolute !important;
-  top: 1rem !important;
+  top: 0.9rem !important;
   left: 1rem !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
   color: #858585 !important;
+}
+
+pre[class*="language-"]::after {
+  content: '';
+  position: absolute;
+  top: 2.5rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.code-copy-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: #858585;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.code-copy-btn:hover {
+  color: #e1e4e8;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 pre.language-bash::before { content: 'bash'; }
@@ -1005,29 +1050,45 @@ font-family: SFMono-Regular, Menlo, Monaco, Consolas,
 
 table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 24px 0;
 }
 
 thead th {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  font-weight: 600;
-  padding: 0.9rem 1rem;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #2a2a2a;
-  border-right: 0.5px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 14px;
+  letter-spacing: normal;
 }
 
 tbody td {
-  padding: 1rem;
-  background-color: #121212;
-  color: #d0d0d0;
-  border-top: 1px solid #1e1e1e;
-  border-right: 0.5px solid rgba(255, 255, 255, 0.08);
-  vertical-align: middle;
+  padding: 14px 16px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  border-top: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: top;
+  font-size: 14px;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table td:first-child,
+table th:first-child {
+  white-space: nowrap;
+}
+
+tbody td:first-child code,
+tbody td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  color: #ff640a;
+  font-size: 13px;
 }
 
 
@@ -1143,12 +1204,10 @@ pre code {
 }
 
 .blog-date {
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 300 !important;
-  font-size: 0.75rem; 
-  letter-spacing: 0.1em;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
   white-space: nowrap;
   line-height: 1.5rem;
 }
@@ -2017,12 +2076,13 @@ pre code {
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.35),
     0 4px 16px rgba(0, 0, 0, 0.25);
-  padding: 12px 18px 0;                 
+  padding: 12px 18px 0;
   color: #f5f5f7;
   animation: fadeUp 0.18s ease-out;
   font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .search-input {
@@ -2051,47 +2111,55 @@ pre code {
   margin-top: 0;
   padding-top: 0;
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;   
+  display: flex;
+  align-items: stretch;
   column-gap: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .search-body::before {
   content: '';
   position: absolute;
-  left: -18px;   
+  left: -18px;
   right: -18px;
-  top: 5;
+  top: 0;
   height: 1px;
   background-color: #262626;
 }
 
 .search-results-pane {
-  padding: 20px 24px 10px 0;        
-  height: 100%;
+  flex: 1 1 50%;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 24px 10px 0;
   overflow-y: auto;
 }
 
 .search-results-pane::after {
   content: '';
   position: absolute;
-  top: 5px;          
+  top: 0;
   right: 50%;
   width: 1px;
-  height: calc(100% - 5px);   
+  height: 100%;
   background-color: #262626;
 }
 
 
 .search-results-pane::-webkit-scrollbar {
-  width: 6px;
+  width: 8px !important;
 }
 .search-results-pane::-webkit-scrollbar-track {
-  background: transparent;
+  background: #2a2a2a !important;
+  border-radius: 4px !important;
 }
 .search-results-pane::-webkit-scrollbar-thumb {
-  background: #343434;
-  border-radius: 999px;
+  background: #4a4a4a !important;
+  border-radius: 4px !important;
+}
+.search-results-pane::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a !important;
 }
 
 .search-group + .search-group {
@@ -2153,11 +2221,15 @@ pre code {
 }
 
 .search-preview-pane {
+  flex: 1 1 50%;
+  min-width: 0;
+  min-height: 0;
   padding: 20px 0 10px 24px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 8px;
+  overflow-y: auto;
 }
 
 .search-preview-empty {

@@ -901,64 +901,65 @@ pre[class*="language-"] {
 
 .token.string,
 .token.attr-value {
-  color: #9ecbff !important;
+  color: #ffc98b !important;
 }
 
 .token.builtin,
 .token.function {
-  color: #79b8ff !important;
+  color: #f97316 !important;
 }
 
 .token.class-name {
-  color: #79b8ff !important;
+  color: #f97316 !important;
 }
 
 .token.keyword,
 .token.tag,
 .token.operator {
-  color: #f97583 !important;
+  color: #e4e4e4 !important;
+  font-weight: 500 !important;
 }
 
 .token.number,
 .token.boolean,
 .token.constant {
-  color: #ffab70 !important;
+  color: #c084fc !important;
 }
 
 .token.variable,
 .token.property,
 .token.attr-name {
-  color: #ffab70 !important;
+  color: #ffc98b !important;
 }
 
 .token.punctuation {
-  color: #e1e4e8 !important;
+  color: #8a8a8a !important;
 }
 
 .token.operator {
-  color: #f97583 !important;
+  color: #e4e4e4 !important;
   background: none !important;
 }
 
 /* ===== Bash  ===== */
 /* curl, sudo, apt, install — command name */
 .language-bash .token.function {
-  color: #b392f0 !important;
+  color: #c084fc !important;
 }
 
 /* -y, --version  */
 .language-bash .token.parameter,
 .language-bash .token.string {
-  color: #ffab70 !important;
+  color: #ffc98b !important;
 }
 
 /* env, activate  */
 .language-bash .token.builtin {
-  color: #9ecbff !important;
+  color: #f97316 !important;
 }
 
 pre[class*="language-"] {
-  padding-top: 3rem !important;
+  padding-top: 3.75rem !important;
 }
 
 pre[class*="language-"]::before {
@@ -1087,7 +1088,7 @@ table th:first-child {
 tbody td:first-child code,
 tbody td:first-child {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  color: #ff640a;
+  color: #f97316;
   font-size: 13px;
 }
 

@@ -3,6 +3,7 @@ import { getPostBySlug, getAllPosts } from "@/lib/posts";
 import { notFound } from "next/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import CodeCopyButtons from "@/components/CodeCopyButtons";
+import CodeTabs from "@/components/CodeTabs";
 import styles from "./blogDetail.module.css";
 import type { Metadata } from "next";
 
@@ -134,6 +135,7 @@ export default async function BlogPostPage({
           className={styles.content}
           dangerouslySetInnerHTML={{ __html: html }}
         />
+        <CodeTabs />
         <CodeCopyButtons />
       </div>
 

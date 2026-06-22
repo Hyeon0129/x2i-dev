@@ -8,6 +8,7 @@ export default function CodeCopyButtons() {
     const blocks = document.querySelectorAll('pre[class*="language-"]');
 
     blocks.forEach((pre) => {
+      if (pre.closest('.code-tabs-group')) return;
       if (pre.querySelector('.code-copy-btn')) return;
       const code = pre.querySelector('code');
       if (!code) return;
@@ -20,8 +21,10 @@ export default function CodeCopyButtons() {
       btn.addEventListener('click', () => {
         navigator.clipboard.writeText(code.textContent || '');
         btn.textContent = 'Copied';
+        btn.classList.add('is-copied');
         setTimeout(() => {
           btn.textContent = 'Copy';
+          btn.classList.remove('is-copied');
         }, 1500);
       });
 

@@ -49,14 +49,14 @@ Installing the Kernel-Mode Driver (TT-KMD) is an essential step for setting up t
 
  Install Software Dependencies
 
- ```bash title="bash"
+ ```bash title="terminal"
  sudo apt update && sudo apt install -y wget git python3-pip dkms cargo python-is-python3
  ```
 <br />
 
  Install the driver (TT-KMD) by running these commands in the terminal:
 
- ```bash  title="bash"
+ ```bash title="terminal"
 git clone https://github.com/tenstorrent/tt-kmd.git
 cd tt-kmd
 sudo dkms add .
@@ -81,7 +81,7 @@ Firmware updates are required only once when the card is first unboxed or when u
 
 To Build from git (development):
 
-```bash title="bash"
+```bash title="terminal"
 ## Building the repository
 sudo apt install cargo
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -122,7 +122,7 @@ command:
 
 Download TT-Firmware and Update:
 
-```bash title="bash"
+```bash title="terminal"
 git clone https://github.com/tenstorrent/tt-firmware.git
 cd tt-firmware/
 root@test:/opt/tt-firmware# ls
@@ -198,7 +198,7 @@ FLASH SUCCESS
 ### 4. Set Up HugePages
 HugePages lets your system allocate dedicated memory to accelerate communication with Tenstorrent devices. Set up HugePages by running these commands in the terminal:
 
-```bash title="bash"
+```bash title="terminal"
 # Install `.deb`
 wget https://github.com/tenstorrent/tt-system-tools/releases/download/upstream%2F1.1/tenstorrent-tools_1.1-5_all.deb
 sudo dpkg -i tenstorrent-tools_1.1-5_all.deb
@@ -219,7 +219,7 @@ sudo reboot
 Install Tenstorrent Software Management Interface [TT-SMI](https://github.com/tenstorrent/tt-smi):
 To Build from git (development):
 
-```bash title="bash"
+```bash title="terminal"
 # Clone the repository
 git clone https://github.com/tenstorrent/tt-smi.git
 cd tt-smi/
@@ -280,7 +280,7 @@ For other configurations or detailed explanations, please refer to [this](https:
 
 <br />
 
-```bash title="bash"
+```bash title="terminal"
 git clone https://github.com/tenstorrent/tt-topology.git
 cd tt-topology
 pip3 install --upgrade pip

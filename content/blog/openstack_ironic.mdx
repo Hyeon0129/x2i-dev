@@ -69,7 +69,7 @@ PXE boot → enroll → manageable → available → deploying → active
 
 ## 2. System Update and Package Installation
 
-```bash
+```bash title="terminal"
 sudo apt update -y && sudo apt upgrade -y
 
 sudo apt install -y \
@@ -89,7 +89,7 @@ sudo apt install -y \
 
 ## 3. Downloading Bifrost
 
-```bash
+```bash title="terminal"
 git clone https://opendev.org/openstack/bifrost /opt/bifrost
 cd /opt/bifrost
 ```
@@ -102,7 +102,7 @@ cd /opt/bifrost
 
 ### 4-1. VM Environment (No IPMI / manual-management)
 
-```bash
+```bash title="terminal"
 ./bifrost-cli install \
   --network-interface <NETWORK_INTERFACE> \      # e.g. enp1s0
   --dhcp-pool <DHCP_START_IP>-<DHCP_END_IP> \   # e.g. 192.168.122.100-192.168.122.200
@@ -115,7 +115,7 @@ cd /opt/bifrost
 
 ### 4-2. Physical Baremetal Servers (IPMI / Redfish)
 
-```bash
+```bash title="terminal"
 ./bifrost-cli install \
   --network-interface <NETWORK_INTERFACE> \      # e.g. enp2s0
   --dhcp-pool <DHCP_START_IP>-<DHCP_END_IP> \   # e.g. 192.168.240.100-192.168.240.200
@@ -134,7 +134,7 @@ cd /opt/bifrost
 
 Creating this file beforehand prevents failures during the installation verification step.
 
-```bash
+```bash title="bash"
 mkdir -p ~/.config/openstack
 cat > ~/.config/openstack/clouds.yaml << 'EOF'
 clouds:
@@ -161,7 +161,7 @@ Ironic is installed and running, try it yourself:
 
 ### 5-1. Activating the Environment
 
-```bash
+```bash title="terminal"
 source /opt/stack/bifrost/bin/activate
 export OS_CLOUD=bifrost
 
@@ -174,7 +174,7 @@ baremetal node list
 
 ### 5-2. Checking Service Status
 
-```bash
+```bash title="terminal"
 systemctl status ironic
 systemctl status ironic-inspector
 systemctl status dnsmasq
@@ -183,13 +183,13 @@ systemctl status nginx
 
 ### 5-3. Verifying noauth and Fixing It Manually
 
-```bash
+```bash title="terminal"
 grep auth_strategy /etc/ironic/ironic.conf
 ```
 
 If the value is `http_basic` or `keystone`, fix it manually:
 
-```bash
+```bash title="terminal"
 sed -i 's/auth_strategy = .*/auth_strategy = noauth/' /etc/ironic/ironic.conf
 systemctl restart ironic
 ```
@@ -198,7 +198,7 @@ systemctl restart ironic
 
 Running `baremetal` commands may surface Eventlet deprecation warnings. They don't affect functionality, but if you want to suppress them, add the following to `.bashrc`:
 
-```bash
+```bash title="terminal"
 echo "export PYTHONWARNINGS=ignore" >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -209,7 +209,7 @@ source ~/.bashrc
 
 ### 6-1. IPMI Driver
 
-```bash
+```bash title="bash"
 NODE=<NODE_UUID>
 
 baremetal node set $NODE \
@@ -224,7 +224,7 @@ baremetal node set $NODE \
 
 Use this for servers that support Redfish — Supermicro, HPE iLO, Dell iDRAC, and so on.
 
-```bash
+```bash title="bash"
 NODE=<NODE_UUID>
 
 baremetal node set $NODE \
@@ -251,7 +251,7 @@ baremetal node set $NODE \
 
 Use this when power control is not needed.
 
-```bash
+```bash title="terminal"
 baremetal node set $NODE \
   --driver manual-management \
   --management-interface noop \
@@ -266,7 +266,7 @@ baremetal node set $NODE \
 
 ### 6-4. Clearing Maintenance Caused by SSL Errors
 
-```bash
+```bash title="terminal"
 # Clear maintenance mode
 baremetal node maintenance unset $NODE
 
@@ -302,7 +302,7 @@ server {
 
 After making changes, reload Nginx:
 
-```bash
+```bash title="terminal"
 nginx -t && systemctl reload nginx
 ```
 
@@ -319,13 +319,13 @@ Build an IPA image that includes a login-capable account and any additional pack
 
 If you don't have an SSH key yet, generate one first:
 
-```bash
+```bash title="terminal"
 ssh-keygen -t rsa -b 4096
 ```
 
 #### Set Environment Variables
 
-```bash
+```bash title="bash"
 export ELEMENTS_PATH=/opt/stack/bifrost/share/ironic-python-agent-builder/dib
 
 export DIB_DEV_USER_USERNAME=<USERNAME>           # e.g. ipauser
@@ -338,7 +338,7 @@ export DIB_DEV_USER_SHELL=/bin/bash
 
 #### Build
 
-```bash
+```bash title="terminal"
 ironic-python-agent-builder \
   -o /opt/custom-ipa \
   -e devuser \
@@ -347,7 +347,7 @@ ironic-python-agent-builder \
 
 #### Copy Build Output
 
-```bash
+```bash title="terminal"
 cp /opt/custom-ipa.kernel     /var/lib/ironic/httpboot/ipa.kernel
 cp /opt/custom-ipa.initramfs  /var/lib/ironic/httpboot/ipa.initramfs
 chmod 644 /var/lib/ironic/httpboot/ipa.*
@@ -361,14 +361,14 @@ Use this when you need changes beyond just adding an account — like modifying 
 
 #### Extract
 
-```bash
+```bash title="terminal"
 mkdir -p /opt/ipa-custom && cd /opt/ipa-custom
 zcat /var/lib/ironic/httpboot/ipa.initramfs | cpio -idmv
 ```
 
 #### Change the root Password
 
-```bash
+```bash title="terminal"
 chroot . /bin/bash
 passwd root
 exit
@@ -376,7 +376,7 @@ exit
 
 #### Enable SSH Access
 
-```bash
+```bash title="terminal"
 sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/'                  etc/ssh/sshd_config
 sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/'    etc/ssh/sshd_config
 
@@ -389,14 +389,14 @@ sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' \
 
 Prevents the long wait caused by the network-online target during ramdisk boot:
 
-```bash
+```bash title="terminal"
 rm -f etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
 rm -f etc/systemd/system/network-online.target.wants/ifupdown-wait-online.service
 ```
 
 #### Repackage
 
-```bash
+```bash title="terminal"
 cd /opt/ipa-custom
 find . | cpio -H newc -o | gzip -9 > /var/lib/ironic/httpboot/ipa.initramfs
 chmod 644 /var/lib/ironic/httpboot/ipa.initramfs
@@ -413,7 +413,7 @@ Using `disk-image-create` gives you full control over partition layout, installe
 
 #### Set Environment Variables
 
-```bash
+```bash title="bash"
 # Ubuntu release codename (jammy = 22.04, noble = 24.04)
 export DIB_RELEASE=jammy
 
@@ -432,7 +432,7 @@ export DIB_IMAGE_SIZE=10
 Below is a standard 4-partition layout with UEFI boot support.  
 Adjust `size` values to suit your environment.
 
-```bash
+```bash title="bash"
 export DIB_BLOCK_DEVICE_CONFIG='
 - local_loop:
     name: image0
@@ -488,7 +488,7 @@ export DIB_BLOCK_DEVICE_CONFIG='
 
 #### Build the Image
 
-```bash
+```bash title="terminal"
 disk-image-create \
   ubuntu \
   bootloader \
@@ -516,7 +516,7 @@ grub-efi-amd64,grub-efi-amd64-signed,shim-signed \
 
 #### Verify the Build
 
-```bash
+```bash title="terminal"
 ls -lh /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2
 ```
 
@@ -526,7 +526,7 @@ ls -lh /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2
 
 If the `/boot/efi/EFI/ubuntu` path is missing after the build, apply this patch:
 
-```bash
+```bash title="bash"
 guestfish -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 << 'EOF'
 run
 mount /dev/sda4 /
@@ -555,7 +555,7 @@ EOF
 
 > **Partition number warning**: The device numbers (`/dev/sda1`, `/dev/sda3`, `/dev/sda4`) may differ depending on your build environment.  
 > Always check your actual partition layout first:
-> ```bash
+> ```bash title="terminal"
 > guestfish -a <image_path> run : list-filesystems
 > ```
 
@@ -565,7 +565,7 @@ EOF
 
 Apply additional configuration to the image after the build completes:
 
-```bash
+```bash title="terminal"
 virt-customize -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
   --root-password password:<ROOT_PASSWORD> \
   --ssh-inject root:file:/root/.ssh/id_rsa.pub \
@@ -581,19 +581,19 @@ virt-customize -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
 #### virt-customize Option Reference
 
 **Accounts / Passwords**
-```bash
+```bash title="terminal"
 --root-password password:<PASSWORD>
 --password <USERNAME>:password:<PASSWORD>
 ```
 
 **SSH**
-```bash
+```bash title="terminal"
 --ssh-inject root:file:/root/.ssh/id_rsa.pub
 --ssh-inject <USERNAME>:string:"ssh-rsa AAAA..."
 ```
 
 **File Operations**
-```bash
+```bash title="terminal"
 --upload /local/file:/remote/path
 --write '/etc/hosts:127.0.0.1 myhost'
 --delete /path/to/file
@@ -601,21 +601,21 @@ virt-customize -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
 ```
 
 **Running Commands**
-```bash
+```bash title="terminal"
 --run-command 'apt-get install -y nginx'
 --firstboot /path/to/script.sh         # Run script on first boot
 --firstboot-command 'systemctl start app'
 ```
 
 **Packages**
-```bash
+```bash title="terminal"
 --install nginx,curl,vim
 --uninstall apache2
 --update
 ```
 
 **System**
-```bash
+```bash title="terminal"
 --hostname <HOSTNAME>
 --timezone Asia/Seoul
 --truncate /path/to/file
@@ -625,7 +625,7 @@ virt-customize -a /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
 
 ### 9-4. Generating a SHA256 Checksum
 
-```bash
+```bash title="terminal"
 sha256sum /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2 \
   > /var/lib/ironic/httpboot/ubuntu-22.04-baremetal.qcow2.sha256
 
@@ -694,13 +694,13 @@ runcmd:
 ```
 
 > **Generating a password hash**:
-> ```bash
+> ```bash title="terminal"
 > openssl passwd -6 <your_password>
 > ```
 
 #### config-drive via Directory
 
-```bash
+```bash title="terminal"
 mkdir -p /opt/configdrive/openstack/latest
 cp user-data.yaml /opt/configdrive/openstack/latest/user_data
 echo '{"uuid": "<NODE_UUID>"}' > /opt/configdrive/openstack/latest/meta_data.json
@@ -710,7 +710,7 @@ echo '{"uuid": "<NODE_UUID>"}' > /opt/configdrive/openstack/latest/meta_data.jso
 
 Encode user-data as JSON and set it directly on the node — no separate files needed:
 
-```bash
+```bash title="bash"
 python3 << 'EOF'
 import json
 with open('/var/lib/ironic/httpboot/user-data.yaml') as f:
@@ -731,14 +731,14 @@ baremetal node set $NODE \
 
 When a baremetal server PXE boots, it registers with Ironic automatically:
 
-```bash
+```bash title="terminal"
 baremetal node list
 # provision_state should show: enroll
 ```
 
 ### 10-2. Transitioning to manageable
 
-```bash
+```bash title="bash"
 NODE=<NODE_UUID>
 
 baremetal node manage $NODE
@@ -753,38 +753,38 @@ Running `provide` will trigger automated cleaning if `automated_clean = True` is
 
 **Skip cleaning and go straight to available (per-node)**
 
-```bash
+```bash title="terminal"
 baremetal node set $NODE --no-automated-clean
 baremetal node provide $NODE
 ```
 
 **Re-enable cleaning for a node**
 
-```bash
+```bash title="terminal"
 baremetal node set $NODE --automated-clean
 ```
 
 **Disable globally (applies to all nodes)**
 
-```bash
+```bash title="bash"
 # /etc/ironic/ironic.conf
 [conductor]
 automated_clean = False
 ```
 
-```bash
+```bash title="terminal"
 systemctl restart ironic
 ```
 
 ### 10-4. Transitioning to available
 
-```bash
+```bash title="terminal"
 baremetal node provide $NODE
 ```
 
 ### 10-5. Setting Image Info on the Node
 
-```bash
+```bash title="bash"
 CONTROLLER_IP=<CONTROLLER_IP>    # e.g. 192.168.240.1
 IMAGE_NAME=ubuntu-22.04-baremetal
 
@@ -798,7 +798,7 @@ baremetal node set $NODE \
 
 **Method A: config-drive from directory**
 
-```bash
+```bash title="terminal"
 baremetal node deploy $NODE --config-drive /opt/configdrive/
 ```
 
@@ -806,7 +806,7 @@ baremetal node deploy $NODE --config-drive /opt/configdrive/
 
 Encode and set user-data without needing separate files:
 
-```bash
+```bash title="bash"
 python3 << 'EOF'
 import json
 with open('/var/lib/ironic/httpboot/user-data.yaml') as f:
@@ -823,7 +823,7 @@ baremetal node deploy $NODE
 
 ### 10-7. Monitoring Deployment Status
 
-```bash
+```bash title="terminal"
 # Watch status in real time
 watch -n2 "baremetal node list 2>/dev/null"
 ```
@@ -844,7 +844,7 @@ Once the node reaches `active`, deployment is complete. Nodes registered via IPM
 
 The example below sets up RAID 1 (mirroring):
 
-```bash
+```bash title="bash"
 cat > /opt/sw-raid-config.json << 'EOF'
 {
   "logical_disks": [
@@ -865,14 +865,14 @@ EOF
 
 Run this while the node is in `manageable` state:
 
-```bash
+```bash title="terminal"
 baremetal node set $NODE --raid-interface agent
 baremetal node set $NODE --target-raid-config /opt/sw-raid-config.json
 ```
 
 ### 11-3. Creating the RAID via a Clean Step
 
-```bash
+```bash title="terminal"
 baremetal node clean $NODE \
   --clean-steps '[
     {"interface": "deploy", "step": "erase_devices_metadata"},
@@ -882,7 +882,7 @@ baremetal node clean $NODE \
 
 After cleaning completes, SSH into the server to verify:
 
-```bash
+```bash title="terminal"
 cat /proc/mdstat
 mdadm --detail /dev/md0
 ```
@@ -893,7 +893,7 @@ mdadm --detail /dev/md0
 
 Removing the RAID along with disk metadata prevents conflicts on the next deployment:
 
-```bash
+```bash title="terminal"
 baremetal node clean $NODE \
   --clean-steps '[
     {"interface": "raid",   "step": "delete_configuration"},
@@ -903,7 +903,7 @@ baremetal node clean $NODE \
 
 To fully reset the RAID interface on the node:
 
-```bash
+```bash title="terminal"
 baremetal node set $NODE --raid-interface no-raid
 ```
 
@@ -913,7 +913,7 @@ baremetal node set $NODE --raid-interface no-raid
 
 ### 12-1. Undeploy
 
-```bash
+```bash title="terminal"
 baremetal node undeploy $NODE
 ```
 
@@ -925,7 +925,7 @@ During cleaning, the node reboots into the ramdisk and wipes disk metadata.
 
 ### 12-2. Manual Clean
 
-```bash
+```bash title="terminal"
 baremetal node clean $NODE \
   --clean-steps '[{"interface": "deploy", "step": "erase_devices_metadata"}]'
 ```
@@ -934,7 +934,7 @@ baremetal node clean $NODE \
 
 To completely remove a node, run from `manageable` state:
 
-```bash
+```bash title="terminal"
 # Transition to manageable first
 baremetal node manage $NODE
 
@@ -964,7 +964,7 @@ baremetal node delete $NODE
 
 By default, Ironic powers off the node after clean or inspect completes. To prevent this, configure it per node:
 
-```bash
+```bash title="terminal"
 # Keep power ON after clean completes
 baremetal node set $NODE --disable-power-off
 
@@ -974,7 +974,7 @@ baremetal node set $NODE --enable-power-off
 
 To detect when cleaning is done and automatically trigger a next step, you can use this script:
 
-```bash
+```bash title="bash"
 #!/bin/bash
 NODE=$1
 TARGET_STATE=${2:-available}
@@ -1000,7 +1000,7 @@ done
 
 **baremetal command returns 401 Unauthorized**
 
-```bash
+```bash title="terminal"
 grep auth_strategy /etc/ironic/ironic.conf
 # If not noauth, fix it:
 sed -i 's/auth_strategy = .*/auth_strategy = noauth/' /etc/ironic/ironic.conf
@@ -1009,7 +1009,7 @@ systemctl restart ironic
 
 **Recovering from clean failed**
 
-```bash
+```bash title="terminal"
 baremetal node maintenance unset $NODE
 baremetal node manage $NODE
 baremetal node provide $NODE
@@ -1017,7 +1017,7 @@ baremetal node provide $NODE
 
 **power failure / Redfish SSL error**
 
-```bash
+```bash title="terminal"
 # Re-set redfish_verify_ca=False
 baremetal node set $NODE --driver-info redfish_verify_ca=False
 # Remove the incorrect parameter if it was set
@@ -1027,7 +1027,7 @@ baremetal node maintenance unset $NODE
 
 **No IP assigned after PXE boot**
 
-```bash
+```bash title="terminal"
 # Check dnsmasq logs
 journalctl -u dnsmasq -f
 
@@ -1037,7 +1037,7 @@ tcpdump -i <PXE_INTERFACE> port 67 or port 68 -n
 
 **Node stuck in enroll and not registering**
 
-```bash
+```bash title="terminal"
 # Check Inspector status
 systemctl status ironic-inspector
 journalctl -u ironic-inspector -f

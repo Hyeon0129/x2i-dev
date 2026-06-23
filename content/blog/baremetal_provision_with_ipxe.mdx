@@ -49,14 +49,14 @@ Before configuring dnsmasq, make sure the interface you'll use for iPXE has a st
 
 ### 1.1 System Update & Package Installation
 
-```bash
+```bash title="terminal"
 yum update -y
 yum install dnsmasq make gcc -y && yum upgrade
 ```
 
 ### 1.2 Create the TFTP Directory
 
-```bash
+```bash title="terminal"
 # This directory will store the iPXE boot files (.efi, .kpxe)
 mkdir /tftpboot
 ```
@@ -65,7 +65,7 @@ mkdir /tftpboot
 
 Edit `/etc/dnsmasq.conf` with the following configuration.
 
-```bash
+```bash title="bash"
 # Disable DNS server
 #port=0
 
@@ -121,7 +121,7 @@ dhcp-boot=tag:ipxe,tag:!BIOS,tag:!EFI,menu/boot3.ipxe
 
 ### 1.4 Firewall Rules
 
-```bash
+```bash title="terminal"
 firewall-cmd --add-service=dhcp --permanent
 firewall-cmd --add-service=tftp --permanent
 firewall-cmd --add-service=dns  --permanent
@@ -136,7 +136,7 @@ systemctl disable firewalld
 
 ### 1.5 Enable and Start dnsmasq
 
-```bash
+```bash title="terminal"
 systemctl enable dnsmasq
 systemctl start dnsmasq
 ```
@@ -147,7 +147,7 @@ systemctl start dnsmasq
 
 The iPXE source is available on GitHub. You need `make` and `gcc` installed before compiling.
 
-```bash
+```bash title="terminal"
 git clone https://github.com/ipxe/ipxe
 cd ipxe/src
 
@@ -167,7 +167,7 @@ cp bin/undionly.kpxe /tftpboot/
 
 iPXE delivers files to client servers over HTTP, so you need a web server to serve those files.
 
-```bash
+```bash title="bash"
 yum install httpd -y
 
 Edit the Apache configuration:
@@ -202,7 +202,7 @@ In this setup, the root is `/data`. Adjust as needed for your environment.
 To install Windows-based operating systems (Windows 2019, 2022, etc.) via iPXE, Samba is required.
 Windows uses a different filesystem than Linux, so we need a file-sharing protocol that Windows can read.
 
-```bash
+```bash title="terminal"
 yum install samba samba-client -y
 
 # Enable and start Samba services
@@ -217,7 +217,7 @@ mkdir /data/srv
 ```
 Edit `/etc/samba/smb.conf`:
 
-```bash
+```bash title="bash"
 [global]
     workgroup = WORKGROUP
     server string = iPXE Samba Server %v
@@ -244,7 +244,7 @@ If you cannot connect, SELinux is likely the cause.
 Check the current status and disable it if needed:
 :::
 
-```bash
+```bash title="terminal"
 getenforce # 0: disable, 1: enforcing 
 # Disabled  ← if already disabled, you're good
 # Enforcing ← if this, you need to fix it
@@ -263,7 +263,7 @@ vim /etc/selinux/config.
 Once the server is fully set up, you can put any OS or tool into iPXE — custom menus, Linux installs, Windows installs, DOS, diagnostics, whatever you need. The menu is fully scriptable, so each item just chains to another `.ipxe` file.
 From the `dnsmasq.conf` configured earlier, the second boot files point to menu files:
 
-```bash
+```bash title="bash"
 # Since `tftp-root=/tftpboot`, the actual file path on disk is `/tftpboot/menu/boot.ipxe`.
 dhcp-boot=tag:ipxe,tag:BIOS,menu/boot.ipxe   # Legacy Mode
 dhcp-boot=tag:ipxe,tag:EFI,menu/boot2.ipxe   # UEFI Mode
@@ -274,7 +274,7 @@ dhcp-boot=tag:ipxe,tag:!BIOS,tag:!EFI,menu/boot3.ipxe  # ARM
 ### Initial Boot File 
 /tftpboot/menu/boot.ipxe: This file loads first via TFTP and immediately chains to the real menu hosted on HTTP.
 
-```bash
+```bash title="bash"
 #!ipxe
 isset ${pxe-ip} || set pxe-ip http://10.0.0.1/data
 console --x 1024 --y 768
@@ -285,7 +285,7 @@ chain ${pxe-ip}/ipxe-scripts/boot.ipxe
 ### Main Menu File
 /data/ipxe-scripts/boot.ipxe: This is where you define all the OS and tool options that appear in the boot menu.
 Every iPXE script file must start with `#!ipxe` on the very first line. For detailed menu options and command references, see [ipxe.org](https://ipxe.org).
-```bash
+```bash title="bash"
 # /ipxe-scripts/boot.ipxe
 #!ipxe  
 isset ${pxe-ip} || set pxe-ip http://10.0.0.1/data
@@ -323,13 +323,13 @@ To install an OS through iPXE, you first need to download the ISO and extract it
 
 ### 6.1 Mount and Extract the ISO (CentOS 7.9 Example)
 
-```bash
+```bash title="terminal"
 mount CentOS-7-x86_64-Everything-2009.iso /mnt
 cp -rf /mnt/* /data/OS/centos/7.9
 ```
 Verify the extracted files:
 
-```bash
+```bash title="terminal"
 ls /data/OS/centos/7.9
 # Expected output:
 # EFI  GPL  images  isolinux  Packages  repodata  RPM-GPG-KEY-CentOS-7 ...
@@ -337,7 +337,7 @@ ls /data/OS/centos/7.9
 
 ### 6.2 Write the OS Installation iPXE Script
 
-```bash
+```bash title="bash"
 #!ipxe
 isset ${pxe-ip} || set pxe-ip http://10.0.0.1/data
 :main
@@ -374,7 +374,7 @@ Installing one server at a time is not practical at scale. Kickstart allows you 
 ### 7.1 Kickstart for RHEL / Rocky / CentOS
 Add `inst.ks=` to the existing kernel line:
 
-```bash
+```bash title="bash"
 :centos7_9
 imgfree
 echo "Booting CentOS 7.9..."
@@ -389,7 +389,7 @@ boot || goto failed
 
 #### Example Kickstart file `centos.cfg`
 
-```bash
+```bash title="bash"
 text
 url --url="http://10.0.0.1/data/OS/centos/7.9/"
 
@@ -429,7 +429,7 @@ Kickstart syntax varies slightly between OS versions — always verify against t
 For Debian-based distributions, the equivalent of Kickstart is `preseed`.
 The iPXE script is nearly identical — the main difference is the kernel and initrd filenames.
 
-```bash
+```bash title="bash"
 :ubuntu20_04
 imgfree
 echo "Booting Ubuntu 20.04.5..."
@@ -453,7 +453,7 @@ boot || goto failed
 
 Below is a minimal preseed configuration for Ubuntu 20.04.
 
-```bash
+```bash title="bash"
 # Locale and keyboard
 d-i debian-installer/locale string en_US.UTF-8
 d-i keyboard-configuration/xkb-keymap select us

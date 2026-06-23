@@ -71,7 +71,7 @@ type Token = {
 };
 
 // Admonition (note, info, tip, 'danger', warning)
-const admonitionTypes = ['note', 'note-plain', 'important', 'tip', 'warning', 'danger'];
+const admonitionTypes = ['note', 'warning'];
 
 admonitionTypes.forEach((type) => {
   md.use(container, type, {

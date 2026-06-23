@@ -21,7 +21,8 @@ export default function CodeTabs() {
       const tabs: HTMLButtonElement[] = [];
 
       panels.forEach((panel, i) => {
-        const title = panel.getAttribute('data-title') || `tab ${i + 1}`;
+        const rawTitle = panel.getAttribute('data-title') || `tab ${i + 1}`;
+        const title = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
 
         const tab = document.createElement('button');
         tab.type = 'button';

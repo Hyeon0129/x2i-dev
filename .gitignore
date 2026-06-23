@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design sandbox post, not for production
+/content/blog/codeblock.mdx

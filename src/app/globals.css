@@ -1014,17 +1014,29 @@ pre[class*="language-"]::after {
 }
 
 
-pre.language-bash::before { content: 'bash'; }
-pre.language-python::before { content: 'python'; }
+pre.language-bash::before { content: 'Bash'; }
+pre.language-python::before { content: 'Python'; }
 pre.language-javascript::before,
-pre.language-js::before { content: 'javascript'; }
+pre.language-js::before { content: 'JavaScript'; }
 pre.language-typescript::before,
-pre.language-ts::before { content: 'typescript'; }
-pre.language-json::before { content: 'json'; }
-pre.language-html::before { content: 'html'; }
-pre.language-css::before { content: 'css'; }
+pre.language-ts::before { content: 'TypeScript'; }
+pre.language-json::before { content: 'JSON'; }
+pre.language-html::before { content: 'HTML'; }
+pre.language-css::before { content: 'CSS'; }
 pre.language-yaml::before,
-pre.language-yml::before { content: 'yaml'; }
+pre.language-yml::before { content: 'YAML'; }
+
+/* title="terminal" — show a terminal icon instead of the language name */
+pre[data-title="terminal" i]::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23858585' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 17 10 11 4 5'/%3E%3Cline x1='12' y1='19' x2='20' y2='19'/%3E%3C/svg%3E");
+}
 
 .line-numbers {
   display: none;
@@ -1190,11 +1202,12 @@ table {
 thead th {
   background-color: transparent;
   color: rgba(255, 255, 255, 0.5);
-  font-weight: 400;
+  font-weight: 600;
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 14px;
+  line-height: 1.4;
   letter-spacing: normal;
 }
 
@@ -1206,6 +1219,8 @@ tbody td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   vertical-align: top;
   font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
 tbody tr:last-child td {

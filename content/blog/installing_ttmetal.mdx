@@ -40,7 +40,7 @@ This option provides the most control, allowing developers to work directly with
 #### Step 1: Clone the Repository
 First, clone the TT-Metal repository along with its submodules:
 
-```bash title="terminal"
+```bash title="bash"
 ## This ensures that all necessary dependencies are included in the codebase.
 git clone https://github.com/tenstorrent/tt-metal.git --recurse-submodules
  ```
@@ -50,7 +50,7 @@ git clone https://github.com/tenstorrent/tt-metal.git --recurse-submodules
 #### Step 2: Install Dependencies
 Before building TT-Metal, install the required dependencies:
 
-```bash title="terminal"
+```bash title="bash"
 ## This script ensures that all necessary packages are installed before proceeding.
 ./install_dependencies.sh
  ```
@@ -60,7 +60,7 @@ Before building TT-Metal, install the required dependencies:
 #### Step 3: Step 3: Build TT-Metal and Set Up Virtual Environment
 After installing dependencies, build TT-Metal and set up a virtual environment by running:
 
-```bash title="terminal"
+```bash title="bash"
 ## This script ensures that all necessary packages are installed before proceeding.
 ## This will compile TT-Metal and activate a dedicated Python environment for execution.
 ./build_metal.sh && ./create_venv.sh
@@ -76,7 +76,7 @@ The fastest way to get started. This method provides a pre-configured environmen
 #### Step 1: Download the Latest Docker Image
 First, pull the latest TT-Metal Docker image from the official registry:
 
-```bash title="terminal"
+```bash title="bash"
 ## This will download the latest release of the TT-Metal Docker container.
 docker pull ghcr.io/tenstorrent/tt-metal/tt-metalium-ubuntu-20.04-amd64-release:latest-rc
  ```
@@ -86,7 +86,7 @@ docker pull ghcr.io/tenstorrent/tt-metal/tt-metalium-ubuntu-20.04-amd64-release:
 #### Step 2: Run the Docker Container
 After downloading the image, start the container using the following command:
 
-```bash title="terminal"
+```bash title="bash"
 ## This script ensures that all necessary packages are installed before proceeding.
 docker run -it --rm -v /dev/hugepages-1G:/dev/hugepages-1G --device /dev/tenstorrent ghcr.io/tenstorrent/tt-metal/tt-metalium-ubuntu-20.04-amd64-release:latest-rc bash
  ```
@@ -110,13 +110,13 @@ To install TT-Metal, you first need to download the correct wheel file based on 
 
 General Installation Command
 
-```bash title="terminal"
+```bash title="bash"
 pip install <wheel_file.whl>
 ```
 
 If you’re using Ubuntu 22.04 with Python 3.10, use the following commands:
 
-```bash title="terminal"
+```bash title="bash"
 # Recommended version for Ubuntu 22.04 with Python 3.10
 wget https://github.com/tenstorrent/tt-metal/releases/download/v0.57.0-rc5/ttnn-0.57.0rc5+any-cp310-cp310-linux_x86_64.whl
 pip install ttnn-0.57.0rc5+any-cp310-cp310-linux_x86_64.whl
@@ -124,7 +124,7 @@ pip install ttnn-0.57.0rc5+any-cp310-cp310-linux_x86_64.whl
 
 If you’re using Ubuntu 20.04 with Python 3.8, use this instead:
 
-```bash title="terminal"
+```bash title="bash"
 # Recommended version for Ubuntu 20.04 with Python 3.8
 wget https://github.com/tenstorrent/tt-metal/releases/download/v0.57.0-rc5/ttnn-0.57.0rc5+any-cp38-cp38-linux_x86_64.whl
 pip install ttnn-0.57.0rc5+any-cp38-cp38-linux_x86_64.whl
@@ -150,7 +150,7 @@ Set Up the Python Path in the TT-Metal Home Directory
 
 To allow TT-Metal to correctly locate all necessary files, you must run the following command inside the TT-Metal installation directory. For example, if TT-Metal is installed in `/opt/tt-metal`, first navigate there:
 
-```bash title="terminal"
+```bash title="bash"
 cd /opt/tt-metal
 export PYTHONPATH=$(pwd)
 export TT_METAL_HOME=$(pwd)
@@ -169,13 +169,13 @@ Select your Tenstorrent card model
 
 <br />
 
-```bash title="terminal"
+```bash title="bash"
 export ARCH_NAME=wormhole_b0
 ```
 
 Install Required Libraries for Models
 
-```bash title="terminal"
+```bash title="bash"
 pip install -r tt_metal/python_env/requirements-dev.txt
 ```
 
@@ -184,7 +184,7 @@ pip install -r tt_metal/python_env/requirements-dev.txt
 Now that TT-Metal is installed, let’s verify the installation and ensure everything is working correctly.
 
 ### Run a Simple Operation on Your TT-Metal Device
-```bash title="terminal"
+```bash title="bash"
 python3 -m ttnn.examples.usage.run_op_on_device
 ```
 

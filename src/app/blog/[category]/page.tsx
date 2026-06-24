@@ -58,8 +58,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       
       <BlogList posts={filteredPosts} />
     </div>
-    
-    <div className="divider" />
     </>
   );
 }

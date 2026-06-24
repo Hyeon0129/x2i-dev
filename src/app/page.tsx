@@ -57,8 +57,6 @@ export default function HomePage() {
         <div style={{ height: "20px" }} />
         <BlogSection /> {}
         <div style={{ height: "40px" }} />
-        <div className="divider" />
-        
       </div>
     </>
   )
@@ -80,7 +78,8 @@ function Hero() {
           </div>
 
           <h1 className="hero-title">
-            If It Doesn&apos;t Work,<br />Make It Work
+            If It Doesn&apos;t Work,<br />
+            <span className="hero-title-accent">Make It Work</span>
           </h1>
           <p className="section-sub">
             I record to learn what I care about, and to organize what I’ve tried and built.
@@ -108,6 +107,7 @@ function TvSection() {
   const text = `> Hello, I'm\n_ a Server Engineer.`
   const [idx, setIdx] = useState(0)
   const done = idx >= text.length
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
 
   useEffect(() => {
     if (done) return
@@ -115,16 +115,48 @@ function TvSection() {
     return () => clearTimeout(t)
   }, [idx, done])
 
+  useEffect(() => {
+    const read = () => {
+      const current = document.documentElement.getAttribute('data-theme')
+      setTheme(current === 'light' ? 'light' : 'dark')
+    }
+    read()
+    const observer = new MutationObserver(read)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section id="records" className="section fade-in">
       <div className="container tv-grid">
-        <div className="tv-wrap">
-          <Image src={TV_IMG} alt="terminal tv" width={1200} height={800} className="tv-image" priority />
-          <div className="tv-text">
-            <span className="typing-text">{text.slice(0, idx)}</span>
-            <span className={`cursor ${done ? 'blink' : ''}`} />
+        {theme === 'light' ? (
+          <div className="code-window-wrap">
+            <div className="cw-card">
+              <div className="cw-bar">
+                <span className="cw-dot cw-dot--red" />
+                <span className="cw-dot cw-dot--yellow" />
+                <span className="cw-dot cw-dot--green" />
+                <span className="cw-bar-label">pyron — zsh</span>
+              </div>
+              <div className="cw-body">
+                <span className="typing-text">{text.slice(0, idx)}</span>
+                <span className={`cw-cursor ${done ? 'blink' : ''}`} />
+              </div>
+            </div>
+            <div className="cw-notches" aria-hidden="true">
+              <span /><span /><span /><span />
+              <span /><span /><span /><span />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="tv-wrap">
+            <Image src={TV_IMG} alt="terminal tv" width={1200} height={800} className="tv-image" priority />
+            <div className="tv-text">
+              <span className="typing-text">{text.slice(0, idx)}</span>
+              <span className={`cursor ${done ? 'blink' : ''}`} />
+            </div>
+          </div>
+        )}
 
                     
         <div className="tv-side">

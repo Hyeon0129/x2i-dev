@@ -111,7 +111,6 @@ export default async function BlogPage({ searchParams }: Props) {
           basePath="/blog"
         />
       </div>
-      <div className="divider" />
     </>
   );
 }

@@ -10,6 +10,22 @@ export default function HeroParticles() {
     const ctx = canvas.getContext('2d')!
     let raf = 0
 
+    // dark theme: white dust on black. light theme: soft slate dust on the
+    // lightly-toned hero, plus a gentler alpha so it reads as ambient texture.
+    let fill = '#ffffff'
+    let alphaScale = 1
+    const readTheme = () => {
+      const light = document.documentElement.getAttribute('data-theme') === 'light'
+      fill = light ? '#64748b' : '#ffffff'
+      alphaScale = light ? 0.7 : 1
+    }
+    readTheme()
+    const themeObserver = new MutationObserver(readTheme)
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
+
     const DPR = Math.min(2, window.devicePixelRatio || 1)
     let w = 0,
       h = 0
@@ -42,7 +58,7 @@ export default function HeroParticles() {
 
     const step = () => {
       ctx.clearRect(0, 0, w, h)
-      ctx.fillStyle = '#fff'
+      ctx.fillStyle = fill
       for (const p of particles) {
         p.x += p.vx
         p.y += p.vy
@@ -50,7 +66,7 @@ export default function HeroParticles() {
         if (p.x > w + 10) p.x = -10
         if (p.y < -10) p.y = h + 10
         if (p.y > h + 10) p.y = -10
-        ctx.globalAlpha = p.a
+        ctx.globalAlpha = p.a * alphaScale
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
         ctx.fill()
@@ -70,6 +86,7 @@ export default function HeroParticles() {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
+      themeObserver.disconnect()
     }
   }, [])
 

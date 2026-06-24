@@ -16,6 +16,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
   const [theme, setTheme] = useState<Theme>('dark');
+  const [isMac, setIsMac] = useState(true);
 
   useEffect(() => {
     const stored = (document.documentElement.getAttribute('data-theme') as Theme | null) ?? 'dark';
@@ -26,7 +27,22 @@ export default function Header() {
       setTheme(current === 'light' ? 'light' : 'dark');
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    setIsMac(/Mac|iPhone|iPod|iPad/.test(navigator.platform ?? navigator.userAgent));
+
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isShortcut = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
+      if (isShortcut) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const toggleTheme = () => {
@@ -98,7 +114,7 @@ export default function Header() {
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <span>Search</span>
-              <kbd>⌘K</kbd>
+              <kbd>{isMac ? '⌘K' : 'Ctrl K'}</kbd>
             </button>
           </div>
         </div>

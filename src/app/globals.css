@@ -113,8 +113,10 @@ body {
 .search-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  justify-content: space-between;
+  gap: 14px;
+  width: 184px;
+  padding: 7px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.04);
@@ -122,6 +124,10 @@ body {
   font-size: 0.82rem;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+.search-btn span {
+  flex: 1;
+  text-align: left;
 }
 .search-btn:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -278,6 +284,115 @@ body {
 .cursor{ display:inline-block; width:8px; height:1.4rem; margin-left:6px; position:relative; top:.25rem; background:#00FF00; opacity:0; }
 .cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Light-theme TV replacement — x.ai-style code window:
+   gradient-mesh panel + notched corners + white terminal card */
+.code-window-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1420px;
+  transform: translateX(-3%);
+  padding: clamp(28px, 4vw, 52px);
+  overflow: hidden;
+  background-color: #2a55a6;
+  background-image:
+    radial-gradient(circle at 30% 22%, rgba(176, 214, 255, 0.95) 0%, transparent 30%),
+    radial-gradient(circle at 42% 62%, rgba(150, 198, 255, 0.95) 0%, transparent 34%),
+    radial-gradient(circle at 55% 70%, rgba(96, 162, 255, 0.9) 0%, transparent 32%),
+    radial-gradient(circle at 68% 38%, rgba(38, 100, 220, 0.95) 0%, transparent 38%),
+    radial-gradient(circle at 88% 80%, rgba(120, 180, 255, 0.8) 0%, transparent 30%),
+    linear-gradient(125deg, #3a66bc 0%, #2a55a6 45%, #16336f 100%);
+}
+/* fine grain overlay for the x.ai paper-shader texture */
+.code-window-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* notched (stepped) corners — squares painted in the page background colour */
+.cw-notches span {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: var(--background-color);
+  z-index: 3;
+}
+.cw-notches span:nth-child(1) { top: 0; left: 0; }
+.cw-notches span:nth-child(2) { top: 13px; left: 13px; }
+.cw-notches span:nth-child(3) { top: 0; right: 0; }
+.cw-notches span:nth-child(4) { top: 13px; right: 13px; }
+.cw-notches span:nth-child(5) { bottom: 0; left: 0; }
+.cw-notches span:nth-child(6) { bottom: 13px; left: 13px; }
+.cw-notches span:nth-child(7) { bottom: 0; right: 0; }
+.cw-notches span:nth-child(8) { bottom: 13px; right: 13px; }
+
+.cw-card {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(213, 217, 226, 0.7),
+    0 18px 40px -24px rgba(15, 23, 42, 0.45);
+}
+.cw-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.cw-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.cw-dot--red { background: #ff5f57; box-shadow: 0 0 8px rgba(255, 95, 87, 0.45); }
+.cw-dot--yellow { background: #febc2e; box-shadow: 0 0 8px rgba(254, 188, 46, 0.45); }
+.cw-dot--green { background: #28c840; box-shadow: 0 0 8px rgba(40, 200, 64, 0.45); }
+.cw-bar-label {
+  margin-left: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  color: rgba(15, 23, 42, 0.4);
+  letter-spacing: 0.02em;
+}
+.cw-body {
+  padding: 30px 26px;
+  min-height: 150px;
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 1.12rem;
+  line-height: 1.7;
+  color: #1f2328;
+  white-space: pre-wrap;
+}
+.cw-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.15rem;
+  margin-left: 4px;
+  position: relative;
+  top: 0.18rem;
+  background: #f97316;
+  opacity: 0;
+}
+.cw-cursor.blink {
+  animation: blink 0.8s steps(2, start) infinite;
+  opacity: 1;
+}
+@media (max-width: 1200px) {
+  .code-window-body { font-size: 0.95rem; min-height: 120px; padding: 24px 20px; }
+  .cw-body { font-size: 0.95rem; min-height: 120px; padding: 24px 20px; }
+}
 .section-title {
  font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
  font-size: 3rem;
@@ -2655,11 +2770,45 @@ html[data-theme="light"] .search-btn kbd {
 
 /* ---------- HERO ---------- */
 html[data-theme="light"] .hero-title,
-html[data-theme="light"] .detail-title { color: #0f1115 !important; }
+html[data-theme="light"] .detail-title {
+  color: #0f1115 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] .hero-title:hover {
+  text-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="light"] .section-sub,
+html[data-theme="light"] .hero-sub { color: #5b6270 !important; }
 html[data-theme="light"] .detail-desc,
 html[data-theme="light"] .about-desc { color: #4b5563 !important; }
 html[data-theme="light"] .mono-tag { color: #6b7280 !important; }
-html[data-theme="light"] canvas.hero-canvas { opacity: 0.35; }
+/* Hero is a clearly-toned block (not pure #fff). The .divider line below it
+   + the white .below-bg create the section boundary — same role the divider
+   plays in dark mode. */
+html[data-theme="light"] .hero {
+  background:
+    radial-gradient(110% 80% at 75% 25%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
+    linear-gradient(165deg, #e6eaf2 0%, #edf0f6 55%, #eef1f7 100%) !important;
+}
+html[data-theme="light"] .hero::before {
+  background:
+    radial-gradient(circle at 28% 45%, rgba(110, 130, 170, 0.12) 0%, transparent 55%) !important;
+  mix-blend-mode: normal !important;
+}
+/* slate dust reads on the toned hero */
+html[data-theme="light"] canvas.hero-canvas { opacity: 1 !important; }
+/* replace the white image glow with a soft neutral shadow */
+html[data-theme="light"] .hero-image {
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.12)) !important;
+}
+/* two-tone title (2nd line muted) so it isn't flat/plain */
+html[data-theme="light"] .hero-title { color: #14181f !important; }
+html[data-theme="light"] .hero-title-accent { color: #9aa3b4 !important; }
+html[data-theme="light"] .section-sub { color: #565d6b !important; }
+/* the boundary line between the toned hero and the white content below */
+html[data-theme="light"] .divider { border-bottom-color: rgba(0, 0, 0, 0.1) !important; }
+html[data-theme="light"] .below-bg { background: #ffffff !important; }
 
 /* ---------- SECTION HEADERS ---------- */
 html[data-theme="light"] .section-title,
@@ -2684,10 +2833,10 @@ html[data-theme="light"] .skills-grid-alt {
   background: transparent !important;
 }
 html[data-theme="light"] .skills-right {
-  background: rgba(0, 0, 0, 0.08) !important;
+  background: rgba(0, 0, 0, 0.06) !important;
 }
 html[data-theme="light"] .skills-box {
-  background: #f5f6f8 !important;
+  background: #ffffff !important;
   color: #0f1115 !important;
 }
 html[data-theme="light"] .skills-box h4 { color: #6b7280 !important; }
@@ -2803,8 +2952,8 @@ html[data-theme="light"] [class*="blog-module__"][class$="__title"] {
   color: #0f1115 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__category"] {
-  background-color: transparent !important;
-  color: #6b7280 !important;
+  background-color: #eceef1 !important;
+  color: #4b5563 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__excerpt"] {
   color: #4b5563 !important;
@@ -2877,6 +3026,15 @@ html[data-theme="light"] [class*="footer-module__"][class$="__divider"] {
 }
 html[data-theme="light"] [class*="footer-module__"][class$="__copy"] {
   color: rgba(15, 17, 21, 0.45) !important;
+}
+html[data-theme="light"] [class*="footer-module__"][class$="__tagline"] {
+  color: rgba(15, 17, 21, 0.55) !important;
+}
+html[data-theme="light"] [class*="footer-module__"][class$="__statLabel"] {
+  color: rgba(15, 17, 21, 0.4) !important;
+}
+html[data-theme="light"] [class*="footer-module__"][class$="__statValue"] {
+  color: #0f1115 !important;
 }
 html[data-theme="light"] [class*="footer-module__"][class$="__heading"] {
   color: #0f1115 !important;

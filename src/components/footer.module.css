@@ -37,9 +37,60 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: space-between;
   text-align: left;
   flex-shrink: 0;
+  gap: 28px;
+  max-width: 280px;
+}
+
+.leftBottom {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+}
+
+.tagline {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.navArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.statLabel {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.statValue {
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .divider {
@@ -50,18 +101,25 @@
 
 .navGrid {
   display: flex;
-  flex: 1;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 24px;
 }
 
 .col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 10px;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
   min-width: 0;
+}
+
+.linksRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
 .copy {

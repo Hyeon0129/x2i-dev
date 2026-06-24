@@ -140,7 +140,6 @@ export default async function BlogPostPage({
       </div>
 
       <div style={{ height: "165px" }} />
-      <div className="divider" />
     </>
   );
 }

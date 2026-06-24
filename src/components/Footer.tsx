@@ -13,10 +13,18 @@ type Theme = 'dark' | 'light';
 export default function Footer() {
   const year = new Date().getFullYear();
   const [theme, setTheme] = useState<Theme>('dark');
+  const [stats, setStats] = useState<{ count: number; lastUpdated: string | null } | null>(null);
 
   useEffect(() => {
     const stored = (document.documentElement.getAttribute('data-theme') as Theme | null) ?? 'dark';
     setTheme(stored === 'light' ? 'light' : 'dark');
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/blog-stats')
+      .then((r) => r.json())
+      .then(setStats)
+      .catch(() => {});
   }, []);
 
   const toggleTheme = () => {
@@ -36,7 +44,7 @@ export default function Footer() {
         <div className={styles.topLine} />
 
         <div className={styles.inner}>
-          {/* LEFT: logo + copyright */}
+          {/* LEFT: logo at top, tagline + copyright pushed to bottom */}
           <div className={styles.colLeft}>
             <Image
               src={LOGO}
@@ -45,34 +53,44 @@ export default function Footer() {
               alt="Pyron logo"
               className={styles.logo}
             />
-            <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
+            <div className={styles.leftBottom}>
+              <p className={styles.tagline}>
+                Thoughts, values, everyday life, and the tech I&apos;m curious about — written down as I go.
+              </p>
+              <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
+            </div>
           </div>
 
           <div className={styles.divider} />
 
-          {/* RIGHT: nav columns */}
-          <div className={styles.navGrid}>
-            <div className={styles.col}>
-              <p className={styles.heading}>Site</p>
-              <Link href="/" className={styles.link}>Home</Link>
-              <Link href="/#records" scroll={true} className={styles.link}>About</Link>
-              <Link href="/#projects" scroll={true} className={styles.link}>Project</Link>
-              <Link href="/blog" className={styles.link}>Blog</Link>
-              <Link href="/docs" className={styles.link}>Docs</Link>
-            </div>
+          {/* RIGHT: nav columns (centered) + stats below */}
+          <div className={styles.navArea}>
+            <div className={styles.navGrid}>
+              <div className={styles.col}>
+                <p className={styles.heading}>Site</p>
+                <div className={styles.linksRow}>
+                  <Link href="/" className={styles.link}>Home</Link>
+                  <Link href="/#records" scroll={true} className={styles.link}>About</Link>
+                  <Link href="/#projects" scroll={true} className={styles.link}>Project</Link>
+                  <Link href="/blog" className={styles.link}>Blog</Link>
+                  <Link href="/docs" className={styles.link}>Docs</Link>
+                </div>
+              </div>
 
-            <div className={styles.col}>
-              <p className={styles.heading}>Categories</p>
-              <Link href="/blog" className={styles.link}>All</Link>
-              <Link href="/blog/insights" className={styles.link}>Insights</Link>
-              <Link href="/blog/guides" className={styles.link}>Guides</Link>
-              <Link href="/blog/projects" className={styles.link}>Projects</Link>
-              <Link href="/blog/life" className={styles.link}>Life</Link>
-            </div>
+              <div className={styles.col}>
+                <p className={styles.heading}>Categories</p>
+                <div className={styles.linksRow}>
+                  <Link href="/blog" className={styles.link}>All</Link>
+                  <Link href="/blog/insights" className={styles.link}>Insights</Link>
+                  <Link href="/blog/guides" className={styles.link}>Guides</Link>
+                  <Link href="/blog/projects" className={styles.link}>Projects</Link>
+                  <Link href="/blog/life" className={styles.link}>Life</Link>
+                </div>
+              </div>
 
-            <div className={styles.col}>
-              <p className={styles.heading}>Contact</p>
-              <div className={styles.social}>
+              <div className={styles.col}>
+                <p className={styles.heading}>Contact</p>
+                <div className={styles.social}>
                 <a
                   href="https://github.com/Hyeon0129"
                   target="_blank"
@@ -107,8 +125,22 @@ export default function Footer() {
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
                 </a>
+                </div>
               </div>
             </div>
+
+            {stats && (
+              <div className={styles.statsRow}>
+                <div className={styles.statItem}>
+                  <p className={styles.statLabel}>Last Posted</p>
+                  <p className={styles.statValue}>{stats.lastUpdated ?? '—'}</p>
+                </div>
+                <div className={styles.statItem}>
+                  <p className={styles.statLabel}>Posts</p>
+                  <p className={styles.statValue}>{stats.count}</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

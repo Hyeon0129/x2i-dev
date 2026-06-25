@@ -108,6 +108,10 @@ function TvSection() {
   const [idx, setIdx] = useState(0)
   const done = idx >= text.length
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  // light theme drops the literal "> " / "_ " shell-prompt glyphs (they
+  // only made sense painted on the fake terminal window) but keeps the
+  // exact same typed-reveal timing/state as dark.
+  const lightDisplay = text.slice(0, idx).replace(/^>\s?/, '').replace(/\n_\s?/, '\n')
 
   useEffect(() => {
     if (done) return
@@ -130,23 +134,16 @@ function TvSection() {
     <section id="records" className="section fade-in">
       <div className="container tv-grid">
         {theme === 'light' ? (
-          <div className="code-window-wrap">
-            <div className="cw-card">
-              <div className="cw-bar">
-                <span className="cw-dot cw-dot--red" />
-                <span className="cw-dot cw-dot--yellow" />
-                <span className="cw-dot cw-dot--green" />
-                <span className="cw-bar-label">pyron — zsh</span>
-              </div>
-              <div className="cw-body">
-                <span className="typing-text">{text.slice(0, idx)}</span>
-                <span className={`cw-cursor ${done ? 'blink' : ''}`} />
-              </div>
+          <div className="light-terminal">
+            <div className="mono-tag">
+              <span>[</span>
+              <span>WHOAMI</span>
+              <span>]</span>
             </div>
-            <div className="cw-notches" aria-hidden="true">
-              <span /><span /><span /><span />
-              <span /><span /><span /><span />
-            </div>
+            <p className="light-terminal-text">
+              <span className="typing-text">{lightDisplay}</span>
+              <span className={`light-terminal-cursor ${done ? 'blink' : ''}`} />
+            </p>
           </div>
         ) : (
           <div className="tv-wrap">

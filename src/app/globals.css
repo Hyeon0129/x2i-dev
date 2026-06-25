@@ -285,117 +285,26 @@ body {
 .cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Light-theme TV replacement — x.ai-style code window:
-   gradient-mesh panel + notched corners + white terminal card */
-.code-window-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 1420px;
-  transform: translateX(-3%);
-  padding: clamp(28px, 4vw, 52px);
-  overflow: hidden;
-  /* muted slate-blue mesh — same cool-gray family as the hero
-     (#e6eaf2 / #64748b / #9aa3b4) instead of a saturated corporate
-     blue, so this card reads as part of the light palette, not a
-     leftover dark-mode-style accent. */
-  background-color: #3c4a63;
-  background-image:
-    radial-gradient(circle at 30% 22%, rgba(186, 198, 222, 0.55) 0%, transparent 30%),
-    radial-gradient(circle at 42% 62%, rgba(148, 163, 184, 0.55) 0%, transparent 34%),
-    radial-gradient(circle at 55% 70%, rgba(100, 116, 139, 0.5) 0%, transparent 32%),
-    radial-gradient(circle at 68% 38%, rgba(71, 85, 105, 0.6) 0%, transparent 38%),
-    radial-gradient(circle at 88% 80%, rgba(148, 163, 184, 0.4) 0%, transparent 30%),
-    linear-gradient(125deg, #4b5a78 0%, #3c4a63 45%, #232c3d 100%);
-}
-/* fine grain overlay for the x.ai paper-shader texture */
-.code-window-wrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: soft-light;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-}
-
-/* notched (stepped) corners — squares painted in the page background colour */
-.cw-notches span {
-  position: absolute;
-  width: 13px;
-  height: 13px;
-  background: var(--background-color);
-  z-index: 3;
-}
-.cw-notches span:nth-child(1) { top: 0; left: 0; }
-.cw-notches span:nth-child(2) { top: 13px; left: 13px; }
-.cw-notches span:nth-child(3) { top: 0; right: 0; }
-.cw-notches span:nth-child(4) { top: 13px; right: 13px; }
-.cw-notches span:nth-child(5) { bottom: 0; left: 0; }
-.cw-notches span:nth-child(6) { bottom: 13px; left: 13px; }
-.cw-notches span:nth-child(7) { bottom: 0; right: 0; }
-.cw-notches span:nth-child(8) { bottom: 13px; right: 13px; }
-
-.cw-card {
-  position: relative;
-  z-index: 2;
-  background: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(213, 217, 226, 0.7),
-    0 18px 40px -24px rgba(15, 23, 42, 0.45);
-}
-.cw-bar {
+/* Light-theme TV replacement — no window/frame at all. Dark mode works
+   because the TV bezel is near-black on a near-black page (the device
+   dissolves into the void) and the green CRT glow is the one focal
+   accent; white has no void to dissolve into, and every attempt to
+   fake a "screen" (navy frame, glass bezel, etc.) just read as a prop
+   bolted onto a site that's otherwise flat/editorial elsewhere in
+   light mode. So this is just typography sitting directly on the
+   page, like the hero title — see html[data-theme="light"] rules for
+   .light-terminal* below for the actual light styling. */
+.light-terminal {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
-.cw-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.cw-dot--red { background: #ff5f57; box-shadow: 0 0 8px rgba(255, 95, 87, 0.45); }
-.cw-dot--yellow { background: #febc2e; box-shadow: 0 0 8px rgba(254, 188, 46, 0.45); }
-.cw-dot--green { background: #28c840; box-shadow: 0 0 8px rgba(40, 200, 64, 0.45); }
-.cw-bar-label {
-  margin-left: auto;
-  font-family: "GeistMono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.72rem;
-  color: rgba(15, 23, 42, 0.4);
-  letter-spacing: 0.02em;
-}
-.cw-body {
-  padding: 30px 26px;
-  min-height: 150px;
-  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-size: 1.12rem;
-  line-height: 1.7;
-  color: #1f2328;
-  white-space: pre-wrap;
-}
-.cw-cursor {
-  display: inline-block;
-  width: 8px;
-  height: 1.15rem;
-  margin-left: 4px;
-  position: relative;
-  top: 0.18rem;
-  background: #f97316;
-  opacity: 0;
-}
-.cw-cursor.blink {
-  animation: blink 0.8s steps(2, start) infinite;
-  opacity: 1;
+.light-terminal-text {
+  margin: 0;
 }
 @media (max-width: 1200px) {
-  .code-window-body { font-size: 0.95rem; min-height: 120px; padding: 24px 20px; }
-  .cw-body { font-size: 0.95rem; min-height: 120px; padding: 24px 20px; }
+  .light-terminal { padding-bottom: 8px; }
 }
 .section-title {
  font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -2917,78 +2826,47 @@ html[data-theme="light"] .tv-cta {
   color: #ffffff !important;
 }
 
-/* ---------- CODE WINDOW (light-only About terminal) ----------
-   What makes the dark version work: the TV photo's bezel is near-black
-   on a near-black page, so the device itself all but dissolves into
-   the void — the only real "object" left is the saturated green CRT
-   glow, which becomes the entire personality of the section. White
-   doesn't have that void to disappear into, so a flat white card with
-   a thin border reads as inert paper, not a device — depth has to come
-   from light/shadow instead of color-matching into the background.
-   This redesigns the section as a glass/aluminum bezel (the device
-   frame, translated to a light material) with the terminal "screen"
-   inset into it, and concentrates the one bit of glow personality into
-   the cursor — same structure as dark (frame + glowing focal point),
-   different material. */
-html[data-theme="light"] .code-window-wrap {
-  background: linear-gradient(155deg, #f4f6fa 0%, #e7eaf1 55%, #edf0f6 100%) !important;
-  border-radius: 26px !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 0 0 1px rgba(15, 23, 42, 0.05),
-    0 2px 6px rgba(15, 23, 42, 0.05),
-    0 30px 60px -28px rgba(15, 23, 42, 0.28),
-    0 14px 28px -18px rgba(91, 100, 120, 0.18) !important;
+/* ---------- LIGHT TERMINAL QUOTE (replaces the dark TV/CRT section) ----------
+   Two earlier passes kept reskinning a "window" (navy mesh frame, then
+   a glass bezel) and both still read as a foreign prop, because this
+   site's light mode is otherwise flat and editorial — hairline
+   borders, no shadows, no skeuomorphism (see .blog-card, .skills-box,
+   .project-card: white/transparent, 1px low-opacity black border,
+   nothing else). A "device" doesn't belong in that language at all.
+   So there's no window here — it's the same move as .hero-title: big
+   type sitting straight on the page, with the existing [ BRACKET ]
+   mono-tag pattern standing in for the dropped titlebar, and a thin
+   quote-rule on the left (the one new shape, borrowed straight from
+   the site's hairline-border vocabulary) instead of a card edge. The
+   one accent carried over from dark's green CRT glow is the cursor. */
+html[data-theme="light"] .light-terminal {
+  border-left: 3px solid rgba(15, 23, 42, 0.12);
+  padding-left: clamp(20px, 3vw, 32px);
 }
-/* glass sheen across the bezel — sits behind .cw-card (z-index:2) so it
-   only shows in the frame margin, like light catching a metal edge */
-html[data-theme="light"] .code-window-wrap::before {
-  opacity: 1 !important;
-  mix-blend-mode: normal !important;
-  background-size: 100% 100% !important;
-  background-image:
-    linear-gradient(125deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 68%, rgba(255, 255, 255, 0.4) 100%) !important;
+html[data-theme="light"] .light-terminal-text {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-weight: 500;
+  font-size: clamp(1.7rem, 3.6vw, 2.75rem);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: #14181f;
+  white-space: pre-wrap;
 }
-html[data-theme="light"] .cw-notches {
-  display: none !important;
+html[data-theme="light"] .light-terminal-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  margin-left: 7px;
+  position: relative;
+  top: 0.1em;
+  background: #e2793f;
+  box-shadow: 0 0 10px rgba(226, 121, 63, 0.45);
+  opacity: 0;
+  vertical-align: text-bottom;
 }
-html[data-theme="light"] .cw-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f9fafc 100%) !important;
-  border-radius: 16px !important;
-  box-shadow:
-    0 0 0 1px rgba(15, 23, 42, 0.06),
-    0 1px 2px rgba(15, 23, 42, 0.04) !important;
-}
-html[data-theme="light"] .cw-bar {
-  background: linear-gradient(180deg, #fbfcfd 0%, #f4f5f8 100%) !important;
-  border-bottom-color: rgba(15, 23, 42, 0.07) !important;
-}
-/* traffic lights stay legible as red/yellow/green but lose the dark-
-   mode-style neon halo, which read as too sharp against white */
-html[data-theme="light"] .cw-dot--red {
-  background: #e8645c !important;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
-}
-html[data-theme="light"] .cw-dot--yellow {
-  background: #e6b552 !important;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
-}
-html[data-theme="light"] .cw-dot--green {
-  background: #4fb877 !important;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
-}
-html[data-theme="light"] .cw-bar-label {
-  color: rgba(15, 23, 42, 0.45) !important;
-}
-html[data-theme="light"] .cw-body {
-  color: #1b212e !important;
-}
-/* the cursor carries the section's one accent of "glow" — same role
-   the green CRT text plays in dark, just a quieter, warmer tone so it
-   doesn't compete with the rest of the light palette */
-html[data-theme="light"] .cw-cursor {
-  background: #e2793f !important;
-  box-shadow: 0 0 10px rgba(226, 121, 63, 0.4) !important;
+html[data-theme="light"] .light-terminal-cursor.blink {
+  animation: blink 0.8s steps(2, start) infinite;
+  opacity: 1;
 }
 
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */

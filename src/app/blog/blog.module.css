@@ -68,109 +68,41 @@
 }
 
 /* ============================================
-   PAGINATION
+   LOAD MORE
 ============================================ */
-
-/*
-  paginationWrap : blogList(1080px)와 동일한 폭·중앙 정렬로
-  pagination nav 를 감싸는 컨테이너
-*/
-.paginationWrap {
-  width: 1080px;
-  margin: 0 auto;
-  padding-bottom: 120px;
+.loadMoreWrap {
   display: flex;
   justify-content: center;
+  margin-top: 10px;
+  padding-bottom: 120px;
 }
 
-.pagination {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-/* ── 숫자 버튼 ── */
-.pageNum {
-  position: relative;
+.loadMoreBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  border: 1px solid transparent;
+  padding: 0.65rem 1.7rem;
+  border-radius: 9999px;
+  border: 0.1px solid #424242;
   background: transparent;
-  color: rgba(255, 255, 255, 0.3);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 400;
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-  user-select: none;
-}
-
-.pageNum:hover {
-  color: rgba(255, 255, 255, 0.75);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.07);
-}
-
-/* 현재 페이지 — 흰색 텍스트 + 오렌지 닷 (블로그 타임라인 dot 과 동일) */
-.pageNumActive {
-  color: #fff !important;
-  font-weight: 600;
-  pointer-events: none;
-  cursor: default;
-}
-
-
-/* ── 화살표 버튼 ── */
-.pageArrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.35);
-  font-family: inherit;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-  user-select: none;
-  margin: 0 6px;
-}
-
-.pageArrow:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: 0.2s;
+  cursor: pointer;
 }
 
-.pageArrowDisabled {
-  opacity: 0.18;
-  pointer-events: none;
-  cursor: default;
+.loadMoreBtn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
-/* ── 말줄임표 ── */
-.pageEllipsis {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  color: rgba(255, 255, 255, 0.18);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  padding-bottom: 4px;
-}
-
-.timelineLine {  
+.timelineLine {
   position: absolute;
   left: 0;
   top: -5px;
@@ -319,12 +251,11 @@
     margin-bottom: 60px;
   }
 
-  .paginationWrap {
-    width: min(94vw, 960px);
+  .loadMoreWrap {
     padding-bottom: 80px;
   }
 
-  
+
   .blogHeader h1 {
     font-size: 48px;
   }
@@ -362,9 +293,14 @@
     padding: 0.45rem 0.9rem;
   }
 
-  
+  .loadMoreBtn {
+    font-size: 0.8rem;
+    padding: 0.55rem 1.4rem;
+  }
+
+
   .right {
-    align-self: center;  
+    align-self: center;
   }
 
   .thumb {
@@ -400,12 +336,11 @@
     gap: 18px;
   }
 
-  .paginationWrap {
-    width: 100%;
+  .loadMoreWrap {
     padding: 0 18px 60px;
   }
 
-  
+
   .timelineLine {
     display: none;
   }
@@ -477,5 +412,10 @@
     font-size: 0.75rem;
     padding: 6px 10px;
     margin-top: 8px;
+  }
+
+  .loadMoreBtn {
+    font-size: 0.78rem;
+    padding: 0.5rem 1.25rem;
   }
 }

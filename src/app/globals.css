@@ -3005,6 +3005,20 @@ html[data-theme="light"] [class*="blog-module__"][class$="__pageArrow"]:hover {
   border-color: rgba(0, 0, 0, 0.25) !important;
   color: #0f1115 !important;
 }
+html[data-theme="light"] [class*="blog-module__"][class$="__pageEllipsis"] {
+  color: rgba(15, 17, 21, 0.3) !important;
+}
+/* mobile-only postItem card (blog.module.css @media max-width:768px) is
+   hardcoded to a black card (rgba(0,0,0,.75) bg + white-tinted border) with
+   no theme branch, so on phones it stayed dark while everything else around
+   it went light — same white/soft-border card used elsewhere in light mode. */
+@media (max-width: 768px) {
+  html[data-theme="light"] [class*="blog-module__"][class$="__postItem"] {
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) !important;
+  }
+}
 
 /* ---------- BLOG POST DETAIL ---------- */
 html[data-theme="light"] [class*="blogDetail-module__"][class$="__container"] { color: #0f1115 !important; }

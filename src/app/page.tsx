@@ -108,13 +108,6 @@ function TvSection() {
   const [idx, setIdx] = useState(0)
   const done = idx >= text.length
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-  // light theme drops the literal "> " / "_ " shell-prompt glyphs (they
-  // only made sense painted on the fake terminal window) but keeps the
-  // exact same typed-reveal timing/state as dark. Split into two lines
-  // so "Hello, I'm" can read as a small lead-in and "a Server
-  // Engineer." as the big, accented line.
-  const lightDisplay = text.slice(0, idx).replace(/^>\s?/, '').replace(/\n_\s?/, '\n')
-  const [lightLine1, lightLine2 = ''] = lightDisplay.split('\n')
 
   useEffect(() => {
     if (done) return
@@ -137,22 +130,11 @@ function TvSection() {
     <section id="records" className="section fade-in">
       <div className="container tv-grid">
         {theme === 'light' ? (
-          <div className="light-hero">
-            <HeroParticles />
-            <div className="light-hero-aurora" aria-hidden="true" />
-            <div className="light-hero-content">
-              <p className="light-hero-lead">
-                <span className="typing-text">{lightLine1}</span>
-              </p>
-              <p className="light-hero-text">
-                <span className="typing-text">{lightLine2}</span>
-                <span className={`light-hero-cursor ${done ? 'blink' : ''}`} />
-              </p>
-              <div className="light-hero-chips">
-                <span className="light-hero-chip">CORE SKILLS</span>
-                <span className="light-hero-chip">DEVOPS &amp; TOOLS</span>
-                <span className="light-hero-chip">HARDWARE &amp; PROTOCOLS</span>
-              </div>
+          <div className="light-card">
+            <span className="light-card-bar" aria-hidden="true" />
+            <div className="light-card-body">
+              <span className="typing-text">{text.slice(0, idx)}</span>
+              <span className={`light-card-cursor ${done ? 'blink' : ''}`} />
             </div>
           </div>
         ) : (

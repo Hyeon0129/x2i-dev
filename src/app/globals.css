@@ -285,40 +285,9 @@ body {
 .cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Light-theme TV replacement. Researched the actual hero pattern used
-   by Linear/Vercel/Stripe/Raycast before touching this again: every
-   one of them is a CENTERED full-width stack (headline -> one big
-   visual anchor below it), not a left-text/right-visual split — and
-   Raycast specifically pairs its visual with small labeled callouts.
-   So this drops the side-by-side "quote column + profile column"
-   composition entirely for light: .tv-grid collapses to one column,
-   the typed headline becomes a full-width centered hero block (with
-   the dust-particle + gradient-blob atmosphere as its "visual anchor"
-   instead of a product screenshot), and a row of labeled chips below
-   it stands in for Raycast's keyboard callouts — reusing the site's
-   own existing section labels (Core Skills / DevOps & Tools / Hardware
-   & Protocols from SkillsSection) instead of inventing copy. The
-   profile block (.tv-side) then sits below as its own centered block,
-   same content, new position. See the html[data-theme="light"]
-   .light-hero and .tv-side rules further down for the actual styling. */
-.light-hero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 460px;
-}
-.light-hero-content {
-  position: relative;
-  z-index: 2;
-}
-.light-hero-lead,
-.light-hero-text {
-  margin: 0;
-}
-@media (max-width: 1200px) {
-  .light-hero { min-height: 360px; padding: 32px 0; }
-}
+/* Light-theme TV replacement: a bounded card (.light-card, styled further
+   down under html[data-theme="light"]) sitting in .tv-grid's existing
+   left column — same 2-column structure as dark, not a new one. */
 .section-title {
  font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
  font-size: 3rem;
@@ -2839,120 +2808,54 @@ html[data-theme="light"] .tv-cta {
   color: #ffffff !important;
 }
 
-/* ---------- LIGHT HERO (replaces the dark TV/CRT section) ----------
-   Structural rewrite, not a restyle. Pulled up Linear/Vercel/Stripe/
-   Raycast and they all use the same composition: a centered headline
-   stack, full width, with ONE dominant visual anchor below it — never
-   a left-text/right-graphic split. Raycast goes further and pins small
-   labeled callouts to that visual. This section is rebuilt on that
-   structure instead of the old "narrow text column beside a profile
-   column" — see the html[data-theme="light"] .tv-grid override below,
-   which collapses the 2-column grid to one so .light-hero and .tv-side
-   stack top-to-bottom instead of sitting side-by-side. Dark's .tv-grid
-   rule is untouched; this only fires under the light attribute.
-   - .light-hero is now full-width and centered, with HeroParticles +
-     two blurred color blobs (slate-navy / the cursor's terracotta) as
-     its "visual anchor" atmosphere, the same role Vercel's layered
-     background image or Stripe's wave graphic plays.
-   - .light-hero-chips is the Raycast-style callout row: real existing
-     copy (SkillsSection's own category labels — Core Skills / DevOps
-     & Tools / Hardware & Protocols), not invented text, pinned under
-     the headline like Raycast pins benefit labels to its keyboard.
-   - .tv-side (profile block) keeps its exact original content but is
-     now its own centered block below the hero instead of a side
-     column — margin/max-width only, no text changes. */
-html[data-theme="light"] .tv-grid {
-  grid-template-columns: 1fr !important;
-  row-gap: clamp(56px, 7vw, 88px) !important;
-}
-html[data-theme="light"] .light-hero-aurora {
-  position: absolute;
-  inset: -20% -8%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(36% 60% at 22% 30%, rgba(60, 74, 99, 0.18) 0%, transparent 70%),
-    radial-gradient(32% 54% at 80% 75%, rgba(226, 121, 63, 0.13) 0%, transparent 70%);
-  filter: blur(38px);
-}
-html[data-theme="light"] .light-hero-content {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto;
-}
-html[data-theme="light"] .light-hero-lead,
-html[data-theme="light"] .light-hero-text,
-html[data-theme="light"] .light-hero-chips {
-  opacity: 0;
-}
-html[data-theme="light"] .fade-in.visible .light-hero-lead {
-  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-html[data-theme="light"] .fade-in.visible .light-hero-text {
-  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.14s both;
-}
-html[data-theme="light"] .fade-in.visible .light-hero-chips {
-  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.32s both;
-}
-@keyframes lightHeroReveal {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-html[data-theme="light"] .light-hero-lead {
-  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-weight: 400;
-  font-size: clamp(1rem, 1.6vw, 1.15rem);
-  letter-spacing: 0.01em;
-  color: #6b7280;
-}
-html[data-theme="light"] .light-hero-text {
-  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-weight: 700;
-  font-size: clamp(2.8rem, 7vw, 5.2rem);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
-  color: #3c4a63;
-  white-space: pre-wrap;
-  margin-top: 10px;
-}
-html[data-theme="light"] .light-hero-cursor {
-  display: inline-block;
-  width: 5px;
-  height: 0.6em;
-  margin-left: 9px;
+/* ---------- LIGHT PROFILE VISUAL (replaces the dark TV/CRT image) ----------
+   Keeps the page's existing rhythm instead of inventing a new one: every
+   other section (Hero, Skills, History) is a left/right split with plain-
+   text content on one side and a bounded visual on the other, so this
+   stays a bounded visual sitting in .tv-grid's own column (no collapsing
+   to one column, no reusing HeroParticles here — that's the Hero
+   section's signature, repeating it here read as the two sections
+   bleeding into each other). The card is a plain bordered surface like
+   .skills-box, with a single accent bar on top tying it to the site's
+   orange accent (cursor color, tv-cta hover, etc.) instead of a foreign
+   blue gradient. */
+html[data-theme="light"] .light-card {
   position: relative;
-  top: 0.03em;
-  background: #e2793f;
-  box-shadow: 0 0 14px rgba(226, 121, 63, 0.5);
+  width: 100%;
+  max-width: 560px;
+  background: #f7f8fa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+html[data-theme="light"] .light-card-bar {
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, #f97316, rgba(249, 115, 22, 0.15));
+}
+html[data-theme="light"] .light-card-body {
+  padding: clamp(32px, 5vw, 56px) clamp(24px, 4vw, 36px);
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.6;
+  color: #2c3340;
+  white-space: pre-wrap;
+}
+html[data-theme="light"] .light-card-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 6px;
+  position: relative;
+  top: 0.18em;
+  background: #f97316;
   opacity: 0;
   vertical-align: text-bottom;
 }
-html[data-theme="light"] .light-hero-cursor.blink {
+html[data-theme="light"] .light-card-cursor.blink {
   animation: blink 0.8s steps(2, start) infinite;
   opacity: 1;
-}
-html[data-theme="light"] .light-hero-chips {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: clamp(28px, 3.6vw, 40px);
-}
-html[data-theme="light"] .light-hero-chip {
-  font-family: "GeistMono", ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: #0f1115;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-html[data-theme="light"] .tv-side {
-  transform: none !important;
-  margin: 0 auto !important;
-  max-width: 560px;
 }
 
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */

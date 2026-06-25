@@ -2917,6 +2917,33 @@ html[data-theme="light"] .tv-cta {
   color: #ffffff !important;
 }
 
+/* ---------- CODE WINDOW (light-only About terminal) ----------
+   Dark mode keeps its CRT-green text over the TV photo, untouched.
+   The old light version (saturated navy mesh frame + notched
+   "selection handle" corners) read as a leftover dark-mode prop, so
+   it's redesigned here to match the rest of the light cards: a plain
+   white panel with the same thin border the home/About cards use,
+   floating on a soft ambient glow instead of a heavy colored frame. */
+html[data-theme="light"] .code-window-wrap {
+  background: none !important;
+}
+html[data-theme="light"] .code-window-wrap::before {
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  background-size: 100% 100% !important;
+  background-image:
+    radial-gradient(55% 65% at 50% 42%, rgba(91, 100, 120, 0.12) 0%, transparent 70%) !important;
+}
+html[data-theme="light"] .cw-notches {
+  display: none !important;
+}
+html[data-theme="light"] .cw-card {
+  background: #ffffff !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 16px 36px -26px rgba(15, 23, 42, 0.16) !important;
+}
+
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */
 html[data-theme="light"] .blog-card {
   background: #ffffff !important;

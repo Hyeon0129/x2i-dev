@@ -107,7 +107,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
         <input
           autoFocus
           type="text"
-          placeholder="Search documentation..."
+          placeholder="Search..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"

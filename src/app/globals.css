@@ -90,7 +90,7 @@ body {
 .nav a{ color:#888888; text-decoration:none; font-size:0.88rem; font-weight:300;  }
 .nav a:hover{ color:#ffffff; }
 .nav a.active{ color:#ffffff; }
-.nav-right{ margin-left:auto; display:flex; align-items:center; gap: 10px; }
+.nav-right{ margin-left:auto; margin-right:10px; display:flex; align-items:center; gap: 10px; }
 
 .theme-toggle-btn {
   display: inline-flex;
@@ -2324,8 +2324,8 @@ pre code {
 .search-body::before {
   content: '';
   position: absolute;
-  left: -18px;
-  right: -18px;
+  left: -19px;
+  right: -19px;
   top: 0;
   height: 1px;
   background-color: #262626;
@@ -2484,8 +2484,8 @@ pre code {
 .search-footer::before {
   content: '';
   position: absolute;
-  left: -18px;   
-  right: -18px;
+  left: -19px;
+  right: -19px;
   top: 0;
   height: 1px;
   background-color: #262626;
@@ -3214,18 +3214,24 @@ html[data-theme="light"] .admonition-warning .admonition-icon {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b88a13' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E") !important;
 }
 
-/* ---------- SEARCH MODAL ---------- */
+/* ---------- SEARCH MODAL ----------
+   Reference is xAI's docs search palette: a solid, slightly-off-white
+   panel (not stark #ffffff, and NOT translucent — the modal's old
+   rgba(255,255,255,0.98) + backdrop-filter let the Hero text bleed through
+   faintly behind it), faint gray dividers/category labels, and a gray
+   (not black) ESC chip. */
 html[data-theme="light"] .search-overlay { background: rgba(0, 0, 0, 0.3) !important; }
 html[data-theme="light"] .search-modal {
-  background: rgba(255, 255, 255, 0.98) !important;
+  background: #fafafa !important;
   color: #0f1115 !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 html[data-theme="light"] .search-input { color: #0f1115 !important; }
 html[data-theme="light"] .search-input::placeholder { color: #6b7280 !important; }
 html[data-theme="light"] .search-body::before,
-html[data-theme="light"] .search-results-pane::after { background-color: rgba(0, 0, 0, 0.1) !important; }
-html[data-theme="light"] .search-group-label { color: #4b5563 !important; }
+html[data-theme="light"] .search-footer::before,
+html[data-theme="light"] .search-results-pane::after { background-color: rgba(0, 0, 0, 0.08) !important; }
+html[data-theme="light"] .search-group-label { color: #9ca3af !important; }
 html[data-theme="light"] .search-result-title { color: #0f1115 !important; }
 html[data-theme="light"] .search-result-item:hover,
 html[data-theme="light"] .search-result-item.active { background: rgba(0, 0, 0, 0.05) !important; }
@@ -3233,8 +3239,8 @@ html[data-theme="light"] .search-result-icon { color: #6b7280 !important; }
 html[data-theme="light"] .search-results-pane::-webkit-scrollbar-track { background: #e5e7eb !important; }
 html[data-theme="light"] .search-results-pane::-webkit-scrollbar-thumb { background: #c4c7cd !important; }
 html[data-theme="light"] .search-results-pane::-webkit-scrollbar-thumb:hover { background: #a8acb3 !important; }
-html[data-theme="light"] .shortcut-key { background: #e5e7eb !important; color: #0f1115 !important; }
-html[data-theme="light"] .search-footer-shortcut { color: #4b5563 !important; }
+html[data-theme="light"] .shortcut-key { background: #eceef1 !important; color: #6b7280 !important; }
+html[data-theme="light"] .search-footer-shortcut { color: #6b7280 !important; }
 html[data-theme="light"] .search-preview-date { color: rgba(15, 17, 21, 0.5) !important; }
 html[data-theme="light"] .search-preview-title { color: #0f1115 !important; }
 html[data-theme="light"] .search-preview-excerpt { color: rgba(15, 17, 21, 0.7) !important; }

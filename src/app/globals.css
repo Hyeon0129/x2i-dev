@@ -2918,30 +2918,77 @@ html[data-theme="light"] .tv-cta {
 }
 
 /* ---------- CODE WINDOW (light-only About terminal) ----------
-   Dark mode keeps its CRT-green text over the TV photo, untouched.
-   The old light version (saturated navy mesh frame + notched
-   "selection handle" corners) read as a leftover dark-mode prop, so
-   it's redesigned here to match the rest of the light cards: a plain
-   white panel with the same thin border the home/About cards use,
-   floating on a soft ambient glow instead of a heavy colored frame. */
+   What makes the dark version work: the TV photo's bezel is near-black
+   on a near-black page, so the device itself all but dissolves into
+   the void — the only real "object" left is the saturated green CRT
+   glow, which becomes the entire personality of the section. White
+   doesn't have that void to disappear into, so a flat white card with
+   a thin border reads as inert paper, not a device — depth has to come
+   from light/shadow instead of color-matching into the background.
+   This redesigns the section as a glass/aluminum bezel (the device
+   frame, translated to a light material) with the terminal "screen"
+   inset into it, and concentrates the one bit of glow personality into
+   the cursor — same structure as dark (frame + glowing focal point),
+   different material. */
 html[data-theme="light"] .code-window-wrap {
-  background: none !important;
+  background: linear-gradient(155deg, #f4f6fa 0%, #e7eaf1 55%, #edf0f6 100%) !important;
+  border-radius: 26px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 0 0 1px rgba(15, 23, 42, 0.05),
+    0 2px 6px rgba(15, 23, 42, 0.05),
+    0 30px 60px -28px rgba(15, 23, 42, 0.28),
+    0 14px 28px -18px rgba(91, 100, 120, 0.18) !important;
 }
+/* glass sheen across the bezel — sits behind .cw-card (z-index:2) so it
+   only shows in the frame margin, like light catching a metal edge */
 html[data-theme="light"] .code-window-wrap::before {
   opacity: 1 !important;
   mix-blend-mode: normal !important;
   background-size: 100% 100% !important;
   background-image:
-    radial-gradient(55% 65% at 50% 42%, rgba(91, 100, 120, 0.12) 0%, transparent 70%) !important;
+    linear-gradient(125deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 68%, rgba(255, 255, 255, 0.4) 100%) !important;
 }
 html[data-theme="light"] .cw-notches {
   display: none !important;
 }
 html[data-theme="light"] .cw-card {
-  background: #ffffff !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafc 100%) !important;
+  border-radius: 16px !important;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.08),
-    0 16px 36px -26px rgba(15, 23, 42, 0.16) !important;
+    0 0 0 1px rgba(15, 23, 42, 0.06),
+    0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+html[data-theme="light"] .cw-bar {
+  background: linear-gradient(180deg, #fbfcfd 0%, #f4f5f8 100%) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.07) !important;
+}
+/* traffic lights stay legible as red/yellow/green but lose the dark-
+   mode-style neon halo, which read as too sharp against white */
+html[data-theme="light"] .cw-dot--red {
+  background: #e8645c !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
+}
+html[data-theme="light"] .cw-dot--yellow {
+  background: #e6b552 !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
+}
+html[data-theme="light"] .cw-dot--green {
+  background: #4fb877 !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08) !important;
+}
+html[data-theme="light"] .cw-bar-label {
+  color: rgba(15, 23, 42, 0.45) !important;
+}
+html[data-theme="light"] .cw-body {
+  color: #1b212e !important;
+}
+/* the cursor carries the section's one accent of "glow" — same role
+   the green CRT text plays in dark, just a quieter, warmer tone so it
+   doesn't compete with the rest of the light palette */
+html[data-theme="light"] .cw-cursor {
+  background: #e2793f !important;
+  box-shadow: 0 0 10px rgba(226, 121, 63, 0.4) !important;
 }
 
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */

@@ -10,14 +10,16 @@ export default function HeroParticles() {
     const ctx = canvas.getContext('2d')!
     let raf = 0
 
-    // dark theme: white dust on black. light theme: soft slate dust on the
-    // lightly-toned hero, plus a gentler alpha so it reads as ambient texture.
+    // dark theme: white dust on black — max possible contrast, untouched.
+    // light theme: against the toned hero (~L 0.82-0.88) low alpha always
+    // reads as invisible regardless of hue, so instead of dampening alpha
+    // we boost it slightly and use a darker slate so dots actually register.
     let fill = '#ffffff'
     let alphaScale = 1
     const readTheme = () => {
       const light = document.documentElement.getAttribute('data-theme') === 'light'
-      fill = light ? '#64748b' : '#ffffff'
-      alphaScale = light ? 0.7 : 1
+      fill = light ? '#475569' : '#ffffff'
+      alphaScale = light ? 1.2 : 1
     }
     readTheme()
     const themeObserver = new MutationObserver(readTheme)

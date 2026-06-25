@@ -294,14 +294,18 @@ body {
   transform: translateX(-3%);
   padding: clamp(28px, 4vw, 52px);
   overflow: hidden;
-  background-color: #2a55a6;
+  /* muted slate-blue mesh — same cool-gray family as the hero
+     (#e6eaf2 / #64748b / #9aa3b4) instead of a saturated corporate
+     blue, so this card reads as part of the light palette, not a
+     leftover dark-mode-style accent. */
+  background-color: #3c4a63;
   background-image:
-    radial-gradient(circle at 30% 22%, rgba(176, 214, 255, 0.95) 0%, transparent 30%),
-    radial-gradient(circle at 42% 62%, rgba(150, 198, 255, 0.95) 0%, transparent 34%),
-    radial-gradient(circle at 55% 70%, rgba(96, 162, 255, 0.9) 0%, transparent 32%),
-    radial-gradient(circle at 68% 38%, rgba(38, 100, 220, 0.95) 0%, transparent 38%),
-    radial-gradient(circle at 88% 80%, rgba(120, 180, 255, 0.8) 0%, transparent 30%),
-    linear-gradient(125deg, #3a66bc 0%, #2a55a6 45%, #16336f 100%);
+    radial-gradient(circle at 30% 22%, rgba(186, 198, 222, 0.55) 0%, transparent 30%),
+    radial-gradient(circle at 42% 62%, rgba(148, 163, 184, 0.55) 0%, transparent 34%),
+    radial-gradient(circle at 55% 70%, rgba(100, 116, 139, 0.5) 0%, transparent 32%),
+    radial-gradient(circle at 68% 38%, rgba(71, 85, 105, 0.6) 0%, transparent 38%),
+    radial-gradient(circle at 88% 80%, rgba(148, 163, 184, 0.4) 0%, transparent 30%),
+    linear-gradient(125deg, #4b5a78 0%, #3c4a63 45%, #232c3d 100%);
 }
 /* fine grain overlay for the x.ai paper-shader texture */
 .code-window-wrap::before {
@@ -361,7 +365,7 @@ body {
 .cw-dot--green { background: #28c840; box-shadow: 0 0 8px rgba(40, 200, 64, 0.45); }
 .cw-bar-label {
   margin-left: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: "GeistMono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.72rem;
   color: rgba(15, 23, 42, 0.4);
   letter-spacing: 0.02em;
@@ -2769,13 +2773,19 @@ html[data-theme="light"] .search-btn kbd {
 }
 
 /* ---------- HERO ---------- */
-html[data-theme="light"] .hero-title,
 html[data-theme="light"] .detail-title {
   color: #0f1115 !important;
   text-shadow: none !important;
 }
+/* dark mode gets a white glow; light mode gets a soft print-like
+   emboss (faint highlight above + diffuse shadow below) so the
+   title keeps visual weight instead of going flat. */
+html[data-theme="light"] .hero-title {
+  color: #0f1115 !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 28px rgba(15, 23, 42, 0.10) !important;
+}
 html[data-theme="light"] .hero-title:hover {
-  text-shadow: none !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 14px 36px rgba(15, 23, 42, 0.14) !important;
   filter: none !important;
 }
 html[data-theme="light"] .section-sub,
@@ -2802,13 +2812,20 @@ html[data-theme="light"] canvas.hero-canvas { opacity: 1 !important; }
 html[data-theme="light"] .hero-image {
   filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.12)) !important;
 }
-/* two-tone title (2nd line muted) so it isn't flat/plain */
+/* two-tone title (2nd line muted) so it isn't flat/plain.
+   #5b6478 keeps ~5:1 contrast against the hero's #e6eaf2–#eef1f7 tone
+   (the old #9aa3b4 only cleared ~2.1:1 and read as washed out). */
 html[data-theme="light"] .hero-title { color: #14181f !important; }
-html[data-theme="light"] .hero-title-accent { color: #9aa3b4 !important; }
+html[data-theme="light"] .hero-title-accent { color: #5b6478 !important; }
 html[data-theme="light"] .section-sub { color: #565d6b !important; }
-/* the boundary line between the toned hero and the white content below */
-html[data-theme="light"] .divider { border-bottom-color: rgba(0, 0, 0, 0.1) !important; }
-html[data-theme="light"] .below-bg { background: #ffffff !important; }
+/* the boundary line between the toned hero and the content below */
+html[data-theme="light"] .divider { border-bottom-color: rgba(15, 17, 21, 0.08) !important; }
+/* fade the hero's last gradient tone (#eef1f7) into white instead of
+   cutting straight to flat #fff, so the hero → About transition reads
+   as one continuous surface instead of two stacked blocks. */
+html[data-theme="light"] .below-bg {
+  background: linear-gradient(180deg, #eef1f7 0%, #ffffff 360px) !important;
+}
 
 /* ---------- SECTION HEADERS ---------- */
 html[data-theme="light"] .section-title,

@@ -285,28 +285,31 @@ body {
 .cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Light-theme TV replacement — no window/frame at all. Dark mode works
-   because the TV bezel is near-black on a near-black page (the device
+/* Light-theme TV replacement — no window/frame. Dark mode works because
+   the TV bezel is near-black on a near-black page (the device
    dissolves into the void) and the green CRT glow is the one focal
-   accent; white has no void to dissolve into, and every attempt to
-   fake a "screen" (navy frame, glass bezel, etc.) just read as a prop
-   bolted onto a site that's otherwise flat/editorial elsewhere in
-   light mode. So this is just typography sitting directly on the
-   page, like the hero title — see html[data-theme="light"] rules for
-   .light-terminal* below for the actual light styling. */
+   accent. There's no equivalent void on white, so instead of faking a
+   "screen" this is built like a modern dev-tool marketing hero
+   (Linear/Vercel/Stripe-style): oversized type as the dominant shape,
+   a soft drifting-particle + gradient-blob atmosphere filling what
+   would otherwise be flat white, and a staggered reveal — see the
+   html[data-theme="light"] .light-terminal* rules below. */
 .light-terminal {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
+  align-items: center;
+  min-height: 420px;
+}
+.light-terminal-content {
+  position: relative;
+  z-index: 2;
 }
 .light-terminal-lead,
 .light-terminal-text {
   margin: 0;
 }
 @media (max-width: 1200px) {
-  .light-terminal { padding-bottom: 8px; }
+  .light-terminal { min-height: 320px; padding: 32px 0; }
 }
 .section-title {
  font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -2828,28 +2831,41 @@ html[data-theme="light"] .tv-cta {
   color: #ffffff !important;
 }
 
-/* ---------- LIGHT TERMINAL QUOTE (replaces the dark TV/CRT section) ----------
-   No window/frame — see the comment above the base .light-terminal
-   rule near the top of this file for why. The [ WHOAMI ] bracket tag
-   from the first pass was dropped (it duplicated the [ PROFILE ] tag
-   right below it in the same column), which left the block feeling
-   empty, so the weight that label carried is rebuilt with typography
-   and the site's own accent colors instead of another label:
-   - "Hello, I'm" becomes a small lead-in (muted gray, same tone as
-     .mono-tag elsewhere) and "a Server Engineer." becomes the one big,
-     bold, accented line — hierarchy instead of a flat two-line block.
-   - The accent on that big line reuses #3c4a63, the slate-navy this
-     file already uses for "techy" emphasis (was the old bezel base
-     tone) — a deliberate single color-point, not the near-black used
-     by every other heading on the page.
-   - The left rule is now a soft gradient instead of a flat line, and
-     a short two-tone underline (slate -> the cursor's terracotta)
-     grounds the block — one small rule system instead of empty space.
+/* ---------- LIGHT TERMINAL HERO (replaces the dark TV/CRT section) ----------
+   Benchmarked against the dev-tool marketing-hero pattern shared by
+   Linear/Vercel/Stripe/x.ai: oversized type that dominates the block,
+   a soft particle + gradient-blob atmosphere instead of flat white,
+   and a staggered entrance — translated into this site's own flat,
+   grayscale-plus-one-accent light language (no card, no shadow/glass
+   skeuomorphism, same hairline-rule vocabulary as everywhere else).
+   - HeroParticles (the same dust canvas the top hero already uses in
+     light) is reused here at section scale, so this block feels like
+     a second hero band instead of dead white space.
+   - Two soft blurred color blobs (slate-navy + the cursor's terracotta)
+     sit behind the type for depth/atmosphere, low-opacity enough to
+     stay calm.
+   - "Hello, I'm" is a small muted lead-in; "a Server Engineer." jumps
+     to a genuinely large display size (matching the scale .hero-title
+     uses up top) in one accent color (#3c4a63) so it dominates the
+     column the way the brief asked for.
+   - Lead -> headline -> rule reveal in a staggered cascade, gated on
+     the same .fade-in.visible class the rest of the site's scroll
+     reveal already uses (no new JS).
    - The cursor keeps carrying dark's CRT-glow role, in terracotta. */
-html[data-theme="light"] .light-terminal {
+html[data-theme="light"] .light-terminal-aurora {
+  position: absolute;
+  inset: -15% -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 50% at 26% 32%, rgba(60, 74, 99, 0.18) 0%, transparent 70%),
+    radial-gradient(38% 46% at 78% 72%, rgba(226, 121, 63, 0.12) 0%, transparent 70%);
+  filter: blur(34px);
+}
+html[data-theme="light"] .light-terminal-content {
   padding-left: clamp(20px, 3vw, 32px);
 }
-html[data-theme="light"] .light-terminal::before {
+html[data-theme="light"] .light-terminal-content::before {
   content: '';
   position: absolute;
   left: 0;
@@ -2858,6 +2874,24 @@ html[data-theme="light"] .light-terminal::before {
   width: 3px;
   border-radius: 2px;
   background: linear-gradient(180deg, rgba(60, 74, 99, 0.45) 0%, rgba(60, 74, 99, 0.08) 100%);
+}
+html[data-theme="light"] .light-terminal-lead,
+html[data-theme="light"] .light-terminal-text,
+html[data-theme="light"] .light-terminal-rule {
+  opacity: 0;
+}
+html[data-theme="light"] .fade-in.visible .light-terminal-lead {
+  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+html[data-theme="light"] .fade-in.visible .light-terminal-text {
+  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.14s both;
+}
+html[data-theme="light"] .fade-in.visible .light-terminal-rule {
+  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.32s both;
+}
+@keyframes lightTerminalReveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 html[data-theme="light"] .light-terminal-lead {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
@@ -2869,22 +2903,22 @@ html[data-theme="light"] .light-terminal-lead {
 html[data-theme="light"] .light-terminal-text {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-weight: 700;
-  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
-  line-height: 1.18;
-  letter-spacing: -0.015em;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   color: #3c4a63;
   white-space: pre-wrap;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 html[data-theme="light"] .light-terminal-cursor {
   display: inline-block;
-  width: 4px;
-  height: 0.7em;
-  margin-left: 8px;
+  width: 5px;
+  height: 0.65em;
+  margin-left: 9px;
   position: relative;
-  top: 0.04em;
+  top: 0.03em;
   background: #e2793f;
-  box-shadow: 0 0 10px rgba(226, 121, 63, 0.45);
+  box-shadow: 0 0 14px rgba(226, 121, 63, 0.5);
   opacity: 0;
   vertical-align: text-bottom;
 }
@@ -2896,7 +2930,7 @@ html[data-theme="light"] .light-terminal-rule {
   display: block;
   width: 48px;
   height: 2px;
-  margin-top: clamp(22px, 3vw, 32px);
+  margin-top: clamp(26px, 3.4vw, 36px);
   border-radius: 2px;
   background: linear-gradient(90deg, rgba(60, 74, 99, 0.55), rgba(226, 121, 63, 0.5));
 }

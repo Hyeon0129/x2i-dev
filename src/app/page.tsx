@@ -138,14 +138,18 @@ function TvSection() {
       <div className="container tv-grid">
         {theme === 'light' ? (
           <div className="light-terminal">
-            <p className="light-terminal-lead">
-              <span className="typing-text">{lightLine1}</span>
-            </p>
-            <p className="light-terminal-text">
-              <span className="typing-text">{lightLine2}</span>
-              <span className={`light-terminal-cursor ${done ? 'blink' : ''}`} />
-            </p>
-            <span className="light-terminal-rule" aria-hidden="true" />
+            <HeroParticles />
+            <div className="light-terminal-aurora" aria-hidden="true" />
+            <div className="light-terminal-content">
+              <p className="light-terminal-lead">
+                <span className="typing-text">{lightLine1}</span>
+              </p>
+              <p className="light-terminal-text">
+                <span className="typing-text">{lightLine2}</span>
+                <span className={`light-terminal-cursor ${done ? 'blink' : ''}`} />
+              </p>
+              <span className="light-terminal-rule" aria-hidden="true" />
+            </div>
           </div>
         ) : (
           <div className="tv-wrap">

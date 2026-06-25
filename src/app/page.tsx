@@ -110,8 +110,11 @@ function TvSection() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   // light theme drops the literal "> " / "_ " shell-prompt glyphs (they
   // only made sense painted on the fake terminal window) but keeps the
-  // exact same typed-reveal timing/state as dark.
+  // exact same typed-reveal timing/state as dark. Split into two lines
+  // so "Hello, I'm" can read as a small lead-in and "a Server
+  // Engineer." as the big, accented line.
   const lightDisplay = text.slice(0, idx).replace(/^>\s?/, '').replace(/\n_\s?/, '\n')
+  const [lightLine1, lightLine2 = ''] = lightDisplay.split('\n')
 
   useEffect(() => {
     if (done) return
@@ -135,15 +138,14 @@ function TvSection() {
       <div className="container tv-grid">
         {theme === 'light' ? (
           <div className="light-terminal">
-            <div className="mono-tag">
-              <span>[</span>
-              <span>WHOAMI</span>
-              <span>]</span>
-            </div>
+            <p className="light-terminal-lead">
+              <span className="typing-text">{lightLine1}</span>
+            </p>
             <p className="light-terminal-text">
-              <span className="typing-text">{lightDisplay}</span>
+              <span className="typing-text">{lightLine2}</span>
               <span className={`light-terminal-cursor ${done ? 'blink' : ''}`} />
             </p>
+            <span className="light-terminal-rule" aria-hidden="true" />
           </div>
         ) : (
           <div className="tv-wrap">

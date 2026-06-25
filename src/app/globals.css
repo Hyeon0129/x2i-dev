@@ -295,11 +295,13 @@ body {
    page, like the hero title — see html[data-theme="light"] rules for
    .light-terminal* below for the actual light styling. */
 .light-terminal {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
 }
+.light-terminal-lead,
 .light-terminal-text {
   margin: 0;
 }
@@ -2827,38 +2829,60 @@ html[data-theme="light"] .tv-cta {
 }
 
 /* ---------- LIGHT TERMINAL QUOTE (replaces the dark TV/CRT section) ----------
-   Two earlier passes kept reskinning a "window" (navy mesh frame, then
-   a glass bezel) and both still read as a foreign prop, because this
-   site's light mode is otherwise flat and editorial — hairline
-   borders, no shadows, no skeuomorphism (see .blog-card, .skills-box,
-   .project-card: white/transparent, 1px low-opacity black border,
-   nothing else). A "device" doesn't belong in that language at all.
-   So there's no window here — it's the same move as .hero-title: big
-   type sitting straight on the page, with the existing [ BRACKET ]
-   mono-tag pattern standing in for the dropped titlebar, and a thin
-   quote-rule on the left (the one new shape, borrowed straight from
-   the site's hairline-border vocabulary) instead of a card edge. The
-   one accent carried over from dark's green CRT glow is the cursor. */
+   No window/frame — see the comment above the base .light-terminal
+   rule near the top of this file for why. The [ WHOAMI ] bracket tag
+   from the first pass was dropped (it duplicated the [ PROFILE ] tag
+   right below it in the same column), which left the block feeling
+   empty, so the weight that label carried is rebuilt with typography
+   and the site's own accent colors instead of another label:
+   - "Hello, I'm" becomes a small lead-in (muted gray, same tone as
+     .mono-tag elsewhere) and "a Server Engineer." becomes the one big,
+     bold, accented line — hierarchy instead of a flat two-line block.
+   - The accent on that big line reuses #3c4a63, the slate-navy this
+     file already uses for "techy" emphasis (was the old bezel base
+     tone) — a deliberate single color-point, not the near-black used
+     by every other heading on the page.
+   - The left rule is now a soft gradient instead of a flat line, and
+     a short two-tone underline (slate -> the cursor's terracotta)
+     grounds the block — one small rule system instead of empty space.
+   - The cursor keeps carrying dark's CRT-glow role, in terracotta. */
 html[data-theme="light"] .light-terminal {
-  border-left: 3px solid rgba(15, 23, 42, 0.12);
   padding-left: clamp(20px, 3vw, 32px);
+}
+html[data-theme="light"] .light-terminal::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(60, 74, 99, 0.45) 0%, rgba(60, 74, 99, 0.08) 100%);
+}
+html[data-theme="light"] .light-terminal-lead {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  letter-spacing: 0.01em;
+  color: #6b7280;
 }
 html[data-theme="light"] .light-terminal-text {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-weight: 500;
-  font-size: clamp(1.7rem, 3.6vw, 2.75rem);
-  line-height: 1.32;
-  letter-spacing: -0.01em;
-  color: #14181f;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: #3c4a63;
   white-space: pre-wrap;
+  margin-top: 6px;
 }
 html[data-theme="light"] .light-terminal-cursor {
   display: inline-block;
-  width: 3px;
-  height: 0.85em;
-  margin-left: 7px;
+  width: 4px;
+  height: 0.7em;
+  margin-left: 8px;
   position: relative;
-  top: 0.1em;
+  top: 0.04em;
   background: #e2793f;
   box-shadow: 0 0 10px rgba(226, 121, 63, 0.45);
   opacity: 0;
@@ -2867,6 +2891,14 @@ html[data-theme="light"] .light-terminal-cursor {
 html[data-theme="light"] .light-terminal-cursor.blink {
   animation: blink 0.8s steps(2, start) infinite;
   opacity: 1;
+}
+html[data-theme="light"] .light-terminal-rule {
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-top: clamp(22px, 3vw, 32px);
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(60, 74, 99, 0.55), rgba(226, 121, 63, 0.5));
 }
 
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */

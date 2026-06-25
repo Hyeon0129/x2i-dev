@@ -11,15 +11,16 @@ export default function HeroParticles() {
     let raf = 0
 
     // dark theme: white dust on black — max possible contrast, untouched.
-    // light theme: against the toned hero (~L 0.82-0.88) low alpha always
-    // reads as invisible regardless of hue, so instead of dampening alpha
-    // we boost it slightly and use a darker slate so dots actually register.
+    // light theme: a darker flat dot against the toned (non-white) hero
+    // background. Per-particle shadowBlur was tried for a "star glow" look
+    // but tanked frame rate (canvas shadow effects are expensive at this
+    // particle count) — flat fills only, no shadow, no per-frame color branching.
     let fill = '#ffffff'
     let alphaScale = 1
     const readTheme = () => {
       const light = document.documentElement.getAttribute('data-theme') === 'light'
-      fill = light ? '#475569' : '#ffffff'
-      alphaScale = light ? 1.2 : 1
+      fill = light ? '#1f2433' : '#ffffff'
+      alphaScale = light ? 1.4 : 1
     }
     readTheme()
     const themeObserver = new MutationObserver(readTheme)

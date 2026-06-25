@@ -14,6 +14,7 @@ import HeroParticles from '../components/HeroParticles'
 
 const HERO_IMG = '/images/intro.png';
 const TV_IMG   = '/images/abm.png';
+const TV_IMG_LIGHT = '/images/light_abm.png';
 const BlogSection = dynamic(() => import("../components/BlogSection"), {
   ssr: true,  
 });
@@ -126,27 +127,22 @@ function TvSection() {
     return () => observer.disconnect()
   }, [])
 
+  const isLight = theme === 'light'
+
   return (
     <section id="records" className="section fade-in">
       <div className="container tv-grid">
-        {theme === 'light' ? (
-          <div className="light-card">
-            <span className="light-card-bar" aria-hidden="true" />
-            <div className="light-card-body">
-              <span className="typing-text">{text.slice(0, idx)}</span>
-              <span className={`light-card-cursor ${done ? 'blink' : ''}`} />
-            </div>
+        <div className="tv-wrap">
+          {isLight ? (
+            <Image src={TV_IMG_LIGHT} alt="terminal tv" width={1024} height={1024} className="tv-image" priority />
+          ) : (
+            <Image src={TV_IMG} alt="terminal tv" width={628} height={549} className="tv-image" priority />
+          )}
+          <div className="tv-text">
+            <span className="typing-text">{text.slice(0, idx)}</span>
+            <span className={`cursor ${done ? 'blink' : ''}`} />
           </div>
-        ) : (
-          <div className="tv-wrap">
-            <Image src={TV_IMG} alt="terminal tv" width={1200} height={800} className="tv-image" priority />
-            <div className="tv-text">
-              <span className="typing-text">{text.slice(0, idx)}</span>
-              <span className={`cursor ${done ? 'blink' : ''}`} />
-            </div>
-          </div>
-        )}
-
+        </div>
 
         <div className="tv-side">
           <div className="mono-tag">

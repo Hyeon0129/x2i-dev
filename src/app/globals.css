@@ -2668,54 +2668,57 @@ html[data-theme="light"] .detail-title {
   color: #0f1115 !important;
   text-shadow: none !important;
 }
-/* dark mode gets a white glow; light mode gets a soft print-like
-   emboss (faint highlight above + diffuse shadow below) so the
-   title keeps visual weight instead of going flat. */
+/* Flat black ink, no glow — matches the clean SaaS-hero reference the user
+   pointed at (large black headline, muted gray second line/sub-copy, no
+   neon treatment at all once the hero background is this close to white). */
 html[data-theme="light"] .hero-title {
   color: #0f1115 !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 28px rgba(15, 23, 42, 0.10) !important;
+  text-shadow: none !important;
 }
 html[data-theme="light"] .hero-title:hover {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 14px 36px rgba(15, 23, 42, 0.14) !important;
+  text-shadow: none !important;
   filter: none !important;
 }
+html[data-theme="light"] .hero-title-accent { color: #6b7280 !important; }
 html[data-theme="light"] .section-sub,
-html[data-theme="light"] .hero-sub { color: #5b6270 !important; }
+html[data-theme="light"] .hero-sub { color: #6b7280 !important; }
 html[data-theme="light"] .detail-desc,
 html[data-theme="light"] .about-desc { color: #4b5563 !important; }
-html[data-theme="light"] .mono-tag { color: #6b7280 !important; }
-/* Hero is a clearly-toned block (not pure #fff). The .divider line below it
-   + the white .below-bg create the section boundary — same role the divider
-   plays in dark mode. */
+html[data-theme="light"] .mono-tag { color: #9ca3af !important; }
+/* Hero is a single flat toned color, exactly like dark mode's hero is a
+   single flat black — no fade. The .divider line is the ONLY boundary;
+   everything in .below-bg below it is pure #fff. Off-white here, just
+   barely distinguished from that #fff — not a saturated blue/slate tone. */
 html[data-theme="light"] .hero {
-  background:
-    radial-gradient(110% 80% at 75% 25%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
-    linear-gradient(165deg, #e6eaf2 0%, #edf0f6 55%, #eef1f7 100%) !important;
+  background: #f7f7f9 !important;
 }
 html[data-theme="light"] .hero::before {
-  background:
-    radial-gradient(circle at 28% 45%, rgba(110, 130, 170, 0.12) 0%, transparent 55%) !important;
+  background: radial-gradient(circle at 50% 40%, rgba(15, 17, 21, 0.03) 0%, transparent 60%) !important;
   mix-blend-mode: normal !important;
 }
 /* slate dust reads on the toned hero */
 html[data-theme="light"] canvas.hero-canvas { opacity: 1 !important; }
-/* replace the white image glow with a soft neutral shadow */
+/* The device mockup PNG is the same asset as dark mode, recolored — and
+   ONLY recolored, the same single treatment dark mode applies (one
+   drop-shadow filter, nothing else; dark mode has no separate glow layer
+   behind the image, so light mode doesn't get one either).
+   invert(0.93) alone flips hue as well as lightness — the asset's baked-in
+   cyan rim-light was coming out orange after invert, which is the "orange
+   neon" that kept showing up uninvited. invert(1) + hue-rotate(180deg) is
+   the standard dark-asset/light-asset trick: it flips lightness but the
+   180deg hue-rotate cancels the hue flip, so the cyan rim-light stays cyan
+   instead of turning orange. Against the near-white hero now, this reads
+   as a soft product shadow rather than a neon halo. */
 html[data-theme="light"] .hero-image {
-  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.12)) !important;
+  filter:
+    invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05)
+    drop-shadow(0 12px 24px rgba(15, 17, 21, 0.16)) !important;
 }
-/* two-tone title (2nd line muted) so it isn't flat/plain.
-   #5b6478 keeps ~5:1 contrast against the hero's #e6eaf2–#eef1f7 tone
-   (the old #9aa3b4 only cleared ~2.1:1 and read as washed out). */
-html[data-theme="light"] .hero-title { color: #14181f !important; }
-html[data-theme="light"] .hero-title-accent { color: #5b6478 !important; }
-html[data-theme="light"] .section-sub { color: #565d6b !important; }
 /* the boundary line between the toned hero and the content below */
-html[data-theme="light"] .divider { border-bottom-color: rgba(15, 17, 21, 0.08) !important; }
-/* fade the hero's last gradient tone (#eef1f7) into white instead of
-   cutting straight to flat #fff, so the hero → About transition reads
-   as one continuous surface instead of two stacked blocks. */
+html[data-theme="light"] .divider { border-bottom-color: rgba(15, 17, 21, 0.1) !important; }
+/* everything below the divider is pure white — only .hero is toned. */
 html[data-theme="light"] .below-bg {
-  background: linear-gradient(180deg, #eef1f7 0%, #ffffff 360px) !important;
+  background: #ffffff !important;
 }
 
 /* ---------- SECTION HEADERS ---------- */
@@ -2799,48 +2802,128 @@ html[data-theme="light"] .carousel-btn:hover {
   color: #6b7280 !important;
 }
 
-/* ---------- TV / TENSTORRENT SECTION ---------- */
-html[data-theme="light"] .tv-wrap,
-html[data-theme="light"] .tv-text,
+/* ---------- TV / TENSTORRENT SECTION ----------
+   light_abm.png is the dedicated light-theme device swapped in by
+   TvSection's theme check (src/app/page.tsx) — same .tv-grid markup, same
+   .tv-text position/size/color/glow as dark mode, untouched. The base
+   .tv-wrap/.tv-image rules above are shared and untouched (dark mode's
+   sizing must stay exactly as it was).
+
+   Bug (fixed): the universal "html[data-theme=light] div/span { color:
+   inherit }" reset further up this file (higher specificity than the
+   single-class .tv-text rule) was overriding .tv-text's own color, so the
+   glyphs rendered black with only the green text-shadow glowing around
+   them. Forced back with !important here.
+
+   Green (and orange/yellow, and a two-tone indigo "Hello" split, all tried
+   earlier) sit too light/warm or too busy against a white screen — neon
+   needs a dark backdrop to pop, and on white it just blurs. Settled on
+   plain black with its own dark "glowing black": a tight near-black core
+   shadow plus a soft charcoal bloom, the closest a black glyph can get to
+   "glowing" on a white screen. */
+html[data-theme="light"] .tv-text {
+  color: #0f1115 !important;
+  text-shadow:
+    0 0 5px rgba(15, 17, 21, 0.45),
+    0 0 14px rgba(15, 17, 21, 0.22),
+    0 1px 2px rgba(15, 17, 21, 0.18) !important;
+}
+html[data-theme="light"] .cursor { background: #0f1115 !important; }
 html[data-theme="light"] .tv-side { color: #0f1115 !important; }
+/* Real intrinsic pixel sizes (measured directly, not the old wrong Image
+   width/height props): abm.png is 628x549 (ratio 1.144), its device fills
+   ~95%/94% of that canvas. light_abm.png is 1024x1024 (ratio 1, perfectly
+   square) — a taller box than dark's at the same width, which was pushing
+   PROFILE/Skills/everything below down the page in light mode only. Forcing
+   .tv-wrap to dark's real aspect ratio + object-fit:contain on .tv-image
+   keeps the *box* height identical to dark's, then the inner image is
+   scaled up to compensate for light_abm.png's own padding (device fills
+   only ~80%/67% of its square canvas vs dark's ~95%/94%).
+   The device itself also needs its own elevation shadow (dark mode gets
+   this "for free" against pure black; on a white page a flat device reads
+   as a sticker, not an object) — a soft, slightly offset drop-shadow gives
+   it the lifted, 3-D look. */
+html[data-theme="light"] .tv-wrap {
+  aspect-ratio: 628 / 549;
+  filter: drop-shadow(8px 28px 32px rgba(15, 23, 42, 0.22)) drop-shadow(2px 8px 10px rgba(15, 23, 42, 0.14));
+}
+html[data-theme="light"] .tv-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.38);
+  transform-origin: center center;
+}
 html[data-theme="light"] .tv-cta {
   background: #0f1115 !important;
   color: #ffffff !important;
 }
 
 /* ---------- LIGHT PROFILE VISUAL (replaces the dark TV/CRT image) ----------
-   Keeps the page's existing rhythm instead of inventing a new one: every
-   other section (Hero, Skills, History) is a left/right split with plain-
-   text content on one side and a bounded visual on the other, so this
-   stays a bounded visual sitting in .tv-grid's own column (no collapsing
-   to one column, no reusing HeroParticles here — that's the Hero
-   section's signature, repeating it here read as the two sections
-   bleeding into each other). The card is a plain bordered surface like
-   .skills-box, with a single accent bar on top tying it to the site's
-   orange accent (cursor color, tv-cta hover, etc.) instead of a foreign
-   blue gradient. */
+   A macOS-style editor window — the same window-chrome language Linear,
+   Vercel and Raycast use for code panels on light marketing pages: a dark
+   editor surface (deliberate contrast against the white page, not another
+   flat-white box) with a traffic-light title bar and a filename tab,
+   line-number gutter, and the site's existing orange cursor accent. It
+   echoes the dark theme's literal terminal/TV image without copying it
+   verbatim, and sits bounded inside .tv-grid's own column like every
+   other section's paired visual. */
 html[data-theme="light"] .light-card {
   position: relative;
   width: 100%;
   max-width: 560px;
-  background: #f7f8fa;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14px;
+  background: #14161c;
+  border: 1px solid rgba(15, 17, 21, 0.08);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow:
+    0 24px 48px -16px rgba(15, 23, 42, 0.22),
+    0 2px 6px rgba(15, 23, 42, 0.08);
 }
 html[data-theme="light"] .light-card-bar {
-  display: block;
-  height: 3px;
-  background: linear-gradient(90deg, #f97316, rgba(249, 115, 22, 0.15));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 40px;
+  padding: 0 16px;
+  background: #1b1e25;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+html[data-theme="light"] .light-card-dots {
+  display: inline-flex;
+  gap: 7px;
+}
+html[data-theme="light"] .light-card-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+html[data-theme="light"] .light-card-filename {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.01em;
 }
 html[data-theme="light"] .light-card-body {
-  padding: clamp(32px, 5vw, 56px) clamp(24px, 4vw, 36px);
+  position: relative;
+  display: flex;
+  gap: 18px;
+  padding: clamp(28px, 4.5vw, 48px) clamp(24px, 4vw, 36px);
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  line-height: 1.6;
-  color: #2c3340;
+  font-size: clamp(1.05rem, 1.9vw, 1.3rem);
+  line-height: 1.7;
+  color: #e3e6ec;
   white-space: pre-wrap;
+}
+html[data-theme="light"] .light-card-gutter {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  font-size: 0.85em;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.22);
+  user-select: none;
 }
 html[data-theme="light"] .light-card-cursor {
   display: inline-block;

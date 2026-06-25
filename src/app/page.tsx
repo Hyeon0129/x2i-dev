@@ -137,18 +137,22 @@ function TvSection() {
     <section id="records" className="section fade-in">
       <div className="container tv-grid">
         {theme === 'light' ? (
-          <div className="light-terminal">
+          <div className="light-hero">
             <HeroParticles />
-            <div className="light-terminal-aurora" aria-hidden="true" />
-            <div className="light-terminal-content">
-              <p className="light-terminal-lead">
+            <div className="light-hero-aurora" aria-hidden="true" />
+            <div className="light-hero-content">
+              <p className="light-hero-lead">
                 <span className="typing-text">{lightLine1}</span>
               </p>
-              <p className="light-terminal-text">
+              <p className="light-hero-text">
                 <span className="typing-text">{lightLine2}</span>
-                <span className={`light-terminal-cursor ${done ? 'blink' : ''}`} />
+                <span className={`light-hero-cursor ${done ? 'blink' : ''}`} />
               </p>
-              <span className="light-terminal-rule" aria-hidden="true" />
+              <div className="light-hero-chips">
+                <span className="light-hero-chip">CORE SKILLS</span>
+                <span className="light-hero-chip">DEVOPS &amp; TOOLS</span>
+                <span className="light-hero-chip">HARDWARE &amp; PROTOCOLS</span>
+              </div>
             </div>
           </div>
         ) : (
@@ -161,7 +165,7 @@ function TvSection() {
           </div>
         )}
 
-                    
+
         <div className="tv-side">
           <div className="mono-tag">
             <span>[</span>

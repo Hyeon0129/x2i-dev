@@ -285,31 +285,39 @@ body {
 .cursor.blink{ animation: blink .8s steps(2,start) infinite; opacity:1; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Light-theme TV replacement — no window/frame. Dark mode works because
-   the TV bezel is near-black on a near-black page (the device
-   dissolves into the void) and the green CRT glow is the one focal
-   accent. There's no equivalent void on white, so instead of faking a
-   "screen" this is built like a modern dev-tool marketing hero
-   (Linear/Vercel/Stripe-style): oversized type as the dominant shape,
-   a soft drifting-particle + gradient-blob atmosphere filling what
-   would otherwise be flat white, and a staggered reveal — see the
-   html[data-theme="light"] .light-terminal* rules below. */
-.light-terminal {
+/* Light-theme TV replacement. Researched the actual hero pattern used
+   by Linear/Vercel/Stripe/Raycast before touching this again: every
+   one of them is a CENTERED full-width stack (headline -> one big
+   visual anchor below it), not a left-text/right-visual split — and
+   Raycast specifically pairs its visual with small labeled callouts.
+   So this drops the side-by-side "quote column + profile column"
+   composition entirely for light: .tv-grid collapses to one column,
+   the typed headline becomes a full-width centered hero block (with
+   the dust-particle + gradient-blob atmosphere as its "visual anchor"
+   instead of a product screenshot), and a row of labeled chips below
+   it stands in for Raycast's keyboard callouts — reusing the site's
+   own existing section labels (Core Skills / DevOps & Tools / Hardware
+   & Protocols from SkillsSection) instead of inventing copy. The
+   profile block (.tv-side) then sits below as its own centered block,
+   same content, new position. See the html[data-theme="light"]
+   .light-hero and .tv-side rules further down for the actual styling. */
+.light-hero {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 420px;
+  justify-content: center;
+  min-height: 460px;
 }
-.light-terminal-content {
+.light-hero-content {
   position: relative;
   z-index: 2;
 }
-.light-terminal-lead,
-.light-terminal-text {
+.light-hero-lead,
+.light-hero-text {
   margin: 0;
 }
 @media (max-width: 1200px) {
-  .light-terminal { min-height: 320px; padding: 32px 0; }
+  .light-hero { min-height: 360px; padding: 32px 0; }
 }
 .section-title {
  font-family: var(--font-universal-sans-display), var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -2831,89 +2839,86 @@ html[data-theme="light"] .tv-cta {
   color: #ffffff !important;
 }
 
-/* ---------- LIGHT TERMINAL HERO (replaces the dark TV/CRT section) ----------
-   Benchmarked against the dev-tool marketing-hero pattern shared by
-   Linear/Vercel/Stripe/x.ai: oversized type that dominates the block,
-   a soft particle + gradient-blob atmosphere instead of flat white,
-   and a staggered entrance — translated into this site's own flat,
-   grayscale-plus-one-accent light language (no card, no shadow/glass
-   skeuomorphism, same hairline-rule vocabulary as everywhere else).
-   - HeroParticles (the same dust canvas the top hero already uses in
-     light) is reused here at section scale, so this block feels like
-     a second hero band instead of dead white space.
-   - Two soft blurred color blobs (slate-navy + the cursor's terracotta)
-     sit behind the type for depth/atmosphere, low-opacity enough to
-     stay calm.
-   - "Hello, I'm" is a small muted lead-in; "a Server Engineer." jumps
-     to a genuinely large display size (matching the scale .hero-title
-     uses up top) in one accent color (#3c4a63) so it dominates the
-     column the way the brief asked for.
-   - Lead -> headline -> rule reveal in a staggered cascade, gated on
-     the same .fade-in.visible class the rest of the site's scroll
-     reveal already uses (no new JS).
-   - The cursor keeps carrying dark's CRT-glow role, in terracotta. */
-html[data-theme="light"] .light-terminal-aurora {
+/* ---------- LIGHT HERO (replaces the dark TV/CRT section) ----------
+   Structural rewrite, not a restyle. Pulled up Linear/Vercel/Stripe/
+   Raycast and they all use the same composition: a centered headline
+   stack, full width, with ONE dominant visual anchor below it — never
+   a left-text/right-graphic split. Raycast goes further and pins small
+   labeled callouts to that visual. This section is rebuilt on that
+   structure instead of the old "narrow text column beside a profile
+   column" — see the html[data-theme="light"] .tv-grid override below,
+   which collapses the 2-column grid to one so .light-hero and .tv-side
+   stack top-to-bottom instead of sitting side-by-side. Dark's .tv-grid
+   rule is untouched; this only fires under the light attribute.
+   - .light-hero is now full-width and centered, with HeroParticles +
+     two blurred color blobs (slate-navy / the cursor's terracotta) as
+     its "visual anchor" atmosphere, the same role Vercel's layered
+     background image or Stripe's wave graphic plays.
+   - .light-hero-chips is the Raycast-style callout row: real existing
+     copy (SkillsSection's own category labels — Core Skills / DevOps
+     & Tools / Hardware & Protocols), not invented text, pinned under
+     the headline like Raycast pins benefit labels to its keyboard.
+   - .tv-side (profile block) keeps its exact original content but is
+     now its own centered block below the hero instead of a side
+     column — margin/max-width only, no text changes. */
+html[data-theme="light"] .tv-grid {
+  grid-template-columns: 1fr !important;
+  row-gap: clamp(56px, 7vw, 88px) !important;
+}
+html[data-theme="light"] .light-hero-aurora {
   position: absolute;
-  inset: -15% -10%;
+  inset: -20% -8%;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(42% 50% at 26% 32%, rgba(60, 74, 99, 0.18) 0%, transparent 70%),
-    radial-gradient(38% 46% at 78% 72%, rgba(226, 121, 63, 0.12) 0%, transparent 70%);
-  filter: blur(34px);
+    radial-gradient(36% 60% at 22% 30%, rgba(60, 74, 99, 0.18) 0%, transparent 70%),
+    radial-gradient(32% 54% at 80% 75%, rgba(226, 121, 63, 0.13) 0%, transparent 70%);
+  filter: blur(38px);
 }
-html[data-theme="light"] .light-terminal-content {
-  padding-left: clamp(20px, 3vw, 32px);
+html[data-theme="light"] .light-hero-content {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
 }
-html[data-theme="light"] .light-terminal-content::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  bottom: 0.2em;
-  width: 3px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, rgba(60, 74, 99, 0.45) 0%, rgba(60, 74, 99, 0.08) 100%);
-}
-html[data-theme="light"] .light-terminal-lead,
-html[data-theme="light"] .light-terminal-text,
-html[data-theme="light"] .light-terminal-rule {
+html[data-theme="light"] .light-hero-lead,
+html[data-theme="light"] .light-hero-text,
+html[data-theme="light"] .light-hero-chips {
   opacity: 0;
 }
-html[data-theme="light"] .fade-in.visible .light-terminal-lead {
-  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+html[data-theme="light"] .fade-in.visible .light-hero-lead {
+  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-html[data-theme="light"] .fade-in.visible .light-terminal-text {
-  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.14s both;
+html[data-theme="light"] .fade-in.visible .light-hero-text {
+  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.14s both;
 }
-html[data-theme="light"] .fade-in.visible .light-terminal-rule {
-  animation: lightTerminalReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.32s both;
+html[data-theme="light"] .fade-in.visible .light-hero-chips {
+  animation: lightHeroReveal 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.32s both;
 }
-@keyframes lightTerminalReveal {
+@keyframes lightHeroReveal {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
-html[data-theme="light"] .light-terminal-lead {
+html[data-theme="light"] .light-hero-lead {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-weight: 400;
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   letter-spacing: 0.01em;
   color: #6b7280;
 }
-html[data-theme="light"] .light-terminal-text {
+html[data-theme="light"] .light-hero-text {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-weight: 700;
-  font-size: clamp(2.6rem, 6vw, 4.6rem);
-  line-height: 1.08;
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
+  line-height: 1.06;
   letter-spacing: -0.02em;
   color: #3c4a63;
   white-space: pre-wrap;
-  margin-top: 8px;
+  margin-top: 10px;
 }
-html[data-theme="light"] .light-terminal-cursor {
+html[data-theme="light"] .light-hero-cursor {
   display: inline-block;
   width: 5px;
-  height: 0.65em;
+  height: 0.6em;
   margin-left: 9px;
   position: relative;
   top: 0.03em;
@@ -2922,17 +2927,32 @@ html[data-theme="light"] .light-terminal-cursor {
   opacity: 0;
   vertical-align: text-bottom;
 }
-html[data-theme="light"] .light-terminal-cursor.blink {
+html[data-theme="light"] .light-hero-cursor.blink {
   animation: blink 0.8s steps(2, start) infinite;
   opacity: 1;
 }
-html[data-theme="light"] .light-terminal-rule {
-  display: block;
-  width: 48px;
-  height: 2px;
-  margin-top: clamp(26px, 3.4vw, 36px);
-  border-radius: 2px;
-  background: linear-gradient(90deg, rgba(60, 74, 99, 0.55), rgba(226, 121, 63, 0.5));
+html[data-theme="light"] .light-hero-chips {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(28px, 3.6vw, 40px);
+}
+html[data-theme="light"] .light-hero-chip {
+  font-family: "GeistMono", ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #0f1115;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+html[data-theme="light"] .tv-side {
+  transform: none !important;
+  margin: 0 auto !important;
+  max-width: 560px;
 }
 
 /* ---------- BLOG SECTION on HOME (BlogSection.tsx) ---------- */

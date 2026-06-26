@@ -269,7 +269,10 @@ function HistorySection() {
 
       if (detailBox) {
         if (isMobile) {
-          detailBox.style.top = `${relativeTop - 18}px`;
+          const HBOX_W = 288; // detailBox is 18rem wide
+          const left = Math.max(8, Math.min(relativeLeft - HBOX_W / 2, timelineRect.width - HBOX_W - 8));
+          detailBox.style.left = `${left}px`;
+          detailBox.style.top = `${relativeTop + 28}px`;
           detailBox.style.display = 'block';
         } else {
           const HBOX_W = 20;
@@ -288,22 +291,9 @@ function HistorySection() {
       if (detailDesc) detailDesc.textContent = dataset.desc || '';
     }
 
-    function adjustDotsForMobile() {
-      if (isMobile) {
-        eventDots.forEach((dot, index) => {
-          const topPosition = 10 + (index * (80 / (eventDots.length - 1)));
-          (dot as HTMLElement).style.top = `${topPosition}%`;
-        });
-
-        const labels = document.querySelectorAll('.quarter-label');
-        labels.forEach((label, index) => {
-          const topPosition = 10 + (index * (80 / (labels.length - 1)));
-          (label as HTMLElement).style.top = `${topPosition}%`;
-        });
-      }
-    }
-
-    adjustDotsForMobile();
+    // Mobile keeps the same horizontal layout as desktop (dots vertically
+    // centered, spread left-to-right by their existing left:% values) —
+    // the timeline scrolls horizontally instead of restacking vertically.
     if (eventDots[0]) {
       showDetail(eventDots[0]);
     }
@@ -370,6 +360,7 @@ function HistorySection() {
         </div>
 
         {}
+        <div className="timeline-scroll">
         <div className="timeline-wrap">
           <div className="timeline-inner">
             <div className="vertical-line" style={{ left: '5%',  top: 'calc(50% - 33px)' }}></div>
@@ -478,6 +469,7 @@ function HistorySection() {
             data-title="Today"
             data-desc="Taking time to figure things out and find my next step.">
           </div>
+        </div>
         </div>
       </div>
     </section>

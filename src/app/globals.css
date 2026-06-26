@@ -166,6 +166,101 @@ body {
   opacity:1;
 }
 
+/* ===== Mobile menu (hamburger + fullscreen overlay) =====
+   Hidden on desktop; .mobile-menu-btn is switched to display:inline-flex
+   only inside the @media (max-width:768px) block above. The overlay's
+   own light-theme palette lives in the html[data-theme="light"]
+   section further down — these rules are the dark/default look,
+   modeled on the x.ai mobile menu reference (near-black sheet, logo +
+   close at top, stacked nav with hairline dividers, one big pill CTA
+   pinned to the bottom — repurposed here as the theme toggle). */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #000000;
+  padding: 18px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+  animation: fadeIn 0.2s ease-out;
+}
+
+.mobile-menu-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-menu-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+.mobile-menu-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 28px;
+}
+.mobile-menu-nav a {
+  color: #f2f2f2;
+  text-decoration: none;
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 20px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.mobile-menu-nav a.active {
+  color: #ffffff;
+}
+
+.mobile-menu-bottom {
+  margin-top: auto;
+  padding-top: 32px;
+}
+.mobile-menu-theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 17px;
+  border-radius: 999px;
+  border: none;
+  background: #ffffff;
+  color: #0f1115;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 /* ===== Hero ===== */
 .hero{ position:relative; min-height:100svh; display:flex; align-items:center; overflow:hidden; }
@@ -486,11 +581,17 @@ font-size: 1.1rem;
   margin-top: 40px;
 }
 #history.section {
-  padding-top: 120px; 
+  padding-top: 120px;
   overflow: visible;
 }
 
-
+/* Plain pass-through wrapper on desktop (no overflow/width of its own,
+   so .timeline-wrap's 100vw full-bleed trick still escapes it exactly
+   as before). On mobile it becomes the actual horizontal-scroll
+   viewport — see the @media (max-width:768px) block further down. */
+.timeline-scroll {
+  width: 100%;
+}
 
 .timeline-wrap {
   position: relative;
@@ -1552,19 +1653,21 @@ pre code {
   }
 
   .header-inner {
-    flex-wrap: wrap;
     height: auto;
     padding: 10px 0;
     gap: 12px;
   }
 
   .nav {
-    gap: 12px;
-    font-size: 0.7rem;
+    display: none;
   }
 
   .nav-right {
     display: none;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
   }
 
   /* ===== HERO ===== */
@@ -1675,9 +1778,26 @@ pre code {
     font-size: 0.9rem;
   }
 
-  
-  #history.section {
+  /* History: swipeable horizontal timeline instead of hidden. The
+     dots/labels keep their original left:% values (same as desktop) —
+     .timeline-wrap just becomes wide enough for that spread to read
+     comfortably, and .timeline-scroll (the new wrapper around it) is
+     the actual finger-scrollable, scrollbar-less viewport. */
+  .timeline-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .timeline-scroll::-webkit-scrollbar {
     display: none;
+  }
+  .timeline-wrap {
+    width: 1000px;
+    max-width: none;
+    left: 0;
+    transform: none;
+    pointer-events: auto;
   }
 
 
@@ -2669,6 +2789,36 @@ html[data-theme="light"] .search-btn kbd {
   color: rgba(15, 17, 21, 0.45) !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
 }
+html[data-theme="light"] .mobile-menu-btn {
+  color: rgba(15, 17, 21, 0.65) !important;
+}
+html[data-theme="light"] .mobile-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+/* mobile menu overlay: same near-black/x.ai look in dark, flipped to
+   this site's light surface (white sheet, dark text/dividers, and the
+   solid-black pill the rest of the light theme already uses for its
+   primary CTAs — tv-cta/blog-explore — instead of dark's white pill). */
+html[data-theme="light"] .mobile-menu-overlay {
+  background: #ffffff !important;
+}
+html[data-theme="light"] .mobile-menu-close {
+  color: rgba(15, 17, 21, 0.65) !important;
+}
+html[data-theme="light"] .mobile-menu-close:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .mobile-menu-nav a {
+  color: #0f1115 !important;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+}
+html[data-theme="light"] .mobile-menu-nav a.active {
+  color: #0f1115 !important;
+}
+html[data-theme="light"] .mobile-menu-theme-btn {
+  background: #0f1115 !important;
+  color: #ffffff !important;
+}
 
 /* ---------- HERO ---------- */
 html[data-theme="light"] .detail-title {
@@ -3125,13 +3275,22 @@ html[data-theme="light"] pre[class*="language-"] {
 html[data-theme="light"] pre[class*="language-"]::before { color: #57606a !important; }
 html[data-theme="light"] pre[class*="language-"]::after { background: rgba(0, 0, 0, 0.08) !important; }
 
-html[data-theme="light"] pre[class*="language-"]::-webkit-scrollbar-track {
+/* The element that actually scrolls horizontally is the <code> inside
+   pre (see pre[class*="language-"] > code, overflow-x:auto, further up
+   this file) — pre itself now has overflow:hidden, so styling pre's
+   own ::-webkit-scrollbar* here has no effect; target code instead.
+   Without this, the light-theme scrollbar falls back to the browser
+   default (white-on-white against the code block, invisible). */
+html[data-theme="light"] pre[class*="language-"] > code {
+  scrollbar-color: #c4c7cd #e9eaec;
+}
+html[data-theme="light"] pre[class*="language-"] > code::-webkit-scrollbar-track {
   background: #e9eaec !important;
 }
-html[data-theme="light"] pre[class*="language-"]::-webkit-scrollbar-thumb {
+html[data-theme="light"] pre[class*="language-"] > code::-webkit-scrollbar-thumb {
   background: #c4c7cd !important;
 }
-html[data-theme="light"] pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+html[data-theme="light"] pre[class*="language-"] > code::-webkit-scrollbar-thumb:hover {
   background: #a8acb3 !important;
 }
 

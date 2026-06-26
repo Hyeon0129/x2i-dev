@@ -119,14 +119,20 @@ body {
 .header-inner .brand{ display:flex; align-items:center; }
 .nav{
   display:flex; gap:38px; margin-left:8px;
-  letter-spacing:.06em; color:#d4d4d4;
+  letter-spacing:normal; color:#d4d4d4;
 }
 .nav a{
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  /* var(--font-universal-sans) was never actually defined anywhere
+     (no @font-face, no next/font, nothing) — it was silently falling
+     back to the system UI font the whole time. The real branded font
+     loaded on this site is 'Universal Sans Display' (see the
+     @font-face above, also what the blog post date/title/description
+     use) — using that directly instead of the dead variable. */
+  font-family: 'Universal Sans Display', 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 300;
   line-height: 20px;
 }
 .nav a:hover{ color:#ffffff; }

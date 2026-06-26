@@ -68,22 +68,34 @@ body {
   left: 0;
   width: 100%;
   z-index: 100;
-  /* Real blur + a translucent (not solid) tint at all times — over the
-     flat-black hero, blurring/tinting black is still just black, so
-     this is visually identical to the old "transparent" look there.
-     Anywhere else (blog post titles etc. sitting close to the top),
-     it's what keeps that content from reading clearly through the
-     header instead of being mostly-but-not-completely obscured. */
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(14px) saturate(150%);
+  /* Pure blur (even masked) still cuts off as "sharp blur, then
+     suddenly no blur" — the x.ai look is closer to content dissolving
+     into the page, which needs an actual fading tint on top of the
+     blur, not blur alone. Padding-bottom gives that fade real room to
+     happen gradually instead of being squeezed into .header-inner's
+     own ~64px. */
+  padding-bottom: 64px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.12) 55%, transparent 100%);
+  /* 14px was way too strong — content behind it turned into an
+     unrecognizable smear instead of the subtle x.ai-style softening
+     (still readable as shapes, just slightly hazy). */
+  backdrop-filter: blur(5px) saturate(120%);
   pointer-events: none;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, padding-bottom 0.2s ease;
+  /* backdrop-filter applies evenly across the whole rectangle, so
+     without this the blur just stops dead at the header's bottom edge.
+     Masking it to fade over the same span as the gradient above keeps
+     the blur and the tint dissolving together. Off while .scrolled,
+     where a crisp edge + the hairline border is the look we want. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%);
 }
 
 /* Once you scroll (.scrolled, toggled by Header.tsx), the tint goes a
    bit darker for extra definition and the hairline divider (on
    .header-inner, not here — see below for why) fades in. */
 .site-header.scrolled {
+  padding-bottom: 0;
+  mask-image: none;
   background: rgba(0, 0, 0, 0.75);
 }
 
@@ -109,7 +121,14 @@ body {
   display:flex; gap:38px; margin-left:8px;
   letter-spacing:.06em; color:#d4d4d4;
 }
-.nav a{ color:#888888; text-decoration:none; font-size:0.88rem; font-weight:300;  }
+.nav a{
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-family: var(--font-universal-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
 .nav a:hover{ color:#ffffff; }
 .nav a.active{ color:#ffffff; }
 .nav-right{ margin-left:auto; margin-right:10px; display:flex; align-items:center; gap: 10px; }
@@ -305,7 +324,12 @@ body {
 }
 
 /* ===== Hero ===== */
-.hero{ position:relative; min-height:100svh; display:flex; align-items:center; overflow:hidden; }
+/* padding-top guarantees the vertically-centered title block always
+   clears the fixed header, even on a wide-but-short viewport (e.g. a
+   short browser window) where 100svh leaves little room and centering
+   alone can land the title right behind the header. Mobile/tablet
+   already had this (96px, below); desktop never did. */
+.hero{ position:relative; min-height:100svh; display:flex; align-items:center; overflow:hidden; padding-top:96px; }
 .hero-grid{
   display:grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(40px, 6vw, 96px); align-items:center;
 }
@@ -2858,22 +2882,20 @@ html[data-theme="light"] a {
 }
 
 /* ---------- HEADER ---------- */
-/* A flat opaque white fill read as a solid panel slapped on the page;
-   fully transparent with zero blur let blog-post titles etc. show
-   through completely legibly. Real blur + a translucent (not solid,
-   not see-through) white tint, matching dark's same treatment above —
-   content behind softens into a barely-legible haze instead of either
-   extreme. */
+/* Same dissolve-into-the-page treatment as dark above (fading
+   gradient tint + masked blur, not a flat fill) — just white-based. */
 html[data-theme="light"] .site-header,
 html[data-theme="light"] header {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.15) 55%, transparent 100%) !important;
   /* Deliberately writing only the unprefixed property: the build's CSS
      transform dropped this declaration whenever it was hand-paired
      with an explicit -webkit-backdrop-filter of the same value
      (confirmed by testing several variants against the compiled
      output) — the autoprefixer adds -webkit- on its own, same as
-     every other backdrop-filter in this file already relies on. */
-  backdrop-filter: blur(14px) saturate(150%) !important;
+     every other backdrop-filter in this file already relies on.
+     5px, not 14px — 14 turned content behind it into an unreadable
+     smear instead of the subtle x.ai-style softening. */
+  backdrop-filter: blur(5px) saturate(120%) !important;
   color: #0f1115 !important;
 }
 html[data-theme="light"] .site-header.scrolled {
@@ -2886,10 +2908,10 @@ html[data-theme="light"] .site-header .brand {
   color: #0f1115 !important;
 }
 html[data-theme="light"] .site-header .nav a {
-  color: #6b7280 !important;
+  color: #868686 !important;
 }
-html[data-theme="light"] .site-header .nav a:hover { color: #0f1115 !important; }
-html[data-theme="light"] .site-header .nav a.active { color: #0f1115 !important; }
+html[data-theme="light"] .site-header .nav a:hover { color: #0d0d0d !important; }
+html[data-theme="light"] .site-header .nav a.active { color: #0d0d0d !important; }
 
 html[data-theme="light"] .theme-toggle-btn {
   color: rgba(15, 17, 21, 0.55) !important;
@@ -3267,18 +3289,17 @@ html[data-theme="light"] [class*="blog-module__"][class$="__categoryItem"]:hover
   color: #0f1115 !important;
   border-color: rgba(0, 0, 0, 0.18) !important;
 }
-/* the category currently being viewed — solid pill. Dark gray, not
-   pure near-black (#0f1115 read as too harsh/black here, even though
-   that's the same tone ABOUT ME/tv-cta use elsewhere). */
+/* the category currently being viewed — solid black pill, same tone
+   ABOUT ME/tv-cta use elsewhere. */
 html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"] {
-  background: #374151 !important;
+  background: #0f1115 !important;
   color: #ffffff !important;
-  border-color: #374151 !important;
+  border-color: #0f1115 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"]:hover {
-  background: #374151 !important;
+  background: #0f1115 !important;
   color: #ffffff !important;
-  border-color: #374151 !important;
+  border-color: #0f1115 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__timelineLine"] {
   background-color: rgba(0, 0, 0, 0.15) !important;

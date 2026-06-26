@@ -71,12 +71,23 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  // Header is transparent at the very top of the page (matches the hero) and
-  // picks up a solid background + hairline bottom border once you scroll —
-  // without that, page content scrolling underneath a permanently-transparent
-  // header reads as overlapping it instead of passing cleanly behind it.
+  // Header stays fully transparent (no background tint at all, just the
+  // blur) for as long as any part of .hero is still behind it — so the
+  // home page's hero never gets a visible colored bar across it, no
+  // matter how far you scroll within it. Once .hero has fully scrolled
+  // past (or on pages with no .hero at all, e.g. /blog), it picks up the
+  // solid tint + hairline border so non-hero content doesn't just show
+  // straight through a permanently-transparent header.
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 8);
+    const handleScroll = () => {
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        const headerHeight = document.querySelector('.site-header')?.clientHeight ?? 0;
+        setScrolled(hero.getBoundingClientRect().bottom <= headerHeight);
+      } else {
+        setScrolled(window.scrollY > 8);
+      }
+    };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -144,11 +155,11 @@ export default function Header() {
   const isProjectActive = pathname === '/' && activeSection === 'projects';
 
   const navLinks = [
-    { href: '/', label: 'HOME', active: isHomeActive },
-    { href: '/#records', label: 'ABOUT', scroll: true, active: isAboutActive },
-    { href: '/#projects', label: 'PROJECT', scroll: true, active: isProjectActive },
-    { href: '/blog', label: 'BLOG', active: isActive('/blog') },
-    { href: 'https://docs.pyron.dev', label: 'DOCS', target: '_blank' },
+    { href: '/', label: 'Home', active: isHomeActive },
+    { href: '/#records', label: 'About', scroll: true, active: isAboutActive },
+    { href: '/#projects', label: 'Project', scroll: true, active: isProjectActive },
+    { href: '/blog', label: 'Blog', active: isActive('/blog') },
+    { href: 'https://docs.pyron.dev', label: 'Docs', target: '_blank' },
   ];
 
   return (
@@ -160,11 +171,11 @@ export default function Header() {
           </Link>
 
           <nav className="nav">
-            <Link href="/" className={isHomeActive ? 'active' : ''}>HOME</Link>
-            <Link href="/#records" scroll={true} className={isAboutActive ? 'active' : ''}>ABOUT</Link>
-            <Link href="/#projects" scroll={true} className={isProjectActive ? 'active' : ''}>PROJECT</Link>
-            <Link href="/blog" className={isActive('/blog') ? 'active' : ''}>BLOG</Link>
-            <Link href="https://docs.pyron.dev" target="_blank">DOCS</Link>
+            <Link href="/" className={isHomeActive ? 'active' : ''}>Home</Link>
+            <Link href="/#records" scroll={true} className={isAboutActive ? 'active' : ''}>About</Link>
+            <Link href="/#projects" scroll={true} className={isProjectActive ? 'active' : ''}>Project</Link>
+            <Link href="/blog" className={isActive('/blog') ? 'active' : ''}>Blog</Link>
+            <Link href="https://docs.pyron.dev" target="_blank">Docs</Link>
           </nav>
 
           <div className="nav-right">

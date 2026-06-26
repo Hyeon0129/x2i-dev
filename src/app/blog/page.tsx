@@ -38,7 +38,7 @@ export default async function BlogPage() {
           <p>Read the latest insights from our journey.</p>
 
           <div className={styles.categories}>
-            <Link href="/blog" className={styles.categoryItem}>All</Link>
+            <Link href="/blog" className={`${styles.categoryItemActive} ${styles.categoryItem}`}>All</Link>
             <Link href="/blog/insights" className={styles.categoryItem}>Insights</Link>
             <Link href="/blog/guides" className={styles.categoryItem}>Guides</Link>
             <Link href="/blog/projects" className={styles.categoryItem}>Projects</Link>

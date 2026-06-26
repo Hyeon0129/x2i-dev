@@ -180,7 +180,6 @@ body {
   justify-content: center;
   width: 36px;
   height: 36px;
-  margin-left: auto;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -188,6 +187,27 @@ body {
   cursor: pointer;
 }
 .mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* mobile-only search trigger, sits left of the hamburger (x.ai
+   reference order). Reuses the existing SearchModal/searchOpen state —
+   no new search logic, just a second way to open it below 768px where
+   the desktop .search-btn pill is hidden. */
+.mobile-search-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+.mobile-search-btn:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -1666,7 +1686,8 @@ pre code {
     display: none;
   }
 
-  .mobile-menu-btn {
+  .mobile-menu-btn,
+  .mobile-search-btn {
     display: inline-flex;
   }
 
@@ -1805,6 +1826,21 @@ pre code {
   }
   .timeline-inner::before {
     width: var(--mobile-line-width, 100%);
+  }
+
+  /* The visible dot stays 5px (matches desktop) but that's far too
+     small a touch target — finger taps need several tries to land on
+     it. ::before expands the actual tappable area to ~41px without
+     changing what's drawn; a tap anywhere in that area still hits
+     .event-dot itself (pseudo-elements don't have separate event
+     targets), so the existing click/touchstart handler just works.
+     18px each side keeps adjacent dots' hit areas from overlapping —
+     the closest two dots are 40px apart after the mobile px-spacing
+     fix, and 18+18=36 < 40. */
+  .event-dot::before {
+    content: '';
+    position: absolute;
+    inset: -18px;
   }
 
 
@@ -2796,10 +2832,12 @@ html[data-theme="light"] .search-btn kbd {
   color: rgba(15, 17, 21, 0.45) !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
 }
-html[data-theme="light"] .mobile-menu-btn {
+html[data-theme="light"] .mobile-menu-btn,
+html[data-theme="light"] .mobile-search-btn {
   color: rgba(15, 17, 21, 0.65) !important;
 }
-html[data-theme="light"] .mobile-menu-btn:hover {
+html[data-theme="light"] .mobile-menu-btn:hover,
+html[data-theme="light"] .mobile-search-btn:hover {
   background: rgba(0, 0, 0, 0.06) !important;
 }
 /* mobile menu overlay: same near-black/x.ai look in dark, flipped to
@@ -3134,15 +3172,33 @@ html[data-theme="light"] .blog-read-btn:hover {
 html[data-theme="light"] [class*="blog-module__"][class$="__blogHeader"],
 html[data-theme="light"] [class*="blog-module__"][class$="__blogHeader"] h1 { color: #0f1115 !important; }
 html[data-theme="light"] [class*="blog-module__"][class$="__blogHeader"] p { color: #4b5563 !important; }
+/* Plain transparent text previously made these look like bare labels,
+   not buttons — no visible distinction at all in light (the dark
+   rgba(255,255,255,...) tint this class uses is invisible on white).
+   Give it the same soft pill treatment used elsewhere in light
+   (rgba(0,0,0,...) tint + hairline border, e.g. .tech-tag/.blog-category). */
 html[data-theme="light"] [class*="blog-module__"][class$="__categoryItem"] {
-  background: transparent !important;
+  background: rgba(0, 0, 0, 0.04) !important;
   color: #6b7280 !important;
-  border-color: transparent !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__categoryItem"]:hover {
-  background: transparent !important;
+  background: rgba(0, 0, 0, 0.08) !important;
   color: #0f1115 !important;
-  border-color: transparent !important;
+  border-color: rgba(0, 0, 0, 0.18) !important;
+}
+/* the category currently being viewed — solid pill, the same
+   black-bg/white-text pattern as the site's other primary buttons
+   (ABOUT ME / tv-cta / blog-explore). */
+html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"] {
+  background: #0f1115 !important;
+  color: #ffffff !important;
+  border-color: #0f1115 !important;
+}
+html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"]:hover {
+  background: #0f1115 !important;
+  color: #ffffff !important;
+  border-color: #0f1115 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__timelineLine"] {
   background-color: rgba(0, 0, 0, 0.15) !important;

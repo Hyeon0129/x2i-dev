@@ -28,7 +28,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   const normalizedCategory = category.toLowerCase();
 
-  
+  const catClass = (slug: string) =>
+    slug === normalizedCategory
+      ? `${styles.categoryItemActive} ${styles.categoryItem}`
+      : styles.categoryItem;
+
+
   const filteredPosts: PostFrontMatter[] = getAllPosts().filter((post) => {
     if (!post) return false;
     if (!post.category) return false;
@@ -45,10 +50,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
         <div className={styles.categories}>
           <Link href="/blog" className={styles.categoryItem}>All</Link>
-          <Link href="/blog/insights" className={styles.categoryItem}>Insights</Link>
-          <Link href="/blog/guides" className={styles.categoryItem}>Guides</Link>
-          <Link href="/blog/projects" className={styles.categoryItem}>Projects</Link>
-          <Link href="/blog/life" className={styles.categoryItem}>Life</Link>
+          <Link href="/blog/insights" className={catClass('insights')}>Insights</Link>
+          <Link href="/blog/guides" className={catClass('guides')}>Guides</Link>
+          <Link href="/blog/projects" className={catClass('projects')}>Projects</Link>
+          <Link href="/blog/life" className={catClass('life')}>Life</Link>
         </div>
       </div>
 

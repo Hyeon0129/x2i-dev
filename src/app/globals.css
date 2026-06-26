@@ -938,12 +938,19 @@ code[class*="language-"] {
 pre[class*="language-"] {
   padding: 1rem 1rem!important;
   margin: 1rem 0 !important;
-  overflow: auto !important;
+  overflow: hidden !important;
   border-radius: 12px !important;
   border: 1px solid rgba(31, 34, 40, 0.6) !important;
   box-shadow: none !important;
   position: relative !important;
 	font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Code itself scrolls horizontally so the title/copy button (children of
+   pre) stay fixed in place instead of scrolling out of view. */
+pre[class*="language-"] > code {
+  display: block !important;
+  overflow-x: auto !important;
 }
 
 .token.comment,

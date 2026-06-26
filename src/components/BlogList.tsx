@@ -17,48 +17,50 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
 
   return (
     <div className={styles.blogList}>
-      <div className={styles.timelineLine}></div>
+      <div className={styles.postsWrap}>
+        <div className={styles.timelineLine}></div>
 
-      {visiblePosts.map((post) => (
-        <div key={post.slug} className={styles.postItem}>
+        {visiblePosts.map((post) => (
+          <div key={post.slug} className={styles.postItem}>
 
-          <div className={styles.postGrid}>
+            <div className={styles.postGrid}>
 
-            {/* LEFT */}
-            <div className={styles.left}>
-              <div className={styles.dot}></div>
-              <p className={styles.date}>{post.dateFormatted}</p>
+              {/* LEFT */}
+              <div className={styles.left}>
+                <div className={styles.dot}></div>
+                <p className={styles.date}>{post.dateFormatted}</p>
 
-              <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`} className={styles.title}>
-                {post.title}
-              </Link>
+                <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`} className={styles.title}>
+                  {post.title}
+                </Link>
 
-              <span className={styles.category}>{post.category}</span>
+                <span className={styles.category}>{post.category}</span>
 
-              <p className={styles.excerpt}>{post.description || post.excerpt}</p>
+                <p className={styles.excerpt}>{post.description || post.excerpt}</p>
 
-              <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`} className={styles.readBtn}>
-                READ
-              </Link>
+                <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`} className={styles.readBtn}>
+                  READ
+                </Link>
+              </div>
+
+              {/* RIGHT - thumbnail */}
+              <div className={styles.right}>
+                <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}>
+                  <Image
+                    src={post.thumbnail!}
+                    alt={post.title}
+                    width={3840}
+                    height={2160}
+                    className={styles.thumb}
+                  />
+                </Link>
+              </div>
+
             </div>
-
-            {/* RIGHT - thumbnail */}
-            <div className={styles.right}>
-              <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`}>
-                <Image
-                  src={post.thumbnail!}
-                  alt={post.title}
-                  width={3840}
-                  height={2160}
-                  className={styles.thumb}
-                />
-              </Link>
-            </div>
-
           </div>
-        </div>
 
-      ))}
+        ))}
+      </div>
 
       {hasMore && (
         <div className={styles.loadMoreWrap}>

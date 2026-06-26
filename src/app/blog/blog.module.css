@@ -58,13 +58,16 @@
 
 
 .blogList {
+  width: 1080px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+}
+
+.postsWrap {
   display: flex;
   flex-direction: column;
   gap: 65px;
   position: relative;
-  width: 1080px;
-  margin: 0 auto;
-  margin-bottom: 80px;
 }
 
 /* ============================================
@@ -247,8 +250,11 @@
   
   .blogList {
     width: min(94vw, 960px);
-    gap: 48px;
     margin-bottom: 60px;
+  }
+
+  .postsWrap {
+    gap: 48px;
   }
 
   .loadMoreWrap {
@@ -333,6 +339,9 @@
     width: 100%;
     padding: 0 18px 60px;
     margin: 0 auto 40px;
+  }
+
+  .postsWrap {
     gap: 18px;
   }
 

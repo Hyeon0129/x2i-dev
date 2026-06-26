@@ -38,13 +38,22 @@ export default function HeroParticles() {
 
     const resize = () => {
       const rect = canvas.parentElement!.getBoundingClientRect()
-      w = Math.floor(rect.width)
-      h = Math.floor(rect.height)
+      const nextW = Math.floor(rect.width)
+      const nextH = Math.floor(rect.height)
+      // Mobile browsers fire `resize` repeatedly while scrolling (the
+      // dynamic toolbar hiding/showing changes the viewport size), so this
+      // fires far more often than an actual layout change — skip the
+      // (relatively expensive) canvas resize + particle re-init when the
+      // size hasn't actually moved.
+      if (nextW === w && nextH === h) return false
+      w = nextW
+      h = nextH
       canvas.width = w * DPR
       canvas.height = h * DPR
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
+      return true
     }
 
     const init = () => {
@@ -78,17 +87,48 @@ export default function HeroParticles() {
       raf = requestAnimationFrame(step)
     }
 
-    const onResize = () => {
-      resize()
-      init()
+    const startLoop = () => {
+      if (!raf) raf = requestAnimationFrame(step)
+    }
+    const stopLoop = () => {
+      cancelAnimationFrame(raf)
+      raf = 0
     }
 
+    const onResize = () => {
+      if (resize()) init()
+    }
+
+    // Debounced: without this, mobile scroll-triggered resize storms (see
+    // above) were re-running getBoundingClientRect + regenerating the
+    // whole particle array dozens of times per scroll gesture — the actual
+    // source of the reported lag, made worse once a second HeroParticles
+    // instance was added for the light-theme hero.
+    let resizeTimer = 0
+    const onResizeDebounced = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(onResize, 150)
+    }
+
+    // Only animate while actually on/near screen — the light-theme hero's
+    // canvas otherwise keeps redrawing every frame even while the user has
+    // scrolled well past it (e.g. down in the History section).
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) startLoop()
+        else stopLoop()
+      },
+      { rootMargin: '200px' }
+    )
+    io.observe(canvas)
+
     onResize()
-    step()
-    window.addEventListener('resize', onResize)
+    window.addEventListener('resize', onResizeDebounced)
     return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', onResize)
+      stopLoop()
+      window.clearTimeout(resizeTimer)
+      window.removeEventListener('resize', onResizeDebounced)
+      io.disconnect()
       themeObserver.disconnect()
     }
   }, [])

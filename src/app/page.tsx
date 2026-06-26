@@ -251,6 +251,45 @@ function HistorySection() {
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
+    // Desktop spreads dots/labels across a 100vw-wide line via left:%, which
+    // works there because the line is genuinely viewport-wide. Reusing the
+    // same percentages on a merely-1000px-wider mobile strip is what was
+    // causing label text ("MAR 2019", "JAN 2020", ...) to overlap — some of
+    // those % gaps are as tight as 5%, and 5% of any width under ~1700px is
+    // narrower than the label text itself. Fix: convert every left:% to a
+    // fixed px position (original % * MOBILE_SCALE) so the gap between the
+    // two closest labels is always a fixed, safely-clear distance, and size
+    // .timeline-wrap/the line to end right after the last dot instead of
+    // carrying on to whatever width was picked.
+    if (isMobile && !timelineWrap.hasAttribute('data-mobile-spread')) {
+      // Guard against StrictMode's dev-mode double effect-invocation re-running
+      // this against already-converted (px, not %) inline styles.
+      timelineWrap.setAttribute('data-mobile-spread', 'true');
+
+      const MOBILE_SCALE = 20; // px per original percentage-point
+      const lineEl = timelineWrap.querySelector('.timeline-inner');
+      let maxDotPx = 0;
+      let maxAnyPx = 0;
+
+      const toPx = (el: Element) => {
+        const pct = parseFloat((el as HTMLElement).style.left);
+        if (Number.isNaN(pct)) return;
+        const px = pct * MOBILE_SCALE;
+        (el as HTMLElement).style.left = `${px}px`;
+        maxAnyPx = Math.max(maxAnyPx, px);
+        return px;
+      };
+
+      timelineWrap.querySelectorAll('.vertical-line, .quarter-label').forEach(toPx);
+      eventDots.forEach((dot) => {
+        const px = toPx(dot);
+        if (px !== undefined) maxDotPx = Math.max(maxDotPx, px);
+      });
+
+      (timelineWrap as HTMLElement).style.width = `${maxAnyPx + 90}px`;
+      if (lineEl) (lineEl as HTMLElement).style.setProperty('--mobile-line-width', `${maxDotPx + 6}px`);
+    }
+
     function showDetail(dot: Element) {
       eventDots.forEach(d => d.classList.remove("active"));
       dot.classList.add("active");

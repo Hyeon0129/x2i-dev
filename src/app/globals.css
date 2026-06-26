@@ -1778,11 +1778,15 @@ pre code {
     font-size: 0.9rem;
   }
 
-  /* History: swipeable horizontal timeline instead of hidden. The
-     dots/labels keep their original left:% values (same as desktop) —
-     .timeline-wrap just becomes wide enough for that spread to read
-     comfortably, and .timeline-scroll (the new wrapper around it) is
-     the actual finger-scrollable, scrollbar-less viewport. */
+  /* History: swipeable horizontal timeline instead of hidden.
+     left:% only spreads items proportionally to whatever width
+     .timeline-wrap happens to have — JS (HistorySection) converts every
+     left:% to a fixed px position and sizes .timeline-wrap/the line to
+     match exactly, so the tightest label-to-label gap stays comfortably
+     clear and nothing trails off past the last dot. 1100px here is just
+     the pre-JS fallback (briefly visible before the effect runs).
+     .timeline-scroll (the new wrapper around it) is the actual
+     finger-scrollable, scrollbar-less viewport. */
   .timeline-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -1793,11 +1797,14 @@ pre code {
     display: none;
   }
   .timeline-wrap {
-    width: 1000px;
+    width: 1100px;
     max-width: none;
     left: 0;
     transform: none;
     pointer-events: auto;
+  }
+  .timeline-inner::before {
+    width: var(--mobile-line-width, 100%);
   }
 
 

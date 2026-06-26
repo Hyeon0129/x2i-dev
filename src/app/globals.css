@@ -2701,45 +2701,83 @@ pre code {
 }
 
 
-/* Mobile */
+/* Mobile — SearchModal renders a completely different (single-column,
+   no preview-pane) JSX branch below this width, modeled on docs.x.ai's
+   mobile search: full-width input + X at top, a flat vertical list of
+   icon+title rows underneath, grouped by category. .search-body/
+   .search-results-pane/.search-preview-pane/.search-footer are the
+   desktop-only 2-pane pieces and never render under this breakpoint
+   (see the `isMobile` branch in SearchModal.tsx), so they don't need
+   (and no longer have) mobile overrides here. */
 @media (max-width: 640px) {
   .search-overlay {
     align-items: flex-start;
-    padding-top: 80px;
+    padding-top: 64px;
   }
 
   .search-modal {
     width: 94%;
     max-width: none;
-    height: auto;
+    height: min(78vh, 620px);
     padding: 12px 14px 0;
   }
 
-  .search-body::before {
-    left: -14px;
-    right: -14px;
-  }
-
-  .search-results-pane {
-    border-right: none;
+  .search-mobile-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
     border-bottom: 1px solid #262626;
-    padding-right: 0;
-    padding-bottom: 10px;
-    max-height: 260px;
   }
 
-  .search-preview-pane {
-    padding-left: 0;
-    padding-top: 10px;
+  .search-mobile-input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 2px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #f9fafb;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
 
-  .search-footer {
-    padding-inline: 8px;
+  .search-mobile-input::placeholder {
+    color: #777777;
   }
 
-  .search-footer::before {
-    left: -14px;
-    right: -14px;
+  .search-mobile-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+  }
+
+  .search-mobile-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 14px;
+  }
+
+  /* full-width touch rows instead of the desktop hover-sized pills */
+  .search-mobile-list .search-result-item {
+    padding: 11px 10px;
+    font-size: 0.95rem;
+  }
+
+  .search-mobile-list .search-result-icon {
+    width: 19px;
+    height: 19px;
   }
 }
 
@@ -3457,6 +3495,13 @@ html[data-theme="light"] .search-modal {
 }
 html[data-theme="light"] .search-input { color: #0f1115 !important; }
 html[data-theme="light"] .search-input::placeholder { color: #6b7280 !important; }
+html[data-theme="light"] .search-mobile-top { border-bottom-color: rgba(0, 0, 0, 0.1) !important; }
+html[data-theme="light"] .search-mobile-input { color: #0f1115 !important; }
+html[data-theme="light"] .search-mobile-input::placeholder { color: #6b7280 !important; }
+html[data-theme="light"] .search-mobile-close {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(15, 17, 21, 0.7) !important;
+}
 html[data-theme="light"] .search-body::before,
 html[data-theme="light"] .search-footer::before,
 html[data-theme="light"] .search-results-pane::after { background-color: rgba(0, 0, 0, 0.08) !important; }

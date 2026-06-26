@@ -21,6 +21,41 @@ type SearchPost = {
   dateFormatted?: string;
 };
 
+const DocIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    className="search-result-icon"
+  >
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9"
+    />
+  </svg>
+);
+
+// Reused verbatim from the site's existing nav (Header.tsx) / blog category
+// filter (blog.module.css categories) — these are the mobile search's
+// pre-query suggestions, not invented copy.
+const SITE_LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/#records', label: 'About' },
+  { href: '/#projects', label: 'Project' },
+  { href: '/blog', label: 'Blog' },
+  { href: 'https://docs.pyron.dev', label: 'Docs' },
+];
+const CATEGORY_LINKS = [
+  { href: '/blog/insights', label: 'Insights' },
+  { href: '/blog/guides', label: 'Guides' },
+  { href: '/blog/projects', label: 'Projects' },
+  { href: '/blog/life', label: 'Life' },
+];
+
 export default function SearchModal({ open, onClose }: SearchModalProps) {
 
   function stripHtml(html: string) {
@@ -31,8 +66,17 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
   const [posts, setPosts] = useState<SearchPost[]>([]);
   const [fuse, setFuse] = useState<Fuse<SearchPost> | null>(null);
   const [activePost, setActivePost] = useState<SearchPost | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+
   useEffect(() => {
     fetch('/api/search')
       .then((r) => r.json())
@@ -99,6 +143,82 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
   }, [results, activePost]);
 
   if (!open) return null;
+
+  // Mobile: full-width single-column list (docs.x.ai pattern) — no preview
+  // pane, results navigate straight to the page on tap. Reuses the same
+  // query/fuse/groupedResults state as desktop, just a different render.
+  if (isMobile) {
+    return (
+      <div className="search-overlay" onClick={onClose}>
+        <div className="search-modal search-modal-mobile" onClick={(e) => e.stopPropagation()}>
+          <div className="search-mobile-top">
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="search-mobile-input"
+            />
+            <button
+              type="button"
+              className="search-mobile-close"
+              aria-label="Close search"
+              onClick={onClose}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="search-mobile-list">
+            {!query.trim() ? (
+              <>
+                <div className="search-group">
+                  <div className="search-group-label">Categories</div>
+                  {CATEGORY_LINKS.map((c) => (
+                    <Link key={c.href} href={c.href} className="search-result-item" onClick={onClose}>
+                      <DocIcon />
+                      <div className="search-result-title">{c.label}</div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="search-group">
+                  <div className="search-group-label">Site</div>
+                  {SITE_LINKS.map((s) => (
+                    <Link key={s.href} href={s.href} className="search-result-item" onClick={onClose}>
+                      <DocIcon />
+                      <div className="search-result-title">{s.label}</div>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            ) : !results.length ? (
+              <div className="search-empty">No results found.</div>
+            ) : (
+              groupedResults.map(([category, posts]) => (
+                <div key={category} className="search-group">
+                  <div className="search-group-label">{category}</div>
+                  {posts.map((post) => {
+                    const categoryPath = (post.category || 'uncategorized').toLowerCase();
+                    const href = `/blog/${categoryPath}/${post.slug}`;
+                    return (
+                      <Link key={post.slug} href={href} className="search-result-item" onClick={onClose}>
+                        <DocIcon />
+                        <div className="search-result-title">{post.title}</div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="search-overlay" onClick={onClose}>

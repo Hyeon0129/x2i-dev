@@ -63,14 +63,28 @@ body {
 
 /* ===== Header ===== */
 .site-header {
-  position: fixed;       
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 100;          
-  background: transparent; 
-  backdrop-filter: blur(2.5px) saturate(150%); 
-  pointer-events: none;  
+  z-index: 100;
+  /* Real blur + a translucent (not solid) tint at all times — over the
+     flat-black hero, blurring/tinting black is still just black, so
+     this is visually identical to the old "transparent" look there.
+     Anywhere else (blog post titles etc. sitting close to the top),
+     it's what keeps that content from reading clearly through the
+     header instead of being mostly-but-not-completely obscured. */
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px) saturate(150%);
+  pointer-events: none;
+  transition: background 0.2s ease;
+}
+
+/* Once you scroll (.scrolled, toggled by Header.tsx), the tint goes a
+   bit darker for extra definition and the hairline divider (on
+   .header-inner, not here — see below for why) fades in. */
+.site-header.scrolled {
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .header-inner {
@@ -78,8 +92,16 @@ body {
   display: flex;
   align-items: center;
   gap: 42px;
-  pointer-events: auto; 
+  pointer-events: auto;
   padding-top: 8px;
+  /* The divider only spans the header's own content width (matching
+     .container, not the full viewport edge-to-edge) — transparent
+     until .scrolled is added to the header above it. */
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.site-header.scrolled .header-inner {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 .header-inner .brand{ display:flex; align-items:center; }
@@ -2836,29 +2858,29 @@ html[data-theme="light"] a {
 }
 
 /* ---------- HEADER ---------- */
-/* Dark's header is fully transparent, no fill color at all — it just
-   floats over whatever's behind it (nav text only, no bar/panel shape).
-   It also has the base rule's blur(2.5px), but that's invisible in
-   practice since the page behind it is flat black (blurring a constant
-   color produces that same constant color). An earlier pass gave light
-   an opaque white fill to "match dark", but that made the header read
-   as a solid white panel/bar sitting on top of the page — exactly the
-   colored, boxed-in look that's wrong here. Light should be the same
-   colorless floating presence as dark: transparent, no blur (light's
-   hero/content has real texture, so the same blur that's invisible on
-   dark's flat black would visibly frost it here). */
+/* A flat opaque white fill read as a solid panel slapped on the page;
+   fully transparent with zero blur let blog-post titles etc. show
+   through completely legibly. Real blur + a translucent (not solid,
+   not see-through) white tint, matching dark's same treatment above —
+   content behind softens into a barely-legible haze instead of either
+   extreme. */
 html[data-theme="light"] .site-header,
 html[data-theme="light"] header {
-  background: transparent !important;
-  /* Deliberately not `none`/blur(0px): the build's CSS transform
-     dropped the unprefixed backdrop-filter declaration whenever it
-     was hand-paired with an explicit -webkit-backdrop-filter of the
-     same value (confirmed by testing several variants against the
-     compiled output) — writing only the unprefixed form here and
-     letting the autoprefixer generate -webkit- itself avoids that,
-     same as every other backdrop-filter in this file already does. */
-  backdrop-filter: blur(0.01px) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  /* Deliberately writing only the unprefixed property: the build's CSS
+     transform dropped this declaration whenever it was hand-paired
+     with an explicit -webkit-backdrop-filter of the same value
+     (confirmed by testing several variants against the compiled
+     output) — the autoprefixer adds -webkit- on its own, same as
+     every other backdrop-filter in this file already relies on. */
+  backdrop-filter: blur(14px) saturate(150%) !important;
   color: #0f1115 !important;
+}
+html[data-theme="light"] .site-header.scrolled {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+html[data-theme="light"] .site-header.scrolled .header-inner {
+  border-bottom-color: rgba(15, 17, 21, 0.08) !important;
 }
 html[data-theme="light"] .site-header .brand {
   color: #0f1115 !important;
@@ -3245,18 +3267,18 @@ html[data-theme="light"] [class*="blog-module__"][class$="__categoryItem"]:hover
   color: #0f1115 !important;
   border-color: rgba(0, 0, 0, 0.18) !important;
 }
-/* the category currently being viewed — solid pill, the same
-   black-bg/white-text pattern as the site's other primary buttons
-   (ABOUT ME / tv-cta / blog-explore). */
+/* the category currently being viewed — solid pill. Dark gray, not
+   pure near-black (#0f1115 read as too harsh/black here, even though
+   that's the same tone ABOUT ME/tv-cta use elsewhere). */
 html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"] {
-  background: #0f1115 !important;
+  background: #374151 !important;
   color: #ffffff !important;
-  border-color: #0f1115 !important;
+  border-color: #374151 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class*="__categoryItemActive"]:hover {
-  background: #0f1115 !important;
+  background: #374151 !important;
   color: #ffffff !important;
-  border-color: #0f1115 !important;
+  border-color: #374151 !important;
 }
 html[data-theme="light"] [class*="blog-module__"][class$="__timelineLine"] {
   background-color: rgba(0, 0, 0, 0.15) !important;

@@ -56,16 +56,16 @@
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-/* Marks which category the user is currently viewing. No dark-theme
-   look on purpose (matches the existing behavior, which never had a
-   persistent selected state) — see html[data-theme="light"]
-   __categoryItemActive in globals.css for the solid pill used there.
-   --is-active is a marker custom property, not a real style — it has
-   zero rendering effect, it's only here because a truly-empty rule
-   block gets optimized away during the build, which would make this
-   resolve to `undefined` as a class name instead of a real one. */
+/* Marks which category the user is currently viewing. White text + a
+   stronger tint than :hover (not just the same hover look, so it reads
+   as "selected" even while the mouse is elsewhere) — see
+   html[data-theme="light"] __categoryItemActive in globals.css for the
+   solid pill used there. */
 .categoryItemActive {
-  --is-active: true;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.26);
+  font-weight: 600;
 }
 
 

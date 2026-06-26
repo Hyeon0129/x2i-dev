@@ -12,12 +12,16 @@ const LOGO = '/images/logo.png';
 
 type Theme = 'dark' | 'light';
 
+type ActiveSection = 'home' | 'records' | 'projects';
+
 export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [theme, setTheme] = useState<Theme>('dark');
   const [isMac, setIsMac] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<ActiveSection>('home');
 
   useEffect(() => {
     const stored = (document.documentElement.getAttribute('data-theme') as Theme | null) ?? 'dark';
@@ -67,6 +71,39 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Header is transparent at the very top of the page (matches the hero) and
+  // picks up a solid background + hairline bottom border once you scroll —
+  // without that, page content scrolling underneath a permanently-transparent
+  // header reads as overlapping it instead of passing cleanly behind it.
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 8);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll-spy for the home page: ABOUT/PROJECT scroll-link to #records/
+  // #projects rather than navigating to a new route, so route-based active
+  // matching never lights them up — mark whichever section you've actually
+  // scrolled past as active instead, same idea as HOME being "active" by
+  // default at the top.
+  useEffect(() => {
+    if (pathname !== '/') return;
+
+    const handleScroll = () => {
+      const offset = 120;
+      const records = document.getElementById('records');
+      const projects = document.getElementById('projects');
+      let next: ActiveSection = 'home';
+      if (records && records.getBoundingClientRect().top <= offset) next = 'records';
+      if (projects && projects.getBoundingClientRect().top <= offset) next = 'projects';
+      setActiveSection(next);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname]);
+
   const toggleTheme = () => {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
@@ -102,26 +139,30 @@ export default function Header() {
       </svg>
     );
 
+  const isHomeActive = pathname === '/' && activeSection === 'home';
+  const isAboutActive = pathname === '/' && activeSection === 'records';
+  const isProjectActive = pathname === '/' && activeSection === 'projects';
+
   const navLinks = [
-    { href: '/', label: 'HOME', active: isActive('/') && pathname === '/' },
-    { href: '/#records', label: 'ABOUT', scroll: true },
-    { href: '/#projects', label: 'PROJECT', scroll: true },
+    { href: '/', label: 'HOME', active: isHomeActive },
+    { href: '/#records', label: 'ABOUT', scroll: true, active: isAboutActive },
+    { href: '/#projects', label: 'PROJECT', scroll: true, active: isProjectActive },
     { href: '/blog', label: 'BLOG', active: isActive('/blog') },
     { href: 'https://docs.pyron.dev', label: 'DOCS', target: '_blank' },
   ];
 
   return (
     <>
-      <header className="site-header">
+      <header className={`site-header${scrolled ? ' scrolled' : ''}`}>
         <div className="container header-inner">
           <Link href="/" className="brand">
             <Image src={LOGO} alt="Pyron" width={45} height={45} />
           </Link>
 
           <nav className="nav">
-            <Link href="/" className={isActive('/') && pathname === '/' ? 'active' : ''}>HOME</Link>
-            <Link href="/#records" scroll={true}>ABOUT</Link>
-            <Link href="/#projects" scroll={true}>PROJECT</Link>
+            <Link href="/" className={isHomeActive ? 'active' : ''}>HOME</Link>
+            <Link href="/#records" scroll={true} className={isAboutActive ? 'active' : ''}>ABOUT</Link>
+            <Link href="/#projects" scroll={true} className={isProjectActive ? 'active' : ''}>PROJECT</Link>
             <Link href="/blog" className={isActive('/blog') ? 'active' : ''}>BLOG</Link>
             <Link href="https://docs.pyron.dev" target="_blank">DOCS</Link>
           </nav>

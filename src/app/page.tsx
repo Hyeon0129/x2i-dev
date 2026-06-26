@@ -250,6 +250,7 @@ function HistorySection() {
     if (!timelineWrap || !eventDots.length) return;
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    let userInteracted = false; // guards the delayed mobile resync below from clobbering a real tap
 
     // Desktop spreads dots/labels across a 100vw-wide line via left:%, which
     // works there because the line is genuinely viewport-wide. Reusing the
@@ -286,8 +287,16 @@ function HistorySection() {
         if (px !== undefined) maxDotPx = Math.max(maxDotPx, px);
       });
 
-      (timelineWrap as HTMLElement).style.width = `${maxAnyPx + 90}px`;
-      if (lineEl) (lineEl as HTMLElement).style.setProperty('--mobile-line-width', `${maxDotPx + 6}px`);
+      // Width: end the swipeable area just past the last label/dot's own
+      // width instead of the old +90px (felt like excess trailing space).
+      (timelineWrap as HTMLElement).style.width = `${maxAnyPx + 50}px`;
+      // Line: explicit left AND width (not just width) so it's pinned to
+      // .timeline-wrap's true left edge through to the last dot, with no
+      // reliance on left:0 cascading correctly from the base rule.
+      if (lineEl) {
+        (lineEl as HTMLElement).style.setProperty('--mobile-line-left', '0px');
+        (lineEl as HTMLElement).style.setProperty('--mobile-line-width', `${maxDotPx + 3}px`);
+      }
     }
 
     function showDetail(dot: Element) {
@@ -333,8 +342,27 @@ function HistorySection() {
     // Mobile keeps the same horizontal layout as desktop (dots vertically
     // centered, spread left-to-right by their existing left:% values) —
     // the timeline scrolls horizontally instead of restacking vertically.
+    let initRaf = 0;
+    let initTimeout = 0;
     if (eventDots[0]) {
-      showDetail(eventDots[0]);
+      if (isMobile) {
+        // On mobile the very first showDetail() call landed the orange
+        // highlight box to the left of the actual dot — only on first
+        // load, and only there; tapping any dot afterwards (a fresh,
+        // later showDetail() call) always lines up correctly. That
+        // pattern is the signature of measuring positions before the
+        // browser has finished laying out the px-spread/width changes
+        // made just above. Deferring the first call to the next frame,
+        // plus a second resync once the section's own 0.8s .fade-in
+        // entrance transition has settled, removes that race instead of
+        // guessing at which exact line caused it.
+        initRaf = requestAnimationFrame(() => showDetail(eventDots[0]));
+        initTimeout = window.setTimeout(() => {
+          if (!userInteracted) showDetail(eventDots[0]);
+        }, 900);
+      } else {
+        showDetail(eventDots[0]);
+      }
     }
 
     if (isMobile) {
@@ -342,11 +370,16 @@ function HistorySection() {
         ['click', 'touchstart'].forEach(eventName => {
           dot.addEventListener(eventName, function (e) {
             e.preventDefault();
+            userInteracted = true;
             const target = (e as Event).currentTarget as Element;
             if (target) showDetail(target);
           });
         });
       });
+      return () => {
+        cancelAnimationFrame(initRaf);
+        window.clearTimeout(initTimeout);
+      };
     } else {
       const handleMouseMove = (event: MouseEvent) => {
         let nearestDot: Element | null = null;

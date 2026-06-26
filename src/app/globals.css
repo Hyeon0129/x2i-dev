@@ -1825,6 +1825,7 @@ pre code {
     pointer-events: auto;
   }
   .timeline-inner::before {
+    left: var(--mobile-line-left, 0);
     width: var(--mobile-line-width, 100%);
   }
 
@@ -2835,9 +2836,27 @@ html[data-theme="light"] a {
 }
 
 /* ---------- HEADER ---------- */
+/* Dark's header is also nominally transparent+blurred (base .site-header
+   rule), but that's invisible in practice because the page behind it is
+   flat black — blurring a constant color is still that constant color.
+   Light's hero/content actually has texture (gradient, particles, text),
+   so the SAME transparent+blur reads as visible frosted glass on scroll.
+   Matching dark's effectively-opaque look here means a real opaque
+   background instead of relying on a blur that only "disappears" by
+   coincidence on a solid backdrop, plus explicitly killing the blur so
+   it can't reappear at any breakpoint (the plain, non-themed
+   .site-header rule and its mobile overrides both set backdrop-filter). */
 html[data-theme="light"] .site-header,
 html[data-theme="light"] header {
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  /* Deliberately not `none`/blur(0px): the build's CSS transform
+     dropped the unprefixed backdrop-filter declaration whenever it
+     was hand-paired with an explicit -webkit-backdrop-filter of the
+     same value (confirmed by testing several variants against the
+     compiled output) — writing only the unprefixed form here and
+     letting the autoprefixer generate -webkit- itself avoids that,
+     same as every other backdrop-filter in this file already does. */
+  backdrop-filter: blur(0.01px) !important;
   color: #0f1115 !important;
 }
 html[data-theme="light"] .site-header .brand {

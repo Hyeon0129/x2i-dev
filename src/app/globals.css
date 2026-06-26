@@ -2836,19 +2836,20 @@ html[data-theme="light"] a {
 }
 
 /* ---------- HEADER ---------- */
-/* Dark's header is also nominally transparent+blurred (base .site-header
-   rule), but that's invisible in practice because the page behind it is
-   flat black — blurring a constant color is still that constant color.
-   Light's hero/content actually has texture (gradient, particles, text),
-   so the SAME transparent+blur reads as visible frosted glass on scroll.
-   Matching dark's effectively-opaque look here means a real opaque
-   background instead of relying on a blur that only "disappears" by
-   coincidence on a solid backdrop, plus explicitly killing the blur so
-   it can't reappear at any breakpoint (the plain, non-themed
-   .site-header rule and its mobile overrides both set backdrop-filter). */
+/* Dark's header is fully transparent, no fill color at all — it just
+   floats over whatever's behind it (nav text only, no bar/panel shape).
+   It also has the base rule's blur(2.5px), but that's invisible in
+   practice since the page behind it is flat black (blurring a constant
+   color produces that same constant color). An earlier pass gave light
+   an opaque white fill to "match dark", but that made the header read
+   as a solid white panel/bar sitting on top of the page — exactly the
+   colored, boxed-in look that's wrong here. Light should be the same
+   colorless floating presence as dark: transparent, no blur (light's
+   hero/content has real texture, so the same blur that's invisible on
+   dark's flat black would visibly frost it here). */
 html[data-theme="light"] .site-header,
 html[data-theme="light"] header {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: transparent !important;
   /* Deliberately not `none`/blur(0px): the build's CSS transform
      dropped the unprefixed backdrop-filter declaration whenever it
      was hand-paired with an explicit -webkit-backdrop-filter of the

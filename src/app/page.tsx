@@ -489,7 +489,7 @@ function HistorySection() {
           <div className="event-dot" style={{ left: '18%' }}
             data-date="28 JAN"
             data-title="Becoming a Father"
-            data-desc="My son was born—everything changed.">
+            data-desc="My son was born. Everything changed.">
           </div>
 
           <div className="event-dot" style={{ left: '23%' }}
@@ -668,7 +668,7 @@ useEffect(() => setMounted(true), []);
       'qc-dashboard': {
         title: 'Server QC Automation Dashboard',
         description: `
-        Automated the repetitive server QC process—eliminating manual checks by letting the system handle everything from power control to BIOS config, 
+        Automated the repetitive server QC process, eliminating manual checks by letting the system handle everything from power control to BIOS config,
         OS installation, and real-time alerts.
         Built a web dashboard to deploy tasks across multiple servers and visualize progress at a glance.
         `,
@@ -686,7 +686,7 @@ useEffect(() => setMounted(true), []);
         description: `
         Real-time comparison demo of LLM inference performance between Tenstorrent NPU (N300S) and NVIDIA A100 GPU. <br />
         Using a Llama-3 based model, the interface visualizes token generation speed alongside GPU utilization and power 
-        consumption—making hardware differences instantly clear.
+        consumption, making hardware differences instantly clear.
 
         `,
         video: '/videos/intro/npu-open-webui.mp4',
@@ -783,7 +783,7 @@ useEffect(() => setMounted(true), []);
           </div>`;
       });
       html += '</div>'; 
-      html += '<div class="snap-caption">* Demo snapshot values — may vary based on environment and configuration.</div>';
+      html += '<div class="snap-caption">* Demo snapshot values, may vary based on environment and configuration.</div>';
       impactBar.innerHTML = html;
       if (divider) divider.style.display = 'block';
       return;

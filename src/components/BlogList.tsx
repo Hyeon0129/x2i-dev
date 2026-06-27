@@ -9,6 +9,12 @@ import type { PostFrontMatter } from "@/lib/posts";
 
 const INITIAL_COUNT = 10;
 const LOAD_MORE_STEP = 6;
+const EXCERPT_MAX_CHARS = 150;
+
+function truncateChars(text: string, maxChars: number) {
+  if (text.length <= maxChars) return text;
+  return text.slice(0, maxChars).trimEnd() + "…";
+}
 
 export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
@@ -36,7 +42,7 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
 
                 <span className={styles.category}>{post.category}</span>
 
-                <p className={styles.excerpt}>{post.description || post.excerpt}</p>
+                <p className={styles.excerpt}>{truncateChars(post.description || post.excerpt || "", EXCERPT_MAX_CHARS)}</p>
 
                 <Link href={`/blog/${post.category?.toLowerCase()}/${post.slug}`} className={styles.readBtn}>
                   READ

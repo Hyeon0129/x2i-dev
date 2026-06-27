@@ -55,7 +55,7 @@ export default function Footer() {
             />
             <div className={styles.leftBottom}>
               <p className={styles.tagline}>
-                Thoughts, values, everyday life, and the tech I&apos;m curious about — written down as I go.
+                A personal record of code, curiosity, and everyday life.
               </p>
               <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
             </div>
@@ -133,7 +133,7 @@ export default function Footer() {
               <div className={styles.statsRow}>
                 <div className={styles.statItem}>
                   <p className={styles.statLabel}>Last Posted</p>
-                  <p className={styles.statValue}>{stats.lastUpdated ?? '—'}</p>
+                  <p className={styles.statValue}>{stats.lastUpdated ?? '-'}</p>
                 </div>
                 <div className={styles.statItem}>
                   <p className={styles.statLabel}>Posts</p>

@@ -10,6 +10,13 @@ function recreateExcerpt(text: string = "", wordCount = 40) {
   return words.slice(0, wordCount).join(" ") + (words.length > wordCount ? "…" : "");
 }
 
+const EXCERPT_MAX_CHARS = 140;
+
+function truncateChars(text: string, maxChars: number) {
+  if (text.length <= maxChars) return text;
+  return text.slice(0, maxChars).trimEnd() + "…";
+}
+
 interface Post {
   title: string;
   date: string;
@@ -32,7 +39,7 @@ export default function BlogSection() {
       .then(data => {
   const override = data.map((post: Post) => ({
     ...post,
-    excerpt: post.description || recreateExcerpt(post.content || post.excerpt || "", 26),
+    excerpt: truncateChars(post.description || recreateExcerpt(post.content || post.excerpt || "", 26), EXCERPT_MAX_CHARS),
   }));
 
   setPosts(override);

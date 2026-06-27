@@ -88,8 +88,8 @@
 .loadMoreWrap {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
-  padding-bottom: 120px;
+  margin-top: 60px;
+  padding-bottom: 70px;
 }
 
 .loadMoreBtn {

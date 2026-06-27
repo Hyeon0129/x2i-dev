@@ -35,7 +35,7 @@ export default async function BlogPage() {
       <div className="container" style={{ paddingTop: "120px" }}>
         <div className={styles.blogHeader}>
           <h1>Blog</h1>
-          <p>Read the latest insights from our journey.</p>
+          <p>Notes on infrastructure, engineering, and life along the way.</p>
 
           <div className={styles.categories}>
             <Link href="/blog" className={`${styles.categoryItemActive} ${styles.categoryItem}`}>All</Link>

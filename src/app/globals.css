@@ -3406,7 +3406,7 @@ html[data-theme="light"] [class*="blogDetail-module__"][class$="__content"] > ul
 html[data-theme="light"] [class*="blogDetail-module__"][class$="__content"] hr { border-top-color: rgba(0, 0, 0, 0.1) !important; }
 html[data-theme="light"] [class*="blogDetail-module__"][class$="__content"] code { color: #c2410c !important; }
 html[data-theme="light"] [class*="blogDetail-module__"][class$="__content"] pre {
-  background: #ffffff !important;
+  background: #f5f6f8 !important;
   border: 1px solid #e5e7eb !important;
 }
 
@@ -3461,7 +3461,7 @@ html[data-theme="light"] [class*="footer-module__"][class$="__themeToggle"]:hove
 /* ---------- CODE BLOCKS (Prism + tabs) ---------- */
 html[data-theme="light"] pre[class*="language-"],
 html[data-theme="light"] code[class*="language-"] {
-  background-color: #ffffff !important;
+  background-color: #f5f6f8 !important;
   color: #1f2328 !important;
 }
 html[data-theme="light"] pre[class*="language-"] {
@@ -3477,7 +3477,7 @@ html[data-theme="light"] pre[class*="language-"]::after { background: rgba(0, 0,
    Without this, the light-theme scrollbar falls back to the browser
    default (white-on-white against the code block, invisible). */
 html[data-theme="light"] pre[class*="language-"] > code {
-  scrollbar-color: #c4c7cd #ffffff;
+  scrollbar-color: #c4c7cd #f5f6f8;
 }
 html[data-theme="light"] pre[class*="language-"] > code::-webkit-scrollbar-track {
   background: #e9eaec !important;

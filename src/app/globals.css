@@ -1104,6 +1104,11 @@ code[class*="language-"] {
 
 pre[class*="language-"] {
   padding: 1rem 1rem!important;
+  /* 0 here, not 1rem — code's own padding-bottom (below) reserves the
+     gap above the horizontal scrollbar instead, so the scrollbar itself
+     ends up flush with pre's bottom edge rather than floating above a
+     band of empty padding. */
+  padding-bottom: 0 !important;
   margin: 1rem 0 !important;
   overflow: hidden !important;
   border-radius: 12px !important;
@@ -1118,6 +1123,11 @@ pre[class*="language-"] {
 pre[class*="language-"] > code {
   display: block !important;
   overflow-x: auto !important;
+  /* The gap between the last code line and the scrollbar now lives here
+     (pre's own bottom padding is 0) — keeps the scrollbar flush with
+     pre's bottom edge while still giving the code text breathing room
+     above it. */
+  padding-bottom: 0.5rem !important;
   scrollbar-color: var(--secondary-color) transparent;
 }
 pre[class*="language-"] > code::-webkit-scrollbar {
@@ -1375,6 +1385,10 @@ pre[data-title="terminal" i]::before {
 
 .code-tabs-group pre[class*="language-"] {
   padding: 1rem !important;
+  /* Same flush-scrollbar treatment as the base pre rule above — the tab
+     bar (not pre's own ::before) handles the title here, but the
+     bottom-padding/scrollbar issue is identical. */
+  padding-bottom: 0 !important;
 }
 
 .code-tabs-group pre[class*="language-"].is-hidden {

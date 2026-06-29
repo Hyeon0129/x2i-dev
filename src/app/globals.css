@@ -1118,6 +1118,20 @@ pre[class*="language-"] {
 pre[class*="language-"] > code {
   display: block !important;
   overflow-x: auto !important;
+  scrollbar-color: var(--secondary-color) transparent;
+}
+pre[class*="language-"] > code::-webkit-scrollbar {
+  height: 8px;
+}
+pre[class*="language-"] > code::-webkit-scrollbar-track {
+  background: transparent;
+}
+pre[class*="language-"] > code::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+pre[class*="language-"] > code::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color-hover);
 }
 
 .token.comment,

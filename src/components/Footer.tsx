@@ -13,7 +13,7 @@ type Theme = 'dark' | 'light';
 export default function Footer() {
   const year = new Date().getFullYear();
   const [theme, setTheme] = useState<Theme>('dark');
-  const [stats, setStats] = useState<{ count: number; lastUpdated: string | null } | null>(null);
+  const [stats, setStats] = useState<{ count: number; lastUpdated: string | null; totalVisitors: number; todayVisitors: number } | null>(null);
 
   useEffect(() => {
     const stored = (document.documentElement.getAttribute('data-theme') as Theme | null) ?? 'dark';
@@ -108,12 +108,20 @@ export default function Footer() {
             {stats && (
               <div className={styles.statsRow}>
                 <div className={styles.statItem}>
+                  <p className={styles.statLabel}>Posts</p>
+                  <p className={styles.statValue}>{stats.count}</p>
+                </div>
+                <div className={styles.statItem}>
                   <p className={styles.statLabel}>Last Posted</p>
                   <p className={styles.statValue}>{stats.lastUpdated ?? '-'}</p>
                 </div>
                 <div className={styles.statItem}>
-                  <p className={styles.statLabel}>Posts</p>
-                  <p className={styles.statValue}>{stats.count}</p>
+                  <p className={styles.statLabel}>Today</p>
+                  <p className={styles.statValue}>{stats.todayVisitors.toLocaleString()}</p>
+                </div>
+                <div className={styles.statItem}>
+                  <p className={styles.statLabel}>Total</p>
+                  <p className={styles.statValue}>{stats.totalVisitors.toLocaleString()}</p>
                 </div>
               </div>
             )}

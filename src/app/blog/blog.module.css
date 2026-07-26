@@ -36,7 +36,7 @@
     border-radius: 8px;
     text-decoration: none;
     font-size: 14px;
-    font-family: 'Inter', 'Degular', 'Helvetica Neue', sans-serif;
+    font-family: var(--font-inter), 'Degular', 'Helvetica Neue', sans-serif;
     font-weight: 400;
     transition: all 0.25s ease;
     border: 1px solid rgba(255, 255, 255, 0.08); 
@@ -101,7 +101,7 @@
   border: 0.1px solid #424242;
   background: transparent;
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -173,7 +173,7 @@
 
 
 .date {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-weight: 400;
   font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.4);
@@ -183,7 +183,7 @@
 
 
 .title {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1.7rem;
   font-weight: 500;
   color: rgb(255, 255, 255);

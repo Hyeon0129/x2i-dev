@@ -162,6 +162,17 @@ pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
   margin: 40px 0;
 }
 
+.content blockquote {
+  border-left: 2px solid rgba(249, 115, 22, 0.5);
+  padding: 4px 0 4px 20px;
+  margin: 28px 0;
+}
+
+.content blockquote p {
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
 .content img {
   max-width: 100%;
   height: auto;

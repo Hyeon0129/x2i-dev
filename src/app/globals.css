@@ -1134,7 +1134,8 @@ pre[class*="language-"] > code {
   padding-bottom: 1rem !important;
 }
 pre[class*="language-"] > code::-webkit-scrollbar {
-  height: 8px;
+  height: 3px;
+  width: 3px;
 }
 pre[class*="language-"] > code::-webkit-scrollbar-track {
   background: transparent;

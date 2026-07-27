@@ -12,8 +12,7 @@ export type PostFrontMatter = {
   category?: string;
   slug?: string;
   thumbnail?: string;
-  
-  
+  published?: boolean;
   description?: string;
   keywords?: string[];
   author?: string;
@@ -40,7 +39,7 @@ export function getAllPosts(): PostFrontMatter[] {
       };
     });
 
-  return posts.sort((a, b) => {
+  return posts.filter((p) => p.published !== false).sort((a, b) => {
     const aTime = a.date ? new Date(a.date).getTime() : 0;
     const bTime = b.date ? new Date(b.date).getTime() : 0;
     return bTime - aTime;

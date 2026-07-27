@@ -44,7 +44,7 @@ export default function Footer() {
         <div className={styles.topLine} />
 
         <div className={styles.inner}>
-          {/* LEFT: logo at top, tagline + copyright pushed to bottom */}
+          {/* LEFT: logo + tagline */}
           <div className={styles.colLeft}>
             <Image
               src={LOGO}
@@ -53,17 +53,14 @@ export default function Footer() {
               alt="Pyron logo"
               className={styles.logo}
             />
-            <div className={styles.leftBottom}>
-              <p className={styles.tagline}>
-                A personal space for my thoughts, values, and everyday life.
-              </p>
-              <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
-            </div>
+            <p className={styles.tagline}>
+              A personal space for my thoughts, values, and everyday life.
+            </p>
           </div>
 
           <div className={styles.divider} />
 
-          {/* RIGHT: nav columns (centered) + stats below */}
+          {/* RIGHT: nav columns */}
           <div className={styles.navArea}>
             <div className={styles.navGrid}>
               <div className={styles.col}>
@@ -104,7 +101,16 @@ export default function Footer() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
+        {/* copyright left + stats right — same row = naturally same baseline */}
+        <div className={styles.footerStats}>
+          <div className={styles.footerStatsLeft}>
+            <p className={styles.copy}>© {year} Pyron Blog. All rights reserved.</p>
+          </div>
+          <div className={styles.footerStatsSpacer} />
+          <div className={styles.footerStatsRight}>
             {stats && (
               <div className={styles.statsRow}>
                 <div className={styles.statItem}>

@@ -38,7 +38,7 @@ export async function generateMetadata({
     : undefined;
 
   return {
-    title: `${fm.title} | Pyron`,
+    title: { absolute: fm.title },
     description: fm.description || fm.excerpt || "",
     keywords: fm.keywords || [],
     authors: fm.author ? [{ name: fm.author }] : undefined,

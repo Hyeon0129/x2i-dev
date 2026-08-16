@@ -11,6 +11,11 @@ const INITIAL_COUNT = 10;
 const LOAD_MORE_STEP = 6;
 const EXCERPT_MAX_CHARS = 150;
 
+function formatCategory(cat?: string) {
+  if (!cat) return '';
+  return cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
 function truncateChars(text: string, maxChars: number) {
   if (text.length <= maxChars) return text;
   return text.slice(0, maxChars).trimEnd() + "…";
@@ -40,7 +45,7 @@ export default function BlogList({ posts }: { posts: PostFrontMatter[] }) {
                   {post.title}
                 </Link>
 
-                <span className={styles.category}>{post.category}</span>
+                <span className={styles.category}>{formatCategory(post.category)}</span>
 
                 <p className={styles.excerpt}>{truncateChars(post.description || post.excerpt || "", EXCERPT_MAX_CHARS)}</p>
 

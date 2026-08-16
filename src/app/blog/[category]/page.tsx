@@ -54,6 +54,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <Link href="/blog/guides" className={catClass('guides')}>Guides</Link>
           <Link href="/blog/projects" className={catClass('projects')}>Projects</Link>
           <Link href="/blog/life" className={catClass('life')}>Life</Link>
+          <Link href="/blog/digital-detox" className={catClass('digital-detox')}>Digital Detox</Link>
         </div>
       </div>
 

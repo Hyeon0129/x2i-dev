@@ -43,6 +43,7 @@ export default async function BlogPage() {
             <Link href="/blog/guides" className={styles.categoryItem}>Guides</Link>
             <Link href="/blog/projects" className={styles.categoryItem}>Projects</Link>
             <Link href="/blog/life" className={styles.categoryItem}>Life</Link>
+            <Link href="/blog/digital-detox" className={styles.categoryItem}>Digital Detox</Link>
           </div>
         </div>
 

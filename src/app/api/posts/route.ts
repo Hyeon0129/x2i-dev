@@ -35,7 +35,7 @@ export async function GET() {
       });
 
   
-    return NextResponse.json(posts.slice(0, 3));
+    return NextResponse.json(posts.filter(p => p.slug !== 'codeblock').slice(0, 3));
   } catch (error) {
     console.error(error);
     return NextResponse.json(

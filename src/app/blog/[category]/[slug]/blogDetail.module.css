@@ -163,14 +163,33 @@ pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
 }
 
 .content blockquote {
-  border-left: 2px solid rgba(249, 115, 22, 0.5);
+  position: relative;
+  border-left: none;
   padding: 4px 0 4px 20px;
   margin: 28px 0;
+}
+
+.content blockquote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 14px rgba(255, 255, 255, 0.4);
 }
 
 .content blockquote p {
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
+}
+
+.content blockquote p:last-child:not(:first-child) {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin-top: 14px;
+  letter-spacing: 0.01em;
 }
 
 .content img {
